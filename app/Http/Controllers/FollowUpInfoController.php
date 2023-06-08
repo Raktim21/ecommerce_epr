@@ -36,15 +36,54 @@ class FollowUpInfoController extends Controller
     }
 
 
-    public function show($id)
+    public function show($client_id)
     {
-        $client = Clients::findOrFail($id);
+        $client = Clients::findOrFail($client_id);
 
         $data = $client->follow_ups;
 
         return response()->json([
             'success' => true,
             'data' => $data
+        ]);
+    }
+
+
+    public function update(Request $request, $id)
+    {
+        $follow = FollowUpInfo::findOrFail($id);
+
+        $validator = Validator::make($request->all(), [
+            'detail' => 'required|string',
+            'occurred_on' => 'required|date_format:Y-m-d H:i:s'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()->all()
+            ], 422);
+        }
+
+        $follow->update([
+            'detail' => $request->detail,
+            'occurred_on' => $request->occurred_on
+        ]);
+
+        return response()->json([
+            'success' => true,
+        ]);
+    }
+
+
+    public function delete($id)
+    {
+        $follow = FollowUpInfo::findOrFail($id);
+
+        $follow->delete();
+
+        return response()->json([
+            'success' => true,
         ]);
     }
 }

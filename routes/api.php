@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClientsController;
 use App\Http\Controllers\FollowUpInfoController;
 use App\Http\Controllers\InterestStatusController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -58,12 +59,16 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     });
 
     Route::controller(FollowUpInfoController::class)->group(function () {
+        Route::get('clients-follow-up/{client_id}', 'show');
         Route::post('follow-up', 'store');
-        Route::get('clients-follow-up/{id}', 'show');
+        Route::put('follow-up/{id}', 'update');
+        Route::delete('follow-up/{id}', 'delete');
     });
 
-
-
+    Route::controller(PaymentController::class)->group(function () {
+        Route::post('clients-payments', 'store');
+        Route::get('clients-payments/{client_id}', 'show');
+    });
 
 });
 

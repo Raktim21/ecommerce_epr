@@ -10,6 +10,16 @@ class Payment extends Model
     use HasFactory;
 
     protected $fillable = [
-        ''
+        'client_id',
+        'amount'
     ];
+
+    protected $hidden = [
+        'updated_at'
+    ];
+
+    public function client()
+    {
+        return $this->belongsTo(Clients::class, 'client_id');
+    }
 }

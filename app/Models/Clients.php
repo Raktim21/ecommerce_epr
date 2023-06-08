@@ -33,6 +33,11 @@ class Clients extends Model
         return $this->hasMany(FollowUpInfo::class, 'client_id');
     }
 
+    public function payment()
+    {
+        return $this->hasOne(Payment::class, 'client_id');
+    }
+
     public function status_id()
     {
         return $this->belongsTo(InterestStatus::class, 'status_id');
