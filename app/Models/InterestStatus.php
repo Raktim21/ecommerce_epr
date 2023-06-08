@@ -8,4 +8,18 @@ use Illuminate\Database\Eloquent\Model;
 class InterestStatus extends Model
 {
     use HasFactory;
+
+    protected $guarded = [
+        'name'
+    ];
+
+    protected $hidden = [
+        'created_at',
+        'updated_at'
+    ];
+
+    public function clients()
+    {
+        $this->hasMany(Clients::class, 'status_id');
+    }
 }
