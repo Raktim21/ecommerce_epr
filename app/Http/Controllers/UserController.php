@@ -95,7 +95,7 @@ class UserController extends Controller
             $filename = hexdec(uniqid()). '.' . $file->getClientOriginalExtension();
             $file->move(public_path('/uploads/users/avatar'),$filename);
 
-            $user->avatar = $filename;
+            $user->avatar = '/uploads/users/avatar/' . $filename;
             $user->save();
         }
 

@@ -28,13 +28,13 @@ class Clients extends Model
         'created_at'
     ];
 
-    public function status()
+    public function status_id()
     {
-        $this->belongsTo(InterestStatus::class, 'status_id');
+        return $this->belongsTo(InterestStatus::class, 'status_id');
     }
 
-    public function added_by_admin()
+    public function added_by()
     {
-        $this->belongsTo(User::class, 'added_by');
+        return $this->belongsTo(User::class, 'added_by');
     }
 }
