@@ -25,7 +25,7 @@ class PaymentController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'client_id' => 'required|exists:clients,id',
-            'amount' => 'required|integer|exact:999',
+            'amount' => 'required|numeric',
         ]);
 
         if ($validator->fails()) {

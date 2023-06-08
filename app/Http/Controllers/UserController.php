@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -55,7 +55,7 @@ class UserController extends Controller
             'address' => $request->address,
             'details' => $request->details,
             'password' => Hash::make($request->password),
-            'avatar' => $filename
+            'avatar' => '/uploads/users/avatar' . $filename
         ]);
 
         return response()->json([
@@ -65,6 +65,8 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
+        $user = User::findOrFail($id);
+
         $validator = Validator::make($request->all(), [
             'name'    => 'required|string|max:255',
             'email'   => 'required|string|email|max:255|unique:users,email,'.$id,
@@ -87,21 +89,33 @@ class UserController extends Controller
             ], 422);
         }
 
-        $user = User::find($id)->update($request->except('avatar'));
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->phone = $request->phone;
+        $user->address = $request->address;
+        $user->details = $request->details;
 
         if ($request->hasFile('avatar')) {
+
+            if(File::exists(public_path($user->avatar)))
+            {
+                File::delete(public_path($user->avatar));
+            }
 
             $file = $request->file('avatar');
             $filename = hexdec(uniqid()). '.' . $file->getClientOriginalExtension();
             $file->move(public_path('/uploads/users/avatar'),$filename);
 
             $user->avatar = '/uploads/users/avatar/' . $filename;
-            $user->save();
+
         }
+
+        $user->save();
 
         return response()->json([
             'success' => true,
         ]);
+
     }
 
     public function show($id)

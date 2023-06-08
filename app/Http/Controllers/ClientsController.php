@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
+use Mockery\Exception;
 
 class ClientsController extends Controller
 {
@@ -205,10 +206,19 @@ class ClientsController extends Controller
     {
         $client = Clients::findOrFail($id);
 
-        $client->delete();
+        try {
+            $client->delete();
 
-        return response()->json([
-            'success' => true,
-        ]);
+            return response()->json([
+                'success' => true,
+            ]);
+        }
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'success' => false,
+                'error' => 'Cannot delete this client.'
+            ], 500);
+        }
     }
 }
