@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-   
+
 
     public function login(Request $request)
     {
@@ -21,24 +21,28 @@ class AuthController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'errors' => $validator->errors()
+                'success' => false,
+                'errors' => $validator->errors()->all()
             ], 422);
         }
 
         $credentials = $request->only('email', 'password');
 
-        if ($token = auth()->attempt($credentials)) {
+        if ($token = auth()->attempt($credentials))
+        {
             $user = auth()->user();
             return response()->json([
-                'status' => 'success',
+                'success' => true,
                 'user' => $user,
                 'admin_access_token' => $token,
                 'token_type' => 'bearer',
                 'expires_in' => auth()->factory()->getTTL() * 60
             ]);
-        }else{
+        }
+        else
+        {
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'Unauthorized'
             ], 401);
         }
@@ -109,7 +113,7 @@ class AuthController extends Controller
                         ],
 
             'address' => 'nullable|string',
-            'details' => 'nullable|string',        
+            'details' => 'nullable|string',
         ]);
 
 
@@ -144,7 +148,7 @@ class AuthController extends Controller
                 'message' => $e->getMessage()
             ]);
         }
- 
+
 
     }
 

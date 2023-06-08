@@ -30,7 +30,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::post('refresh', [AuthController::class, 'refresh']);
 
     Route::get('profile', [AuthController::class, 'profile']);
-    Route::post('update-avater', [AuthController::class, 'updateAvater']);
+    Route::post('update-avatar', [AuthController::class, 'updateAvatar']);
     Route::post('update-info', [AuthController::class, 'updateInfo']);
     Route::post('update-pasword', [AuthController::class, 'updatePassword']);
 
@@ -43,5 +43,5 @@ Route::group(['middleware' => ['jwt.auth']], function () {
         Route::get('users/{id}', 'show');
         Route::delete('users/{id}', 'destroy');
     });
-    
+
 });
