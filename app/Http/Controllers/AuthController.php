@@ -53,14 +53,18 @@ class AuthController extends Controller
     public function profile()
     {
         $user = User::find(auth()->user()->id);
-        return response()->json($user, 200);
+
+        return response()->json([
+            'success' => true,
+            'data' => $user
+        ]);
     }
 
     public function updateAvater(Request $request)
     {
 
         $validator = Validator::make($request->all(), [
-            'avatar' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'avatar' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -71,6 +75,7 @@ class AuthController extends Controller
         }
 
         DB::beginTransaction();
+
         try {
             $file = $request->file('avatar');
             $filename = hexdec(uniqid()). '.' . $file->getClientOriginalExtension();
@@ -84,32 +89,32 @@ class AuthController extends Controller
             DB::commit();
 
             return response()->json([
-                'status' => true,
-                'message' => 'Avatar updated successfully'
+                'success' => true,
             ]);
-        }catch (\Exception $e){
-
+        }
+        catch (\Exception $e)
+        {
             DB::rollback();
+
             return response()->json([
-                'status' => false,
+                'success' => false,
                 'message' => $e->getMessage()
-            ]);
+            ], 500);
         }
     }
 
 
     public function updateInfo(Request $request)
     {
+        $user = User::findOrFail(auth()->user()->id);
+
         $validator = Validator::make($request->all(), [
             'name'  => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,'.auth()->user()->id,
             'phone' =>  [
                             'required',
-                            'max:11',
-                            'min:11',
                             'regex:/^(?:\+?88|0088)?01[3-9]\d{8}$/',
-                            'string',
-                            'unique:users,phone,'.auth()->user()->id,
+                            'unique:users,phone,'.$user->id,
                         ],
 
             'address' => 'nullable|string',
@@ -119,37 +124,22 @@ class AuthController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => false,
+                'success' => false,
                 'errors' => $validator->errors()->all(),
             ], 422);
         }
 
-        DB::beginTransaction();
-        try {
-            $user = User::find(auth()->user()->id);
-            $user->name    = $request->name;
-            $user->email   = $request->email;
-            $user->phone   = $request->phone;
-            $user->address = $request->address;
-            $user->details = $request->details;
-            $user->save();
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'details' => $request->details,
+        ]);
 
-            DB::commit();
-
-            return response()->json([
-                'status' => true,
-                'message' => 'Information updated successfully'
-            ]);
-
-        }catch (\Exception $e){
-            DB::rollback();
-            return response()->json([
-                'status' => false,
-                'message' => $e->getMessage()
-            ]);
-        }
-
-
+        return response()->json([
+            'success' => true,
+        ]);
     }
 
 
@@ -159,11 +149,11 @@ class AuthController extends Controller
             'old_password' =>  [
                                     'required', function ($attribute, $value, $fail) {
                                         if (!Hash::check($value, auth()->user()->password)) {
-                                            $fail("Old password is incorrect");
+                                            $fail("Old password is incorrect.");
                                         }
                                     },
                                 ],
-            'new_password'     => 'required',
+            'new_password'     => 'required|min:6',
             'confirm_password' => 'required|same:new_password',
         ]);
 
@@ -174,28 +164,13 @@ class AuthController extends Controller
             ], 422);
         }
 
-        DB::beginTransaction();
-        try {
-            $user = User::find(auth()->user()->id);
-            $user->password = bcrypt($request->new_password);
-            $user->save();
+        User::findOrFail(auth()->user()->id)->update([
+            'password' => bcrypt($request->new_password)
+        ]);
 
-            DB::commit();
-
-            return response()->json([
-                'status' => true,
-                'message' => 'Password updated successfully'
-            ]);
-
-
-        }catch (\Exception $e){
-            DB::rollback();
-            return response()->json([
-                'status' => false,
-                'message' => $e->getMessage()
-            ]);
-        }
-
+        return response()->json([
+            'success' => true,
+        ]);
     }
 
 
@@ -203,14 +178,15 @@ class AuthController extends Controller
     {
         auth()->logout();
 
-        return response()->json(['message' => 'Successfully logged out'],200);
+        return response()->json([
+            'success' => true
+        ]);
     }
 
 
     public function refresh()
     {
         return $this->respondWithToken(auth()->refresh());
-        // return $this->respondWithToken(auth()->fromUser(auth()->user()));
     }
 
     protected function respondWithToken($token)

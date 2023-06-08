@@ -32,7 +32,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::get('profile', [AuthController::class, 'profile']);
     Route::post('update-avatar', [AuthController::class, 'updateAvatar']);
     Route::post('update-info', [AuthController::class, 'updateInfo']);
-    Route::post('update-pasword', [AuthController::class, 'updatePassword']);
+    Route::post('update-password', [AuthController::class, 'updatePassword']);
 
 
     Route::controller(UserController::class)->group(function () {
