@@ -40,6 +40,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::controller(ClientsController::class)->group(function () {
         Route::get('clients', 'index');
         Route::get('clients-confirm/{id}', 'confirmClient');
+        Route::put('clients-change-status/{id}', 'changeStatus');
         Route::get('clients/{id}', 'show');
         Route::post('clients', 'store');
         Route::put('clients-info-update/{id}', 'updateInfo');

@@ -221,4 +221,29 @@ class ClientsController extends Controller
             ], 500);
         }
     }
+
+
+    public function changeStatus(Request $request, $id)
+    {
+        $client = Clients::findOrFail($id);
+
+        $validator = Validator::make($request->all(), [
+            'status_id' => 'required|exists:interest_statuses,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'error' => $validator->errors()->first()
+            ], 422);
+        }
+
+        $client->update([
+            'status_id' => $request->status_id
+        ]);
+
+        return response()->json([
+            'success' => true,
+        ]);
+    }
 }
