@@ -127,4 +127,25 @@ class UserController extends Controller
             'data' => $user
         ]);
     }
+
+
+    public function destroy($id)
+    {
+        $user = User::findOrFail($id);
+
+        try {
+            $user->delete();
+
+            return response()->json([
+                'success' => true,
+            ]);
+        }
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'success' => false,
+                'error' => 'Cannot delete this user.'
+            ], 500);
+        }
+    }
 }
