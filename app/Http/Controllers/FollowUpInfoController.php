@@ -20,7 +20,7 @@ class FollowUpInfoController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'errors' => $validator->errors()->all()
+                'error' => $validator->errors()->first()
             ], 422);
         }
 
@@ -61,7 +61,7 @@ class FollowUpInfoController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'errors' => $validator->errors()->all()
+                'error' => $validator->errors()->first()
             ], 422);
         }
 

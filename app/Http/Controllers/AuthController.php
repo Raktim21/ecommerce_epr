@@ -22,7 +22,7 @@ class AuthController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'errors' => $validator->errors()->all()
+                'error' => $validator->errors()->first()
             ], 422);
         }
 
@@ -43,7 +43,7 @@ class AuthController extends Controller
         {
             return response()->json([
                 'success' => false,
-                'message' => 'Unauthorized'
+                'error' => 'Unauthorized'
             ], 401);
         }
 
@@ -70,7 +70,7 @@ class AuthController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'status' => false,
-                'errors' => $validator->errors()->all(),
+                'error' => $validator->errors()->first()
             ], 422);
         }
 
@@ -125,7 +125,7 @@ class AuthController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'errors' => $validator->errors()->all(),
+                'error' => $validator->errors()->first()
             ], 422);
         }
 
@@ -160,7 +160,7 @@ class AuthController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'status' => false,
-                'errors' => $validator->errors()->all(),
+                'error' => $validator->errors()->first()
             ], 422);
         }
 

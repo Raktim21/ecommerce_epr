@@ -66,8 +66,8 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     });
 
     Route::controller(PaymentController::class)->group(function () {
+        Route::get('clients-payments', 'index');
         Route::post('clients-payments', 'store');
-        Route::get('clients-payments/{client_id}', 'show');
     });
 
 });

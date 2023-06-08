@@ -12,7 +12,18 @@ class ClientsController extends Controller
 {
     public function index()
     {
-        $status = \request()->input('confirmed');
+        $validator = Validator::make(request()->all(), [
+            'confirmed' => 'required|in:0,1'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'error' => $validator->errors()->first()
+            ], 422);
+        }
+
+        $status = request()->input('confirmed');
 
         $data = Clients::when($status==0, function ($query) {
             $query->where('confirmation_date',null);
@@ -78,7 +89,7 @@ class ClientsController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'errors' => $validator->errors()->all()
+                'error' => $validator->errors()->first()
             ], 422);
         }
 
@@ -117,11 +128,11 @@ class ClientsController extends Controller
         $validator = Validator::make($request->all(), [
             'company'          => 'required|string|max:255',
             'name'             => 'required|string|max:255',
-            'email'            => 'required|string|email|max:255|unique:clients,email',
+            'email'            => 'required|string|email|max:255|unique:clients,email,'.$id,
             'phone_no'         =>   [
                 'required',
                 'regex:/^(?:\+?88|0088)?01[3-9]\d{8}$/',
-                'unique:clients,phone_no',
+                'unique:clients,phone_no,'.$id,
             ],
             'status_id'        => 'required|exists:interest_statuses,id',
             'area'             => 'required|string',
@@ -132,7 +143,7 @@ class ClientsController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'errors' => $validator->errors()->all()
+                'error' => $validator->errors()->first()
             ], 422);
         }
 
@@ -164,7 +175,7 @@ class ClientsController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'status' => false,
-                'errors' => $validator->errors()->all(),
+                'error' => $validator->errors()->first()
             ], 422);
         }
 
