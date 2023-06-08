@@ -3,17 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Models\Clients;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 
 class ClientsController extends Controller
 {
     public function index()
     {
-        $data = Clients::where('confirmation_date', null)->with('status_id')
-            ->with(['added_by' => function($q) {
-                $q->select('id','name');
-            }])
+        $status = \request()->input('confirmed');
+
+        $data = Clients::when($status==0, function ($query) {
+            $query->where('confirmation_date',null);
+        })->when($status==1, function ($query) {
+            $query->whereNotNull('confirmation_date');
+        })
+            ->leftJoin('interest_statuses','clients.status_id','=','interest_statuses.id')
+            ->select('clients.*','interest_statuses.id as status_id','interest_statuses.name as status_name')
             ->paginate(10);
 
         return response()->json([
@@ -22,13 +29,31 @@ class ClientsController extends Controller
         ]);
     }
 
+
     public function show($id)
     {
-        $client = Clients::findOrFail($id);
+        $client = Clients::with('status_id')
+            ->with(['added_by' => function($q) {
+                $q->select('id','name');
+            }])->findOrFail($id);
 
         return response()->json([
             'success' => true,
             'data' => $client
+        ]);
+    }
+
+
+    public function confirmClient($id)
+    {
+        $client = Clients::findOrFail($id);
+
+        $client->update([
+            'confirmation_date' => Carbon::now(),
+        ]);
+
+        return response()->json([
+            'success' => true,
         ]);
     }
 
@@ -47,7 +72,7 @@ class ClientsController extends Controller
             'area'             => 'required|string',
             'client_opinion'   => 'nullable|string',
             'officer_opinion'  => 'nullable|string',
-            'document'         => 'required|image|mimes:jpeg,png,jpg,pdf|max:2048'
+            'document'         => 'nullable|mimes:jpeg,png,jpg,pdf|max:2048'
         ]);
 
         if ($validator->fails()) {
@@ -83,6 +108,7 @@ class ClientsController extends Controller
             'success' => true,
         ], 201);
     }
+
 
     public function updateInfo(Request $request, $id)
     {
@@ -120,6 +146,55 @@ class ClientsController extends Controller
             'client_opinion' => $request->client_opinion ?? 'N/A',
             'officer_opinion' => $request->officer_opinion ?? 'N/A',
         ]);
+
+        return response()->json([
+            'success' => true,
+        ]);
+    }
+
+
+    public function updateDoc(Request $request, $id)
+    {
+        $client = Clients::findOrFail($id);
+
+        $validator = Validator::make($request->all(), [
+            'document' => 'required|mimes:pdf,jpeg,png,jpg|max:2048',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()->all(),
+            ], 422);
+        }
+
+        if($client->document)
+        {
+            if(File::exists(public_path($client->document)))
+            {
+                File::delete(public_path($client->document));
+            }
+        }
+
+        $file = $request->file('document');
+        $filename = hexdec(uniqid()). '.' . $file->getClientOriginalExtension();
+        $file->move(public_path('/uploads/clients/documents/'),$filename);
+
+        $client->update([
+            'document' => '/uploads/clients/documents/' . $filename
+        ]);
+
+        return response()->json([
+            'success' => true,
+        ]);
+    }
+
+
+    public function destroy($id)
+    {
+        $client = Clients::findOrFail($id);
+
+        $client->delete();
 
         return response()->json([
             'success' => true,
