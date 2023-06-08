@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClientsController;
+use App\Http\Controllers\FollowUpInfoController;
 use App\Http\Controllers\InterestStatusController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -55,6 +56,13 @@ Route::group(['middleware' => ['jwt.auth']], function () {
         Route::post('clients-document-update/{id}', 'updateDoc');
         Route::delete('clients/{id}', 'destroy');
     });
+
+    Route::controller(FollowUpInfoController::class)->group(function () {
+        Route::post('follow-up', 'store');
+        Route::get('clients-follow-up/{id}', 'show');
+    });
+
+
 
 
 });

@@ -28,6 +28,11 @@ class Clients extends Model
         'created_at'
     ];
 
+    public function follow_ups()
+    {
+        return $this->hasMany(FollowUpInfo::class, 'client_id');
+    }
+
     public function status_id()
     {
         return $this->belongsTo(InterestStatus::class, 'status_id');

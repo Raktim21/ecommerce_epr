@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('follow_up_infos', function (Blueprint $table) {
+        Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('client_id')->constrained('clients')->onDelete('cascade');
-            $table->text('detail');
-            $table->timestamp('occurred_on');
+            $table->foreignId('client_id')->constrained('clients')->onDelete('restrict');
+            $table->double('amount',8,2);
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('follow_up_infos');
+        Schema::dropIfExists('payments');
     }
 };
