@@ -14,7 +14,8 @@ class ClientsController extends Controller
     public function index()
     {
         $validator = Validator::make(request()->all(), [
-            'confirmed' => 'required|in:0,1'
+            'confirmed' => 'sometimes|in:0,1',
+            'search' => 'sometimes'
         ]);
 
         if ($validator->fails()) {
@@ -24,11 +25,20 @@ class ClientsController extends Controller
             ], 422);
         }
 
-        $status = request()->input('confirmed');
+        $search = request()->input('search') ?? '';
 
-        $data = Clients::when($status==0, function ($query) {
+        $status = request()->input('confirmed') ?? '';
+
+        $data = Clients::when($status==='' && $search!==null , function ($query) use ($search) {
+            $query->where('company','like',"%$search%")
+                  ->orWhere('clients.name','like',"%$search%")
+                  ->orWhere('clients.email','like',"%$search%")
+                  ->orWhere('clients.area','like',"%$search%");
+        })
+        ->when($status==0, function ($query) {
             $query->where('confirmation_date',null);
-        })->when($status==1, function ($query) {
+        })
+        ->when($status==1, function ($query) {
             $query->whereNotNull('confirmation_date');
         })
             ->leftJoin('interest_statuses','clients.status_id','=','interest_statuses.id')
@@ -39,6 +49,15 @@ class ClientsController extends Controller
             'success' => true,
             'data' => $data
         ]);
+    }
+
+    public function demo()
+    {
+        $search = request()->input('search') ?? null;
+
+        $data = Clients::where('company','like',"%$search%")->get();
+
+        return response($data);
     }
 
 
