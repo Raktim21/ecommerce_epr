@@ -247,10 +247,9 @@ class ClientsController extends Controller
         ]);
     }
 
-    public function clientConfirmed()
+    public function unpaidClients()
     {
         $data = Clients::whereDoesntHave('payment')
-            ->whereNotNull('confirmation_date')
             ->select('id','name')
             ->get();
 
