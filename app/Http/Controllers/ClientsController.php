@@ -246,4 +246,17 @@ class ClientsController extends Controller
             'success' => true,
         ]);
     }
+
+    public function clientConfirmed()
+    {
+        $data = Clients::whereDoesntHave('payment')
+            ->whereNotNull('confirmation_date')
+            ->select('id','name')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $data
+        ]);
+    }
 }
