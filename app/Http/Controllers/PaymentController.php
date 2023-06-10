@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Clients;
 use App\Models\Payment;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class PaymentController extends Controller
@@ -35,13 +38,32 @@ class PaymentController extends Controller
             ], 422);
         }
 
-        Payment::create([
-            'client_id' => $request->client_id,
-            'amount' => $request->amount
-        ]);
+        DB::beginTransaction();
 
-        return response()->json([
-            'success' => true,
-        ], 201);
+        try {
+            Payment::create([
+                'client_id' => $request->client_id,
+                'amount' => $request->amount
+            ]);
+
+            Clients::find($request->client_id)->update([
+                'confirmation_date' => Carbon::now(),
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+            ], 201);
+        }
+        catch (\Exception $e)
+        {
+            DB::rollback();
+
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }
