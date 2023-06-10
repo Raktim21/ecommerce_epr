@@ -7,7 +7,6 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
-use Mockery\Exception;
 
 class ClientsController extends Controller
 {
@@ -51,15 +50,6 @@ class ClientsController extends Controller
         ]);
     }
 
-    public function demo()
-    {
-        $search = request()->input('search') ?? null;
-
-        $data = Clients::where('company','like',"%$search%")->get();
-
-        return response($data);
-    }
-
 
     public function show($id)
     {
@@ -71,20 +61,6 @@ class ClientsController extends Controller
         return response()->json([
             'success' => true,
             'data' => $client
-        ]);
-    }
-
-
-    public function confirmClient($id)
-    {
-        $client = Clients::findOrFail($id);
-
-        $client->update([
-            'confirmation_date' => Carbon::now(),
-        ]);
-
-        return response()->json([
-            'success' => true,
         ]);
     }
 
