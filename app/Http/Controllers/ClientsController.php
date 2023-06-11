@@ -34,7 +34,7 @@ class ClientsController extends Controller
             })
             ->leftJoin('interest_statuses','clients.status_id','=','interest_statuses.id')
             ->select('clients.*','interest_statuses.id as status_id','interest_statuses.name as status_name')
-            ->paginate(2);
+            ->paginate(10)->appends($request->except('page'));
 
         return response()->json([
             'success' => true,
