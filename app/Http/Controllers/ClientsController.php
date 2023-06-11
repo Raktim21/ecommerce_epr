@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ClientGetRequest;
 use App\Models\Clients;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -10,23 +11,10 @@ use Illuminate\Support\Facades\Validator;
 
 class ClientsController extends Controller
 {
-    public function index()
+    public function index(ClientGetRequest $request)
     {
-        $validator = Validator::make(request()->all(), [
-            'confirmed' => 'sometimes|in:0,1',
-            'search' => 'sometimes'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'error' => $validator->errors()->first()
-            ], 422);
-        }
-
-        $search = request()->input('search') ?? '';
-
-        $status = request()->input('confirmed') ?? '';
+        $search = $request->search ?? '';
+        $status = $request->confirmed ?? '';
 
         $data = Clients::
             when($status==0, function ($query) use($search) {
