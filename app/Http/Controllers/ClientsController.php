@@ -18,22 +18,20 @@ class ClientsController extends Controller
 
         $data = Clients::
             when($status==0, function ($query) use($search) {
-                return $query->whereNull('confirmation_date')
-                    ->when($search, function ($query) use ($search) {
-                        return $query->where('company','like',"%$search%")
+            return $query->where(function ($query) use ($search) {
+                        $query->where('company','like',"%$search%")
                             ->orWhere('clients.name','like',"%$search%")
                             ->orWhere('clients.email','like',"%$search%")
                             ->orWhere('clients.area','like',"%$search%");
-                    });
-            })
-            ->when($status==1, function ($query) use($search) {
-                return $query->whereNotNull('confirmation_date')
-                    ->when($search, function ($query) use ($search) {
-                        return $query->where('company','like',"%$search%")
-                            ->orWhere('clients.name','like',"%$search%")
-                            ->orWhere('clients.email','like',"%$search%")
-                            ->orWhere('clients.area','like',"%$search%");
-                    });
+                })->whereNull('confirmation_date');
+            })->
+            when($status==1, function ($query) use($search) {
+                return $query->where(function ($query) use ($search) {
+                    $query->where('company','like',"%$search%")
+                        ->orWhere('clients.name','like',"%$search%")
+                        ->orWhere('clients.email','like',"%$search%")
+                        ->orWhere('clients.area','like',"%$search%");
+                })->whereNotNull('confirmation_date');
             })
             ->leftJoin('interest_statuses','clients.status_id','=','interest_statuses.id')
             ->select('clients.*','interest_statuses.id as status_id','interest_statuses.name as status_name')
