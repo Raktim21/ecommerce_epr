@@ -28,18 +28,25 @@ class ClientsController extends Controller
 
         $status = request()->input('confirmed') ?? '';
 
-        $data = Clients::when($status==='' && $search!==null , function ($query) use ($search) {
-            $query->where('company','like',"%$search%")
-                  ->orWhere('clients.name','like',"%$search%")
-                  ->orWhere('clients.email','like',"%$search%")
-                  ->orWhere('clients.area','like',"%$search%");
-        })
-        ->when($status==0, function ($query) {
-            $query->where('confirmation_date',null);
-        })
-        ->when($status==1, function ($query) {
-            $query->whereNotNull('confirmation_date');
-        })
+        $data = Clients::
+            when($status==0, function ($query) use($search) {
+                return $query->whereNull('confirmation_date')
+                    ->when($search, function ($query) use ($search) {
+                        return $query->where('company','like',"%$search%")
+                            ->orWhere('clients.name','like',"%$search%")
+                            ->orWhere('clients.email','like',"%$search%")
+                            ->orWhere('clients.area','like',"%$search%");
+                    });
+            })
+            ->when($status==1, function ($query) use($search) {
+                return $query->whereNotNull('confirmation_date')
+                    ->when($search, function ($query) use ($search) {
+                        return $query->where('company','like',"%$search%")
+                            ->orWhere('clients.name','like',"%$search%")
+                            ->orWhere('clients.email','like',"%$search%")
+                            ->orWhere('clients.area','like',"%$search%");
+                    });
+            })
             ->leftJoin('interest_statuses','clients.status_id','=','interest_statuses.id')
             ->select('clients.*','interest_statuses.id as status_id','interest_statuses.name as status_name')
             ->paginate(10);
