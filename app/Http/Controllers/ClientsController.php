@@ -64,7 +64,7 @@ class ClientsController extends Controller
         $validator = Validator::make($request->all(), [
             'company'          => 'required|string|max:255',
             'name'             => 'required|string|max:255',
-            'email'            => 'required|email|unique:clients,email',
+            'email'            => 'nullable|email|unique:clients,email',
             'phone_no'         =>   [
                                         'required',
                                         'regex:/^(?:\+?88|0088)?01[3-9]\d{8}$/',
@@ -87,7 +87,7 @@ class ClientsController extends Controller
         $client = Clients::create([
             'company' => $request->company,
             'name' => $request->name,
-            'email' => $request->email,
+            'email' => $request->email ?? 'N/A',
             'phone_no' => $request->phone_no,
             'area' => $request->area,
             'status_id' => 1,

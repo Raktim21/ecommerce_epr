@@ -6,7 +6,6 @@ use App\Models\Clients;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Collection;
-use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
@@ -26,13 +25,13 @@ class ClientsImport implements ToModel, WithHeadingRow, WithValidation
         return new Clients([
             'company' => $row['company'],
             'name' => $row['name'],
-            'email' => $row['email'],
+            'email' => $row['email'] ?? 'N/A',
             'phone_no' => '0' . $row['phone_no'],
             'area' => $row['area'],
             'status_id' => 1,
             'product_type' => $row['product_type'],
-            'client_opinion' => $row['client_opinion'] ?? '',
-            'officer_opinion' => $row['officer_opinion'] ?? '',
+            'client_opinion' => $row['client_opinion'] ?? 'N/A',
+            'officer_opinion' => $row['officer_opinion'] ?? 'N/A',
             'added_by' => auth()->user()->id,
         ]);
     }
@@ -42,7 +41,7 @@ class ClientsImport implements ToModel, WithHeadingRow, WithValidation
         return [
             '*.company'          => 'required|string|max:255',
             '*.name'             => 'required|string|max:255',
-            '*.email'            => 'nullable|email',
+            '*.email'            => 'sometimes|nullable|email',
             '*.phone_no'         =>   [
                 'required',
                 'regex:/^1[3-9]\d{8}$/',
@@ -50,8 +49,8 @@ class ClientsImport implements ToModel, WithHeadingRow, WithValidation
             ],
             '*.area'             => 'required|string|max:255',
             '*.product_type'     => 'required|string|max:255',
-            '*.client_opinion'   => 'nullable|string',
-            '*.officer_opinion'  => 'nullable|string',
+            '*.client_opinion'   => 'sometimes|nullable|string',
+            '*.officer_opinion'  => 'sometimes|nullable|string',
         ];
     }
 
@@ -60,9 +59,7 @@ class ClientsImport implements ToModel, WithHeadingRow, WithValidation
         return [
             '*.company.required'      => 'The company field is required.',
             '*.name.required'         => 'The name field is required.',
-            '*.email.required'        => 'The email field is required.',
             '*.email.email'           => 'The email field must have a valid email address.',
-            '*.email.unique'          => 'The selected email already exists.',
             '*.phone_no.required'     => 'The phone no field is required.',
             '*.phone_no.regex'        => 'The phone no field must have a valid number.',
             '*.phone_no.unique'       => 'The selected phone no already exists.',
