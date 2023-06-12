@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('phone_no')->unique();
             $table->string('area');
             $table->foreignId('status_id')->constrained('interest_statuses')->onDelete('restrict');
+            $table->string('product_type', 255);
             $table->string('client_opinion')->nullable();
             $table->string('officer_opinion')->nullable();
             $table->string('document')->nullable();

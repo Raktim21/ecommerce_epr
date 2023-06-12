@@ -69,6 +69,7 @@ class ClientsController extends Controller
                                         'unique:clients,phone_no',
                                     ],
             'area'             => 'required|string',
+            'product_type'     => 'required|string|max:255',
             'client_opinion'   => 'nullable|string',
             'officer_opinion'  => 'nullable|string',
             'document'         => 'nullable|mimes:jpeg,png,jpg,pdf|max:2048'
@@ -88,6 +89,7 @@ class ClientsController extends Controller
             'phone_no' => $request->phone_no,
             'area' => $request->area,
             'status_id' => 1,
+            'product_type' => $request->product_type,
             'client_opinion' => $request->client_opinion ?? 'N/A',
             'officer_opinion' => $request->officer_opinion ?? 'N/A',
             'added_by' => auth()->user()->id

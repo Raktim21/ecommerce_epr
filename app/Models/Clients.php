@@ -16,6 +16,7 @@ class Clients extends Model
         'phone_no',
         'area',
         'status_id',
+        'product_type',
         'client_opinion',
         'officer_opinion',
         'document',
