@@ -33,8 +33,8 @@ class ClientGetRequest extends FormRequest
     protected function failedValidation(Validator $validator)
     {
         throw new HttpResponseException(response()->json([
-            'status'  => false,
-            'errors'  => $validator->errors()->all(),
+            'success'  => false,
+            'error'  => $validator->errors()->first(),
         ], 422));
     }
 }
