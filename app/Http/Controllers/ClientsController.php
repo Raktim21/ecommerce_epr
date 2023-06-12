@@ -91,7 +91,7 @@ class ClientsController extends Controller
             'phone_no' => $request->phone_no,
             'area' => $request->area,
             'status_id' => 1,
-            'product_type' => $request->product_type,
+            'product_type' => $request->product_type ?? 'N/A',
             'client_opinion' => $request->client_opinion ?? 'N/A',
             'officer_opinion' => $request->officer_opinion ?? 'N/A',
             'added_by' => auth()->user()->id

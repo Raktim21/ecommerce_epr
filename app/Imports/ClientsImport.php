@@ -27,9 +27,9 @@ class ClientsImport implements ToModel, WithHeadingRow, WithValidation
             'name' => $row['name'],
             'email' => $row['email'] ?? 'N/A',
             'phone_no' => '0' . $row['phone_no'],
-            'area' => $row['area'],
+            'area' => $row['area'] ?? 'N/A',
             'status_id' => 1,
-            'product_type' => $row['product_type'],
+            'product_type' => $row['product_type'] ?? 'N/A',
             'client_opinion' => $row['client_opinion'] ?? 'N/A',
             'officer_opinion' => $row['officer_opinion'] ?? 'N/A',
             'added_by' => auth()->user()->id,
@@ -47,8 +47,8 @@ class ClientsImport implements ToModel, WithHeadingRow, WithValidation
                 'regex:/^1[3-9]\d{8}$/',
                 'unique:clients,phone_no',
             ],
-            '*.area'             => 'required|string|max:255',
-            '*.product_type'     => 'required|string|max:255',
+            '*.area'             => 'sometimes|nullable|string|max:255',
+            '*.product_type'     => 'sometimes|nullable|string|max:255',
             '*.client_opinion'   => 'sometimes|nullable|string',
             '*.officer_opinion'  => 'sometimes|nullable|string',
         ];
@@ -63,8 +63,6 @@ class ClientsImport implements ToModel, WithHeadingRow, WithValidation
             '*.phone_no.required'     => 'The phone no field is required.',
             '*.phone_no.regex'        => 'The phone no field must have a valid number.',
             '*.phone_no.unique'       => 'The selected phone no already exists.',
-            '*.area.required'         => 'The area field is required.',
-            '*.product_type.required' => 'The product type field is required.',
         ];
     }
 
