@@ -125,6 +125,7 @@ class ClientsController extends Controller
                 'unique:clients,phone_no,'.$id,
             ],
             'status_id'        => 'required|exists:interest_statuses,id',
+            'product_type'     => 'required|string|max:255',
             'area'             => 'required|string',
             'client_opinion'   => 'nullable|string',
             'officer_opinion'  => 'nullable|string',
@@ -144,6 +145,7 @@ class ClientsController extends Controller
             'phone_no' => $request->phone_no,
             'area' => $request->area,
             'status_id' => $request->status_id,
+            'product_type' => $request->product_type,
             'client_opinion' => $request->client_opinion ?? 'N/A',
             'officer_opinion' => $request->officer_opinion ?? 'N/A',
         ]);

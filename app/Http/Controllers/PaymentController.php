@@ -27,8 +27,18 @@ class PaymentController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'client_id' => 'required|exists:clients,id',
+            'client_id' => ['required','unique:payments,client_id',
+                function ($attr, $val, $fail)
+                {
+                    $client = Clients::find($val);
+
+                    if(!$client || $client->status_id != 11) {
+                        $fail("The selected client must have an interest rate of 100.");
+                    }
+                }],
             'amount' => 'required|numeric',
+        ],[
+            'client_id.unique' => 'The selected client has already paid.'
         ]);
 
         if ($validator->fails()) {
