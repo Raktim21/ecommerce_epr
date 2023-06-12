@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ClientGetRequest;
+use App\Imports\ClientsImport;
 use App\Models\Clients;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ClientsController extends Controller
 {
@@ -62,7 +64,7 @@ class ClientsController extends Controller
         $validator = Validator::make($request->all(), [
             'company'          => 'required|string|max:255',
             'name'             => 'required|string|max:255',
-            'email'            => 'required|string|email|max:255|unique:clients,email',
+            'email'            => 'required|email|unique:clients,email',
             'phone_no'         =>   [
                                         'required',
                                         'regex:/^(?:\+?88|0088)?01[3-9]\d{8}$/',
@@ -108,6 +110,38 @@ class ClientsController extends Controller
         return response()->json([
             'success' => true,
         ], 201);
+    }
+
+
+    public function importClients(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'file' => 'required|mimes:xlsx,csv',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'error' => $validator->errors()->first()
+            ], 422);
+        }
+
+        $file = $request->file('file');
+
+        try {
+            Excel::import(new ClientsImport, $file);
+
+            return response()->json([
+                'success' => true,
+            ], 201);
+        }
+        catch (\Exception $ex)
+        {
+            return response()->json([
+                'success' => false,
+                'error' => $ex->getMessage()
+            ], 422);
+        }
     }
 
 

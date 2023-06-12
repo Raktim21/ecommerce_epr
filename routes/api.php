@@ -43,6 +43,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
         Route::put('clients-change-status/{id}', 'changeStatus');
         Route::get('clients/{id}', 'show');
         Route::post('clients', 'store');
+        Route::post('import/clients', 'importClients');
         Route::put('clients-info-update/{id}', 'updateInfo');
         Route::post('clients-document-update/{id}', 'updateDoc');
         Route::delete('clients/{id}', 'destroy');
