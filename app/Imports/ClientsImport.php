@@ -12,21 +12,13 @@ use Maatwebsite\Excel\Concerns\WithValidation;
 
 class ClientsImport implements ToModel, WithHeadingRow, WithValidation
 {
-    /**
-    * @param Collection $collection
-    */
-    public function collection(Collection $collection)
-    {
-        //
-    }
-
     public function model(array $row)
     {
         return new Clients([
-            'company' => $row['company'],
-            'name' => $row['name'],
+            'company' => $row['company'] ?? '',
+            'name' => $row['name'] ?? 'N/A',
             'email' => $row['email'] ?? 'N/A',
-            'phone_no' => '0' . $row['phone_no'],
+            'phone_no' => $row['phone_no'] ?? 'N/A',
             'area' => $row['area'] ?? 'N/A',
             'status_id' => 1,
             'product_type' => $row['product_type'] ?? 'N/A',
@@ -39,30 +31,30 @@ class ClientsImport implements ToModel, WithHeadingRow, WithValidation
     public function rules(): array
     {
         return [
-            '*.company'          => 'required|string|max:255',
-            '*.name'             => 'required|string|max:255',
-            '*.email'            => 'sometimes|nullable|email',
-            '*.phone_no'         =>   [
-                'required',
-                'regex:/^1[3-9]\d{8}$/',
-                'unique:clients,phone_no',
-            ],
-            '*.area'             => 'sometimes|nullable|string|max:255',
-            '*.product_type'     => 'sometimes|nullable|string|max:255',
-            '*.client_opinion'   => 'sometimes|nullable|string',
-            '*.officer_opinion'  => 'sometimes|nullable|string',
+//            '*.company'          => 'required|string|max:255',
+//            '*.name'             => 'required|string|max:255',
+//            '*.email'            => 'sometimes|nullable|email',
+//            '*.phone_no'         =>   [
+//                'required',
+//                'regex:/^1[3-9]\d{8}$/',
+//                'unique:clients,phone_no',
+//            ],
+//            '*.area'             => 'sometimes|nullable|string|max:255',
+//            '*.product_type'     => 'sometimes|nullable|string|max:255',
+//            '*.client_opinion'   => 'sometimes|nullable|string',
+//            '*.officer_opinion'  => 'sometimes|nullable|string',
         ];
     }
 
     public function customValidationMessages(): array
     {
         return [
-            '*.company.required'      => 'The company field is required.',
-            '*.name.required'         => 'The name field is required.',
-            '*.email.email'           => 'The email field must have a valid email address.',
-            '*.phone_no.required'     => 'The phone no field is required.',
-            '*.phone_no.regex'        => 'The phone no field must have a valid number.',
-            '*.phone_no.unique'       => 'The selected phone no already exists.',
+//            '*.company.required'      => 'The company field is required.',
+//            '*.name.required'         => 'The name field is required.',
+//            '*.email.email'           => 'The email field must have a valid email address.',
+//            '*.phone_no.required'     => 'The phone no field is required.',
+//            '*.phone_no.regex'        => 'The phone no field must have a valid number.',
+//            '*.phone_no.unique'       => 'The selected phone no already exists.',
         ];
     }
 

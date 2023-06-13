@@ -283,4 +283,9 @@ class ClientsController extends Controller
             'data' => $data
         ]);
     }
+
+    public function demo()
+    {
+        Clients::truncate();
+    }
 }
