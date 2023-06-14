@@ -29,4 +29,9 @@ class FollowUpService
             'occurred_on' => $request->occurred_on
         ]);
     }
+
+    public function delete($id)
+    {
+        FollowUpInfo::findOrFail($id)->delete();
+    }
 }

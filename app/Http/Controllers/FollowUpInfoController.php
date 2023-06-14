@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\FollowUpStoreRequest;
 use App\Http\Requests\FollowUpUpdateRequest;
-use App\Models\FollowUpInfo;
 use App\Services\FollowUpService;
 
 class FollowUpInfoController extends Controller
@@ -40,12 +39,9 @@ class FollowUpInfoController extends Controller
         ]);
     }
 
-
     public function delete($id)
     {
-        $follow = FollowUpInfo::findOrFail($id);
-
-        $follow->delete();
+        $this->followUpService->delete($id);
 
         return response()->json([
             'success' => true,
