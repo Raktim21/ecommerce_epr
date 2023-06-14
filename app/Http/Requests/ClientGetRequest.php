@@ -26,7 +26,8 @@ class ClientGetRequest extends FormRequest
     {
         return [
             'confirmed' => 'sometimes|in:0,1',
-            'search' => 'sometimes|string'
+            'search' => 'sometimes|string',
+            'per_page' => 'sometimes|integer'
         ];
     }
 

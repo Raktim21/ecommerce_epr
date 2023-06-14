@@ -22,7 +22,8 @@ class ClientsController extends Controller
     {
         return response()->json([
             'success' => true,
-            'data' => $this->clientService->getAll($request)
+            'data' => $this->clientService->getAll($request),
+            'search' => $request->search ?? ''
         ]);
     }
 
