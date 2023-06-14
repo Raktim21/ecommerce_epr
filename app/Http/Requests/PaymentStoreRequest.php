@@ -31,8 +31,8 @@ class PaymentStoreRequest extends FormRequest
                     $client = Clients::find($val);
 
                     if(!$client || $client->company=='N/A' || $client->name=='N/A' || $client->email=='N/A' ||
-                        $client->phone_no=='N/A' || $client->area=='N/A' || $client->product_type=='N/A' ||
-                        $client->document==null)
+                        $client->phone_no=='N/A' || $client->email=='N/A' || $client->area=='N/A' ||
+                        $client->product_type=='N/A' || $client->document==null)
                     {
                         $fail("Insufficient client information.");
                     }
