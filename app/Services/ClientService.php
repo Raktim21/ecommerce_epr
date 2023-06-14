@@ -51,8 +51,9 @@ class ClientService
     {
         return Clients::whereDoesntHave('payment')->where('status_id',11)
             ->whereNotNull('document')->whereNot('company','N/A')->whereNot('name','N/A')
-            ->whereNot('phone_no','N/A')->whereNot('email','N/A')
-            ->select('id','name')
+            ->whereNot('phone_no','N/A')
+            ->whereNot('email','N/A')
+            ->select('id','company','name','phone_no','email','area','product_type','status_id','document')
             ->get();
     }
 
