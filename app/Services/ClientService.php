@@ -2,12 +2,41 @@
 
 namespace App\Services;
 
+use App\Imports\ClientsImport;
 use App\Models\Clients;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ClientService
 {
+    public function getAll(Request $request)
+    {
+        $search = $request->search ?? '';
+        $status = $request->confirmed ?? '';
+
+        return Clients::
+        when($status==0, function ($query) use($search) {
+            return $query->where(function ($query) use ($search) {
+                $query->where('company','like',"%$search%")
+                    ->orWhere('clients.name','like',"%$search%")
+                    ->orWhere('clients.email','like',"%$search%")
+                    ->orWhere('clients.area','like',"%$search%");
+            })->whereNull('confirmation_date');
+        })->
+        when($status==1, function ($query) use($search) {
+            return $query->where(function ($query) use ($search) {
+                $query->where('company','like',"%$search%")
+                    ->orWhere('clients.name','like',"%$search%")
+                    ->orWhere('clients.email','like',"%$search%")
+                    ->orWhere('clients.area','like',"%$search%");
+            })->whereNotNull('confirmation_date');
+        })
+            ->leftJoin('interest_statuses','clients.status_id','=','interest_statuses.id')
+            ->select('clients.*','interest_statuses.id as status_id','interest_statuses.name as status_name')
+            ->paginate(10)->appends($request->except('page'));
+    }
+
     public function show($id)
     {
         return Clients::with('status_id')
@@ -44,6 +73,21 @@ class ClientService
         }
     }
 
+    public function import(Request $request)
+    {
+        $file = $request->file('file');
+
+        try {
+            Excel::import(new ClientsImport, $file);
+
+            return true;
+        }
+        catch (\Exception $ex)
+        {
+            return false;
+        }
+    }
+
     public function updateInfo(Request $request, $id)
     {
         $client = Clients::find($id);
@@ -76,7 +120,6 @@ class ClientService
         $this->uploadDoc($request, $client);
     }
 
-
     private function uploadDoc(Request $request, $client)
     {
         $file = $request->file('document');
@@ -89,27 +132,14 @@ class ClientService
 
     public function updateStatus(Request $request, $id)
     {
-        $client = Clients::find($id);
-
-        $client->update([
+        Clients::find($id)->update([
             'status_id' => $request->status_id
         ]);
     }
 
-    public function delete($id)
+    public function delete(Request $request)
     {
-        $client = Clients::findOrFail($id);
-
-        if(! $client->confirmation_date)
-        {
-            $client->delete();
-
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        Clients::whereIn('id', $request->ids)->delete();
     }
 
 }
