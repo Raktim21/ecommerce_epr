@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ClientGetRequest;
 use App\Http\Requests\ClientStoreRequest;
+use App\Http\Requests\ClientUpdateInfoRequest;
 use App\Imports\ClientsImport;
 use App\Models\Clients;
 use App\Services\ClientService;
@@ -100,44 +101,9 @@ class ClientsController extends Controller
     }
 
 
-    public function updateInfo(Request $request, $id)
+    public function updateInfo(ClientUpdateInfoRequest $request, $id, ClientService $clientService)
     {
-        $client = Clients::findOrFail($id);
-
-        $validator = Validator::make($request->all(), [
-            'company'          => 'required|string|max:255',
-            'name'             => 'required|string|max:255',
-            'email'            => 'required|string|email|max:255|unique:clients,email,'.$id,
-            'phone_no'         =>   [
-                'required',
-                'regex:/^(?:\+?88|0088)?01[3-9]\d{8}$/',
-                'unique:clients,phone_no,'.$id,
-            ],
-            'status_id'        => 'required|exists:interest_statuses,id',
-            'product_type'     => 'required|string|max:255',
-            'area'             => 'required|string',
-            'client_opinion'   => 'nullable|string',
-            'officer_opinion'  => 'nullable|string',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'error' => $validator->errors()->first()
-            ], 422);
-        }
-
-        $client->update([
-            'company' => $request->company,
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone_no' => $request->phone_no,
-            'area' => $request->area,
-            'status_id' => $request->status_id,
-            'product_type' => $request->product_type,
-            'client_opinion' => $request->client_opinion ?? 'N/A',
-            'officer_opinion' => $request->officer_opinion ?? 'N/A',
-        ]);
+        $clientService->update($request, $id);
 
         return response()->json([
             'success' => true,

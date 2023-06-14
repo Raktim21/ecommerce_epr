@@ -35,6 +35,23 @@ class ClientService
         }
     }
 
+    public function update(Request $request, $id)
+    {
+        $client = Clients::find($id);
+
+        $client->update([
+            'company' => $request->company,
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone_no' => $request->phone_no,
+            'area' => $request->area,
+            'status_id' => $request->status_id,
+            'product_type' => $request->product_type,
+            'client_opinion' => $request->client_opinion ?? 'N/A',
+            'officer_opinion' => $request->officer_opinion ?? 'N/A',
+        ]);
+    }
+
     public function uploadAvatar(Request $request, $client)
     {
         $file = $request->file('document');
