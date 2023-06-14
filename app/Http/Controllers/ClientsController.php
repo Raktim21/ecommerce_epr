@@ -6,6 +6,7 @@ use App\Http\Requests\ClientGetRequest;
 use App\Http\Requests\ClientStoreRequest;
 use App\Imports\ClientsImport;
 use App\Models\Clients;
+use App\Services\ClientService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
@@ -46,12 +47,9 @@ class ClientsController extends Controller
     }
 
 
-    public function show($id)
+    public function show($id, ClientService $clientService)
     {
-        $client = Clients::with('status_id')
-            ->with(['added_by' => function($q) {
-                $q->select('id','name');
-            }])->findOrFail($id);
+        $client = $clientService->show($id);
 
         return response()->json([
             'success' => true,
@@ -60,31 +58,9 @@ class ClientsController extends Controller
     }
 
 
-    public function store(ClientStoreRequest $request)
+    public function store(ClientStoreRequest $request, ClientService $clientService)
     {
-
-        $client = Clients::create([
-            'company' => $request->company,
-            'name' => $request->name,
-            'email' => $request->email ?? 'N/A',
-            'phone_no' => $request->phone_no,
-            'area' => $request->area,
-            'status_id' => 1,
-            'product_type' => $request->product_type ?? 'N/A',
-            'client_opinion' => $request->client_opinion ?? 'N/A',
-            'officer_opinion' => $request->officer_opinion ?? 'N/A',
-            'added_by' => auth()->user()->id
-        ]);
-
-        if ($request->hasFile('document')) {
-
-            $file = $request->file('document');
-            $filename = hexdec(uniqid()). '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('/uploads/clients/documents'),$filename);
-
-            $client->document = '/uploads/clients/documents/' . $filename;
-            $client->save();
-        }
+        $clientService->create($request);
 
         return response()->json([
             'success' => true,
