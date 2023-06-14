@@ -14,7 +14,7 @@ class ClientService
     {
         $search = $request->search ?? '';
         $status = $request->confirmed ?? '';
-        $limit = $request->per_page ?? 10;
+        $limit = $request->per_page;
 
         return Clients::
         when($status==0, function ($query) use($search) {
