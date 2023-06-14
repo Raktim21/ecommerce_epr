@@ -2,18 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\InterestStatus;
-use Illuminate\Http\Request;
+use App\Services\StatusService;
 
 class InterestStatusController extends Controller
 {
+    public function __construct(StatusService $statusService)
+    {
+        $this->statusService = $statusService;
+    }
+
+
     public function index()
     {
-        $data = InterestStatus::all();
-
         return response()->json([
             'success' => true,
-            'data' => $data
+            'data' => $this->statusService->getAll()
         ]);
     }
 }
