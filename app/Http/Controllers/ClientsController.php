@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ClientGetRequest;
 use App\Http\Requests\ClientStoreRequest;
 use App\Http\Requests\ClientUpdateInfoRequest;
+use App\Http\Requests\ClientUpdateStatusRequest;
 use App\Imports\ClientsImport;
 use App\Models\Clients;
 use App\Services\ClientService;
@@ -15,6 +16,11 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class ClientsController extends Controller
 {
+    public function __construct(ClientService $clientService)
+    {
+        $this->clientService = $clientService;
+    }
+
     public function index(ClientGetRequest $request)
     {
         $search = $request->search ?? '';
@@ -48,20 +54,18 @@ class ClientsController extends Controller
     }
 
 
-    public function show($id, ClientService $clientService)
+    public function show($id)
     {
-        $client = $clientService->show($id);
-
         return response()->json([
             'success' => true,
-            'data' => $client
+            'data' => $this->clientService->show($id)
         ]);
     }
 
 
-    public function store(ClientStoreRequest $request, ClientService $clientService)
+    public function store(ClientStoreRequest $request)
     {
-        $clientService->create($request);
+        $this->clientService->create($request);
 
         return response()->json([
             'success' => true,
@@ -101,9 +105,9 @@ class ClientsController extends Controller
     }
 
 
-    public function updateInfo(ClientUpdateInfoRequest $request, $id, ClientService $clientService)
+    public function updateInfo(ClientUpdateInfoRequest $request, $id)
     {
-        $clientService->update($request, $id);
+        $this->clientService->updateInfo($request, $id);
 
         return response()->json([
             'success' => true,
@@ -113,34 +117,7 @@ class ClientsController extends Controller
 
     public function updateDoc(Request $request, $id)
     {
-        $client = Clients::findOrFail($id);
-
-        $validator = Validator::make($request->all(), [
-            'document' => 'required|mimes:pdf,jpeg,png,jpg|max:2048',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => false,
-                'error' => $validator->errors()->first()
-            ], 422);
-        }
-
-        if($client->document)
-        {
-            if(File::exists(public_path($client->document)))
-            {
-                File::delete(public_path($client->document));
-            }
-        }
-
-        $file = $request->file('document');
-        $filename = hexdec(uniqid()). '.' . $file->getClientOriginalExtension();
-        $file->move(public_path('/uploads/clients/documents/'),$filename);
-
-        $client->update([
-            'document' => '/uploads/clients/documents/' . $filename
-        ]);
+        $this->clientService->updateDoc($request, $id);
 
         return response()->json([
             'success' => true,
@@ -169,24 +146,9 @@ class ClientsController extends Controller
     }
 
 
-    public function changeStatus(Request $request, $id)
+    public function changeStatus(ClientUpdateStatusRequest $request, $id)
     {
-        $client = Clients::findOrFail($id);
-
-        $validator = Validator::make($request->all(), [
-            'status_id' => 'required|exists:interest_statuses,id',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => false,
-                'error' => $validator->errors()->first()
-            ], 422);
-        }
-
-        $client->update([
-            'status_id' => $request->status_id
-        ]);
+        $this->clientService->updateStatus($request, $id);
 
         return response()->json([
             'success' => true,
@@ -195,18 +157,9 @@ class ClientsController extends Controller
 
     public function unpaidClients()
     {
-        $data = Clients::whereDoesntHave('payment')
-            ->select('id','name')
-            ->get();
-
         return response()->json([
             'success' => true,
-            'data' => $data
+            'data' => $this->clientService->unpaidClients()
         ]);
-    }
-
-    public function demo()
-    {
-        Clients::truncate();
     }
 }

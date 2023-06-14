@@ -62,4 +62,3 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     });
 
 });
-Route::get('demo', [ClientsController::class, 'demo']);

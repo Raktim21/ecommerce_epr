@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Clients;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class ClientService
 {
@@ -14,6 +15,14 @@ class ClientService
                 $q->select('id','name');
             }])->findOrFail($id);
     }
+
+    public function unpaidClients()
+    {
+        return Clients::whereDoesntHave('payment')
+            ->select('id','name')
+            ->get();
+    }
+
     public function create(Request $request)
     {
         $client = Clients::create([
@@ -31,11 +40,11 @@ class ClientService
 
         if ($request->hasFile('document'))
         {
-            $this->uploadAvatar($request, $client);
+            $this->uploadDoc($request, $client);
         }
     }
 
-    public function update(Request $request, $id)
+    public function updateInfo(Request $request, $id)
     {
         $client = Clients::find($id);
 
@@ -52,7 +61,23 @@ class ClientService
         ]);
     }
 
-    public function uploadAvatar(Request $request, $client)
+    public function updateDoc(Request $request, $id)
+    {
+        $client = Clients::find($id);
+
+        if($client->document)
+        {
+            if(File::exists(public_path($client->document)))
+            {
+                File::delete(public_path($client->document));
+            }
+        }
+
+        $this->uploadDoc($request, $client);
+    }
+
+
+    private function uploadDoc(Request $request, $client)
     {
         $file = $request->file('document');
         $filename = hexdec(uniqid()). '.' . $file->getClientOriginalExtension();
@@ -60,6 +85,15 @@ class ClientService
 
         $client->document = '/uploads/clients/documents/' . $filename;
         $client->save();
+    }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $client = Clients::find($id);
+
+        $client->update([
+            'status_id' => $request->status_id
+        ]);
     }
 
 }
