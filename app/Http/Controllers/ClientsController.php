@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ClientGetRequest;
+use App\Http\Requests\ClientStoreRequest;
 use App\Imports\ClientsImport;
 use App\Models\Clients;
 use Illuminate\Http\Request;
@@ -59,30 +60,8 @@ class ClientsController extends Controller
     }
 
 
-    public function store(Request $request)
+    public function store(ClientStoreRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'company'          => 'required|string|max:255',
-            'name'             => 'required|string|max:255',
-            'email'            => 'nullable|email|unique:clients,email',
-            'phone_no'         =>   [
-                                        'required',
-                                        'regex:/^(?:\+?88|0088)?01[3-9]\d{8}$/',
-                                        'unique:clients,phone_no',
-                                    ],
-            'area'             => 'required|string',
-            'product_type'     => 'required|string|max:255',
-            'client_opinion'   => 'nullable|string',
-            'officer_opinion'  => 'nullable|string',
-            'document'         => 'nullable|mimes:jpeg,png,jpg,pdf|max:2048'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'error' => $validator->errors()->first()
-            ], 422);
-        }
 
         $client = Clients::create([
             'company' => $request->company,

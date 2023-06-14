@@ -14,6 +14,7 @@ class InterestStatusSeeder extends Seeder
     public function run(): void
     {
         DB::table('interest_statuses')->insert([
+            ['name' => '10','created_at' => now(), 'updated_at' => now()],
             ['name' => '20','created_at' => now(), 'updated_at' => now()],
             ['name' => '30','created_at' => now(), 'updated_at' => now()],
             ['name' => '40','created_at' => now(), 'updated_at' => now()],

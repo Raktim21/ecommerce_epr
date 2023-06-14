@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('company');
             $table->string('name');
-            $table->string('email')->unique();
-            $table->string('phone_no')->unique();
+            $table->string('email')->default('N/A');
+            $table->string('phone_no');
             $table->string('area');
             $table->foreignId('status_id')->constrained('interest_statuses')->onDelete('restrict');
             $table->string('product_type', 255);
