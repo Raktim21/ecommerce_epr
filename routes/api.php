@@ -46,7 +46,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
         Route::post('import/clients', 'importClients');
         Route::put('clients-info-update/{id}', 'updateInfo');
         Route::post('clients-document-update/{id}', 'updateDoc');
-        Route::delete('clients/{id}', 'destroy');
+        Route::post('clients/delete', 'destroy');
     });
 
     Route::controller(FollowUpInfoController::class)->group(function () {

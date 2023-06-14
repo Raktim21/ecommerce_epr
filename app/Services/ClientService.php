@@ -96,4 +96,20 @@ class ClientService
         ]);
     }
 
+    public function delete($id)
+    {
+        $client = Clients::findOrFail($id);
+
+        if(! $client->confirmation_date)
+        {
+            $client->delete();
+
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
 }

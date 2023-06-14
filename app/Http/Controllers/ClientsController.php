@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ClientDeleteRequest;
 use App\Http\Requests\ClientGetRequest;
 use App\Http\Requests\ClientStoreRequest;
+use App\Http\Requests\ClientUpdateDocRequest;
 use App\Http\Requests\ClientUpdateInfoRequest;
 use App\Http\Requests\ClientUpdateStatusRequest;
 use App\Imports\ClientsImport;
@@ -115,7 +117,7 @@ class ClientsController extends Controller
     }
 
 
-    public function updateDoc(Request $request, $id)
+    public function updateDoc(ClientUpdateDocRequest $request, $id)
     {
         $this->clientService->updateDoc($request, $id);
 
@@ -125,24 +127,8 @@ class ClientsController extends Controller
     }
 
 
-    public function destroy($id)
+    public function destroy(ClientDeleteRequest $request)
     {
-        $client = Clients::findOrFail($id);
-
-        try {
-            $client->delete();
-
-            return response()->json([
-                'success' => true,
-            ]);
-        }
-        catch (\Exception $e)
-        {
-            return response()->json([
-                'success' => false,
-                'error' => 'Cannot delete this client.'
-            ], 500);
-        }
     }
 
 
