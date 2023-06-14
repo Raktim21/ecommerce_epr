@@ -47,7 +47,9 @@ class ClientService
 
     public function unpaidClients()
     {
-        return Clients::whereDoesntHave('payment')
+        return Clients::whereDoesntHave('payment')->where('status_id',11)
+            ->whereNotNull('document')->whereNot('company','N/A')->whereNot('name','N/A')
+            ->whereNot('phone_no','N/A')
             ->select('id','name')
             ->get();
     }
