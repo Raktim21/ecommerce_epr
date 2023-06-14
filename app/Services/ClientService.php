@@ -36,7 +36,7 @@ class ClientService
             ->leftJoin('interest_statuses','clients.status_id','=','interest_statuses.id')
             ->select('clients.*','interest_statuses.id as status_id','interest_statuses.name as status_name')
             ->paginate($limit)
-            ->appends($request->except('page'));
+            ->appends($request->except('page','per_page'));
     }
 
     public function show($id)
