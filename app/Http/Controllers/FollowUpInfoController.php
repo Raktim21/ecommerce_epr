@@ -2,73 +2,38 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Clients;
+use App\Http\Requests\FollowUpStoreRequest;
+use App\Http\Requests\FollowUpUpdateRequest;
 use App\Models\FollowUpInfo;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use App\Services\FollowUpService;
 
 class FollowUpInfoController extends Controller
 {
-    public function store(Request $request)
+    public function __construct(FollowUpService $followUpService)
     {
-        $validator = Validator::make($request->all(), [
-            'client_id' => 'required|exists:clients,id',
-            'detail' => 'required|string',
-            'occurred_on' => 'required|date_format:Y-m-d H:i:s'
-        ]);
+        $this->followUpService = $followUpService;
+    }
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'error' => $validator->errors()->first()
-            ], 422);
-        }
-
-        FollowUpInfo::create([
-            'client_id' => $request->client_id,
-            'detail' => $request->detail,
-            'occurred_on' => $request->occurred_on
-        ]);
+    public function store(FollowUpStoreRequest $request)
+    {
+        $this->followUpService->store($request);
 
         return response()->json([
             'success' => true,
         ],201);
     }
 
-
     public function show($client_id)
     {
-        $client = Clients::findOrFail($client_id);
-
-        $data = $client->follow_ups;
-
         return response()->json([
             'success' => true,
-            'data' => $data
+            'data' => $this->followUpService->show($client_id)
         ]);
     }
 
-
-    public function update(Request $request, $id)
+    public function update(FollowUpUpdateRequest $request, $id)
     {
-        $follow = FollowUpInfo::findOrFail($id);
-
-        $validator = Validator::make($request->all(), [
-            'detail' => 'required|string',
-            'occurred_on' => 'required|date_format:Y-m-d H:i:s'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'error' => $validator->errors()->first()
-            ], 422);
-        }
-
-        $follow->update([
-            'detail' => $request->detail,
-            'occurred_on' => $request->occurred_on
-        ]);
+        $this->followUpService->update($request, $id);
 
         return response()->json([
             'success' => true,
