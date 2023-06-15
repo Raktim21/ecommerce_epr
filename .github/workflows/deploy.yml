@@ -63,19 +63,7 @@ jobs:
             script: |
               cd domains/sltm.selopia.com/public_html/
               composer2 update
-              # php artisan migrate
-              # php artisan optimize
-              # php artisan cache:clear
-
-              php artisan db:seed --class=ThemeCustomizationSeeder
-              cp .env.example .env
-              sed -i 's/DB_DATABASE=.*/DB_DATABASE=u652464815_sltm/g' .env
-              sed -i 's/DB_USERNAME=.*/DB_USERNAME=u652464815_sltm/g' .env
-              sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=bxZQ2E=t' .env
-              php artisan key:generate
-              php artisan jwt:secret
-              php artisan config:clear
-              php artisan migrate:fresh --seed
+              php artisan migrate
               php artisan optimize
               php artisan cache:clear
   
