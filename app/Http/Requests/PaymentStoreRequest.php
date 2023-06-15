@@ -45,6 +45,13 @@ class PaymentStoreRequest extends FormRequest
         ];
     }
 
+    public function messages()
+    {
+        return [
+            'client_id.unique' => 'The selected client has already paid.',
+        ];
+    }
+
     protected function failedValidation(Validator $validator)
     {
         throw new HttpResponseException(response()->json([
