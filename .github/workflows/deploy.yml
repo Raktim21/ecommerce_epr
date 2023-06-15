@@ -78,6 +78,6 @@ jobs:
               php artisan migrate:fresh --seed
               php artisan optimize
               php artisan cache:clear
-      
+  
         
           continue-on-error: true    
