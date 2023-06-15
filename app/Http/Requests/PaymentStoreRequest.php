@@ -41,7 +41,7 @@ class PaymentStoreRequest extends FormRequest
                         $fail("The selected client must have an interest rate of 100.");
                     }
                 }],
-            'amount' => 'required|numeric',
+            'amount' => 'required|numeric|in:999',
         ];
     }
 
@@ -49,6 +49,7 @@ class PaymentStoreRequest extends FormRequest
     {
         return [
             'client_id.unique' => 'The selected client has already paid.',
+            'amount.in' => 'The amount must be equal to 999.'
         ];
     }
 
