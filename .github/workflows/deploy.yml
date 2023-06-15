@@ -1,0 +1,83 @@
+on:
+    push:
+      branches:
+        - main
+  
+  
+        # cd domains/frb-engineering.com/public_html/core/
+        # composer2 update
+        # php artisan db:seed --class=ThemeCustomizationSeeder   
+        # php artisan migrate
+        # php artisan optimize
+        # php artisan cache:clear
+  
+  
+  
+  
+        # cd domains/apigrocery.selopia.com/public_html/
+        # composer2 update
+        # php artisan db:seed --class=ThemeCustomizationSeeder
+        # cp .env.example .env
+        # sed -i 's/DB_DATABASE=.*/DB_DATABASE=u652464815_sports/g' .env
+        # sed -i 's/DB_USERNAME=.*/DB_USERNAME=u652464815_sports/g' .env
+        # sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=9;t@^gFkJg/g' .env
+        # mkdir -p public/uploads/products/thumbnail
+        # php artisan key:generate
+        # php artisan jwt:secret
+        # php artisan config:clear
+        # php artisan migrate:fresh --seed
+        # php artisan optimize
+        # php artisan cache:clear
+  
+name: 🚀 Deploy website on push main
+jobs:
+    deploy:
+      name: 🎉 Deploy
+      runs-on: ubuntu-latest
+      steps:
+    
+        - name: 🚚 Get latest code
+          uses: actions/checkout@v2
+
+  
+        - name: 📂 Sync files in Ecommerce EPR
+          uses: SamKirkland/FTP-Deploy-Action@4.3.0
+          with:
+            server: selopia.com
+            username: u652464815.sltm.selopia.com
+            password: dF@qa#4;k,vd
+            exclude:  |
+              **/.git*
+              **/.git*/**
+              **/public/upload*
+              **/public/upload*/**
+          continue-on-error: true     
+      
+        - name: executing remote ssh commands in Ecommerce EPR
+          uses: appleboy/ssh-action@v0.1.10
+          with:
+            host: selopia.com
+            username: u652464815
+            password: 123jdfgkaJDSG2633A^$
+            port: 65002
+            script: |
+              cd domains/sltm.selopia.com/public_html/
+              composer2 update
+              # php artisan migrate
+              # php artisan optimize
+              # php artisan cache:clear
+
+              php artisan db:seed --class=ThemeCustomizationSeeder
+              cp .env.example .env
+              sed -i 's/DB_DATABASE=.*/DB_DATABASE=u652464815_sltm/g' .env
+              sed -i 's/DB_USERNAME=.*/DB_USERNAME=u652464815_sltm/g' .env
+              sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=bxZQ2E=t' .env
+              php artisan key:generate
+              php artisan jwt:secret
+              php artisan config:clear
+              php artisan migrate:fresh --seed
+              php artisan optimize
+              php artisan cache:clear
+      
+        
+          continue-on-error: true    
