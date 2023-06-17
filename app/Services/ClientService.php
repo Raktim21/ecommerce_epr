@@ -36,6 +36,7 @@ class ClientService
         })
             ->leftJoin('interest_statuses','clients.status_id','=','interest_statuses.id')
             ->select('clients.*','interest_statuses.id as status_id','interest_statuses.name as status_name')
+            ->latest('clients.created_at')
             ->paginate($limit)
             ->appends($request->except('page','per_page'));
     }
@@ -61,17 +62,22 @@ class ClientService
     public function create(Request $request)
     {
         $client = Clients::create([
-            'company' => $request->company,
-            'name' => $request->name,
-            'email' => $request->email ?? 'N/A',
-            'phone_no' => $request->phone_no,
-            'area' => $request->area,
-            'status_id' => 1,
-            'product_type' => $request->product_type ?? 'N/A',
-            'client_opinion' => $request->client_opinion ?? 'N/A',
+            'company'         => $request->company,
+            'name'            => $request->name,
+            'email'           => $request->email ?? 'N/A',
+            'phone_no'        => $request->phone_no,
+            'area'            => $request->area,
+            'status_id'       => 1,
+            'product_type'    => $request->product_type ?? 'N/A',
+            'client_opinion'  => $request->client_opinion ?? 'N/A',
             'officer_opinion' => $request->officer_opinion ?? 'N/A',
-            'added_by' => auth()->user()->id
+            'added_by'        => auth()->user()->id
         ]);
+
+        $client->latitude = $request->latitude;
+        $client->longitude = $request->longitude;
+        $client->save();
+
 
         if ($request->hasFile('document'))
         {
