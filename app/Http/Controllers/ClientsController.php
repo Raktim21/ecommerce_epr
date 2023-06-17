@@ -10,6 +10,7 @@ use App\Http\Requests\ClientUpdateDocRequest;
 use App\Http\Requests\ClientUpdateInfoRequest;
 use App\Http\Requests\ClientUpdateStatusRequest;
 use App\Services\ClientService;
+use Illuminate\Support\Facades\Log;
 
 class ClientsController extends Controller
 {

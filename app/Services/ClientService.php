@@ -6,6 +6,7 @@ use App\Imports\ClientsImport;
 use App\Models\Clients;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ClientService
@@ -82,6 +83,8 @@ class ClientService
     {
         $file = $request->file('file');
 
+        
+
         try {
             Excel::import(new ClientsImport, $file);
 
@@ -89,6 +92,7 @@ class ClientService
         }
         catch (\Exception $ex)
         {
+            Log::info($ex->getMessage());
             return false;
         }
     }
