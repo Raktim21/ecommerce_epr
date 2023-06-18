@@ -38,11 +38,20 @@ class RolePermissionService
 
                 $user->assignRole($request->role_id);
             }
+            DB::commit();
+
             return true;
         }
         catch (QueryException $ex)
         {
+            DB::rollback();
+
             return false;
         }
+    }
+
+    public function role($id)
+    {
+        return Role::with('permissions')->findOrFail($id);
     }
 }

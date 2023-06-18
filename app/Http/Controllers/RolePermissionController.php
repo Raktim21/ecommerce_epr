@@ -24,6 +24,14 @@ class RolePermissionController extends Controller
         ]);
     }
 
+    public function getRole($id)
+    {
+        return response()->json([
+            'success' => true,
+            'data' => $this->service->role($id),
+        ]);
+    }
+
     public function assignRole(AssignRoleRequest $request, $user_id)
     {
         $this->service->assignUser($request, $user_id);

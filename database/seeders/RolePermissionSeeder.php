@@ -17,6 +17,7 @@ class RolePermissionSeeder extends Seeder
     {
         $permissions = [
             'get-role-list',
+            'get-role-info',
             'get-permission-list',
             'create-role',
             'assign-permissions-to-role',

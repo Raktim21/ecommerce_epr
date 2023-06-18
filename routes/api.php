@@ -28,8 +28,8 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     });
 
     Route::controller(RolePermissionController::class)->group(function () {
-        Route::get('roles', 'roleList');
-        Route::get('roles/{id}', 'getRole');
+        Route::get('roles', 'roleList')->middleware(['permission:get-role-list']);
+        Route::get('roles/{id}', 'getRole')->middleware(['permission:get-role-info']);
         Route::post('roles', 'createRole');
         Route::delete('roles/{id}', 'deleteRole');
         Route::get('permissions', 'permissionList');
