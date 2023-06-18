@@ -37,7 +37,7 @@ class PaymentStoreRequest extends FormRequest
                         $fail("Insufficient client information.");
                     }
 
-                    if(!$client || $client->status_id != 11) {
+                    if(!$client || $client->interest_status != 100) {
                         $fail("The selected client must have an interest rate of 100.");
                     }
                 }],
