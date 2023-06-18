@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AssignRoleRequest;
 use App\Http\Requests\AssignUsersRequest;
+use App\Http\Requests\CreateRoleRequest;
 use App\Services\RolePermissionService;
 use Illuminate\Http\Request;
 
@@ -24,12 +25,29 @@ class RolePermissionController extends Controller
         ]);
     }
 
+    public function permissionList()
+    {
+        return response()->json([
+            'success' => true,
+            'data' => $this->service->permissions(),
+        ]);
+    }
+
     public function getRole($id)
     {
         return response()->json([
             'success' => true,
             'data' => $this->service->role($id),
         ]);
+    }
+
+    public function createRole(CreateRoleRequest $request)
+    {
+        $this->service->createRole($request);
+
+        return response()->json([
+            'success'  => true,
+        ], 201);
     }
 
     public function assignRole(AssignRoleRequest $request, $user_id)
@@ -52,5 +70,19 @@ class RolePermissionController extends Controller
         return response()->json([
             'success'  => false,
         ], 500);
+    }
+
+    public function deleteRole($id)
+    {
+        if($this->service->deleteRole($id))
+        {
+            return response()->json([
+                'success'  => true,
+            ]);
+        }
+        return response()->json([
+            'success' => false,
+            'error'   => 'The selected role can not be deleted.'
+        ], 422);
     }
 }

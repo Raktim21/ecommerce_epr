@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class RolePermissionService
@@ -14,6 +15,11 @@ class RolePermissionService
     public function roles()
     {
         return Role::all();
+    }
+
+    public function permissions()
+    {
+        return Permission::all();
     }
 
     public function assignUser(Request $request, $id)
@@ -53,5 +59,36 @@ class RolePermissionService
     public function role($id)
     {
         return Role::with('permissions')->findOrFail($id);
+    }
+
+    public function deleteRole($id)
+    {
+        if(!$this->isSuperAdmin($id))
+        {
+            Role::find($id)->delete();
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private function isSuperAdmin($id)
+    {
+        if(Role::find($id)->name == 'Super Admin')
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public function createRole(Request $request)
+    {
+        $role = Role::create([
+            'name'       => $request->role,
+            'guard_name' => 'api'
+        ]);
+
+        $role->syncPermissions($request->permissions);
     }
 }
