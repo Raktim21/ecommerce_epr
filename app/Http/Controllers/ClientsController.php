@@ -8,10 +8,7 @@ use App\Http\Requests\ClientImportRequest;
 use App\Http\Requests\ClientStoreRequest;
 use App\Http\Requests\ClientUpdateDocRequest;
 use App\Http\Requests\ClientUpdateInfoRequest;
-use App\Http\Requests\ClientUpdateStatusRequest;
-use App\Models\Clients;
 use App\Services\ClientService;
-use Illuminate\Support\Facades\Log;
 
 class ClientsController extends Controller
 {
@@ -67,11 +64,18 @@ class ClientsController extends Controller
 
     public function updateInfo(ClientUpdateInfoRequest $request, $id)
     {
-        $this->clientService->updateInfo($request, $id);
+        if(!$this->clientService->isConfirmed($id))
+        {
+            $this->clientService->updateInfo($request, $id);
 
+            return response()->json([
+                'success' => true,
+            ]);
+        }
         return response()->json([
-            'success' => true,
-        ]);
+            'success' => false,
+            'error' => 'The selected client can not be updated.'
+        ], 422);
     }
 
     public function updateDoc(ClientUpdateDocRequest $request, $id)

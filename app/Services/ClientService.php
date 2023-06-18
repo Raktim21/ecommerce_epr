@@ -11,13 +11,20 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class ClientService
 {
+    private $client;
+
+    public function __construct(Clients $client)
+    {
+        $this->client = $client;
+    }
+
     public function getAll(Request $request)
     {
         $search = $request->search ?? '';
         $status = $request->confirmed ?? '';
         $limit = $request->per_page;
 
-        return Clients::
+        return $this->client->newQuery()->
         when($status==0, function ($query) use($search) {
             return $query->where(function ($query) use ($search) {
                 $query->where('company','like',"%$search%")
@@ -41,18 +48,17 @@ class ClientService
 
     public function show($id)
     {
-        return Clients::with(['added_by' => function($q) {
+        return $this->client->with(['added_by' => function($q) {
                 $q->select('id','name');
             }])->findOrFail($id);
     }
 
     public function unpaidClients()
     {
-        return Clients::where('confirmation_date',null)->where('interest_status',100)
+        return $this->client->where('confirmation_date',null)->where('interest_status',100)
             ->whereNotNull('document')->whereNot('company','N/A')->whereNot('name','N/A')
             ->whereNot('phone_no','N/A')
             ->whereNot('email','N/A')
-            ->select('id','company','name','phone_no','email','area','product_type','status_id','document')
             ->get();
     }
 
@@ -77,6 +83,15 @@ class ClientService
         {
             $this->uploadDoc($request, $client);
         }
+    }
+
+    public function isConfirmed($id)
+    {
+        if($this->client->newQuery()->findOrFail($id)->confirmation_date != null)
+        {
+            return true;
+        }
+        return false;
     }
 
     public function import(Request $request)

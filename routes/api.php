@@ -35,8 +35,6 @@ Route::group(['middleware' => ['jwt.auth']], function () {
         Route::delete('users/{id}', 'destroy');
     });
 
-    Route::get('status', [InterestStatusController::class, 'index']);
-
     Route::controller(ClientsController::class)->group(function () {
         Route::get('clients', 'index');
         Route::get('get-unpaid-clients', 'unpaidClients');
