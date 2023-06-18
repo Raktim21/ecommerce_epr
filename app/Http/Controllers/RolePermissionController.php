@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AssignRoleRequest;
+use App\Http\Requests\AssignUsersRequest;
 use App\Services\RolePermissionService;
 use Illuminate\Http\Request;
 
@@ -33,5 +34,15 @@ class RolePermissionController extends Controller
     }
 
     public function assignUsers(AssignUsersRequest $request)
-    {}
+    {
+        if($this->service->assignMultipleUser($request))
+        {
+            return response()->json([
+                'success'  => true,
+            ], 201);
+        }
+        return response()->json([
+            'success'  => false,
+        ], 500);
+    }
 }
