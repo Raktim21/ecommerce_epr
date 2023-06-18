@@ -34,24 +34,21 @@ class ClientService
                     ->orWhere('clients.area','like',"%$search%");
             })->whereNotNull('confirmation_date');
         })
-            ->leftJoin('interest_statuses','clients.status_id','=','interest_statuses.id')
-            ->select('clients.*','interest_statuses.id as status_id','interest_statuses.name as status_name')
-            ->latest('clients.created_at')
+            ->latest()
             ->paginate($limit)
             ->appends($request->except('page','per_page'));
     }
 
     public function show($id)
     {
-        return Clients::with('status_id')
-            ->with(['added_by' => function($q) {
+        return Clients::with(['added_by' => function($q) {
                 $q->select('id','name');
             }])->findOrFail($id);
     }
 
     public function unpaidClients()
     {
-        return Clients::where('confirmation_date',null)->where('status_id',11)
+        return Clients::where('confirmation_date',null)->where('interest_status',100)
             ->whereNotNull('document')->whereNot('company','N/A')->whereNot('name','N/A')
             ->whereNot('phone_no','N/A')
             ->whereNot('email','N/A')
@@ -67,17 +64,14 @@ class ClientService
             'email'           => $request->email ?? 'N/A',
             'phone_no'        => $request->phone_no,
             'area'            => $request->area,
-            'status_id'       => 1,
+            'interest_status' => $request->interest_status ?? 0,
             'product_type'    => $request->product_type ?? 'N/A',
             'client_opinion'  => $request->client_opinion ?? 'N/A',
             'officer_opinion' => $request->officer_opinion ?? 'N/A',
-            'added_by'        => auth()->user()->id
+            'added_by'        => auth()->user()->id,
+            'latitude'        => $request->latitude,
+            'longitude'       => $request->longitude,
         ]);
-
-        $client->latitude = $request->latitude;
-        $client->longitude = $request->longitude;
-        $client->save();
-
 
         if ($request->hasFile('document'))
         {
@@ -88,8 +82,6 @@ class ClientService
     public function import(Request $request)
     {
         $file = $request->file('file');
-
-        
 
         try {
             Excel::import(new ClientsImport, $file);
@@ -110,13 +102,15 @@ class ClientService
         $client->update([
             'company' => $request->company,
             'name' => $request->name,
-            'email' => $request->email,
-            'phone_no' => $request->phone_no,
-            'area' => $request->area,
-            'status_id' => $request->status_id,
-            'product_type' => $request->product_type,
-            'client_opinion' => $request->client_opinion ?? 'N/A',
+            'email'           => $request->email,
+            'phone_no'        => $request->phone_no,
+            'area'            => $request->area,
+            'interest_status' => $request->interest_status,
+            'product_type'    => $request->product_type,
+            'client_opinion'  => $request->client_opinion ?? 'N/A',
             'officer_opinion' => $request->officer_opinion ?? 'N/A',
+            'latitude'        => $request->latitude,
+            'longitude'       => $request->longitude,
         ]);
     }
 
@@ -143,13 +137,6 @@ class ClientService
 
         $client->document = '/uploads/clients/documents/' . $filename;
         $client->save();
-    }
-
-    public function updateStatus(Request $request, $id)
-    {
-        Clients::find($id)->update([
-            'status_id' => $request->status_id
-        ]);
     }
 
     public function delete(Request $request)

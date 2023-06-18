@@ -33,12 +33,11 @@ class ClientStoreRequest extends FormRequest
                 'unique:clients,phone_no',
             ],
             'area'             => 'required|string',
+            'interest_status'  => 'nullable|max:100',
             'product_type'     => 'required|string|max:255',
             'client_opinion'   => 'nullable|string',
             'officer_opinion'  => 'nullable|string',
             'document'         => 'nullable|mimes:jpeg,png,jpg,pdf|max:2048',
-            'latitude'         => 'required|string',
-            'longitude'        => 'required|string',
         ];
     }
 

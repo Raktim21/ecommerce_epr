@@ -15,13 +15,15 @@ class Clients extends Model
         'email',
         'phone_no',
         'area',
-        'status_id',
+        'interest_status',
         'product_type',
         'client_opinion',
         'officer_opinion',
         'document',
         'added_by',
-        'confirmation_date'
+        'confirmation_date',
+        'latitude',
+        'longitude'
     ];
 
     protected $hidden = [
@@ -37,11 +39,6 @@ class Clients extends Model
     public function payment()
     {
         return $this->hasOne(Payment::class, 'client_id');
-    }
-
-    public function status_id()
-    {
-        return $this->belongsTo(InterestStatus::class, 'status_id');
     }
 
     public function added_by()

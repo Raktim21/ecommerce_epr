@@ -32,7 +32,7 @@ class ClientImportRequest extends FormRequest
     {
         throw new HttpResponseException(response()->json([
             'success'  => false,
-            'error'  => $validator->errors()->all(),
+            'error'  => $validator->errors()->first(),
         ], 422));
     }
 }

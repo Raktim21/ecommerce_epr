@@ -92,15 +92,6 @@ class ClientsController extends Controller
         ]);
     }
 
-    public function changeStatus(ClientUpdateStatusRequest $request, $id)
-    {
-        $this->clientService->updateStatus($request, $id);
-
-        return response()->json([
-            'success' => true,
-        ]);
-    }
-
     public function unpaidClients()
     {
         return response()->json([

@@ -32,7 +32,7 @@ class ClientUpdateInfoRequest extends FormRequest
                 'regex:/^(?:\+?88|0088)?01[3-9]\d{8}$/',
                 'unique:clients,phone_no,'.$this->route('id'),
             ],
-            'status_id'        => 'required|exists:interest_statuses,id',
+            'interest_status'  => 'required|max:100',
             'product_type'     => 'required|string|max:255',
             'area'             => 'required|string',
             'client_opinion'   => 'nullable|string',

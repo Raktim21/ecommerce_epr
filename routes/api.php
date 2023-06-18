@@ -40,7 +40,6 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::controller(ClientsController::class)->group(function () {
         Route::get('clients', 'index');
         Route::get('get-unpaid-clients', 'unpaidClients');
-        Route::put('clients-change-status/{id}', 'changeStatus');
         Route::get('clients/{id}', 'show');
         Route::post('clients', 'store');
         Route::post('import/clients', 'importClients');

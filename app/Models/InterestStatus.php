@@ -17,9 +17,4 @@ class InterestStatus extends Model
         'created_at',
         'updated_at'
     ];
-
-    public function clients()
-    {
-        $this->hasMany(Clients::class, 'status_id');
-    }
 }
