@@ -12,7 +12,9 @@ class FollowUpInfo extends Model
     protected $fillable = [
         'client_id',
         'detail',
-        'occurred_on'
+        'occurred_on',
+        'latitude',
+        'longitude'
     ];
 
     protected $hidden = [

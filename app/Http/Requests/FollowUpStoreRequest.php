@@ -26,7 +26,9 @@ class FollowUpStoreRequest extends FormRequest
         return [
             'client_id' => 'required|exists:clients,id',
             'detail' => 'required|string',
-            'occurred_on' => 'required|date_format:Y-m-d H:i:s'
+            'occurred_on' => 'required|date_format:Y-m-d H:i:s',
+            'latitude' => 'nullable',
+            'longitude' => 'nullable',
         ];
     }
 
