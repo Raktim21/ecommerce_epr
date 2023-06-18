@@ -16,11 +16,11 @@ class JWTMiddleware
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next,  $gaurd = 'api')
+    public function handle(Request $request, Closure $next,  $guard = 'api')
     {
-        if ($gaurd != null) {
-            \Config::set('auth.defaults.guard',$gaurd);
-            auth()->shouldUse($gaurd);
+        if ($guard != null) {
+            \Config::set('auth.defaults.guard',$guard);
+            auth()->shouldUse($guard);
         }
 
         if (!auth()->check()) {
