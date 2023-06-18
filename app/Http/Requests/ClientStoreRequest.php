@@ -32,7 +32,7 @@ class ClientStoreRequest extends FormRequest
                 'regex:/^(?:\+?88|0088)?01[3-9]\d{8}$/',
                 'unique:clients,phone_no',
             ],
-            'area'             => 'required|string',
+            'area'             => 'nullable|string',
             'interest_status'  => 'nullable|lte:100',
             'product_type'     => 'required|string|max:255',
             'client_opinion'   => 'nullable|string',

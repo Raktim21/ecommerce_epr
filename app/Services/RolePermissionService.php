@@ -14,7 +14,7 @@ class RolePermissionService
 
     public function roles()
     {
-        return Role::all();
+        return Role::with('permissions')->orderBy('id')->get();
     }
 
     public function permissions()

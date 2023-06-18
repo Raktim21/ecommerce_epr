@@ -20,6 +20,7 @@ class RolePermissionSeeder extends Seeder
             'get-role-info',
             'get-permission-list',
             'create-role',
+            'update-role',
             'delete-role',
             'assign-role-to-user',
             'get-user-list',
