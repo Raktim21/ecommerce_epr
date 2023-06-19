@@ -13,6 +13,7 @@ class Payment extends Model
         'client_id',
         'payment_type_id',
         'transaction_id',
+        'invoice_no',
         'amount'
     ];
 

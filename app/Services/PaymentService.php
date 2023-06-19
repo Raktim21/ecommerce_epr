@@ -28,6 +28,7 @@ class PaymentService
                 'client_id' => $request->client_id,
                 'payment_type_id' => $request->payment_type_id,
                 'transaction_id' => $request->transaction_id ?? 'N/A',
+                'invoice_no' => 'PAY-'.rand(100,999).'-'.time(),
                 'amount' => $request->amount
             ]);
 
@@ -50,6 +51,11 @@ class PaymentService
     public function getAllTypes()
     {
         return PaymentType::all();
+    }
+
+    public function read($id)
+    {
+        return Payment::with('client','type')->findOrFail($id);
     }
 
 }

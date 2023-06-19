@@ -68,7 +68,9 @@ Route::group(['middleware' => ['jwt.auth']], function () {
         Route::get('clients-payments', 'index')->middleware('permission:get-client-payment');
         Route::post('clients-payments', 'store')->middleware('permission:create-client-payment');
         Route::get('payment_types', 'getTypes')->middleware('permission:get-payment-type');
-        Route::get('payslip/{id}', 'getPayslip')->middleware('permission:get-payslip');
+//        Route::get('payslip/{id}', 'getPayslip')->middleware('permission:get-payslip');
     });
 
 });
+
+Route::get('payslip/{id}', [PaymentController::class, 'getPayslip']);

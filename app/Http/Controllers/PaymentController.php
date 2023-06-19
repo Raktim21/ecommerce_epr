@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PaymentStoreRequest;
 use App\Services\PaymentService;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PaymentController extends Controller
 {
@@ -45,5 +46,18 @@ class PaymentController extends Controller
                 'error' => 'Something went wrong.'
             ], 500);
         }
+    }
+
+    public function getPayslip($id)
+    {
+        $data = $this->paymentService->read($id);
+
+        $info = array(
+            'data' => $data
+        );
+
+        $pdf = Pdf::loadView('payslip', $info);
+
+        return $pdf->stream('payslip_' . now() . '.pdf');
     }
 }
