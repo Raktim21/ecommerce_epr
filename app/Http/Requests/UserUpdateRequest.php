@@ -34,6 +34,7 @@ class UserUpdateRequest extends FormRequest
             'address'          => 'nullable|string',
             'details'          => 'nullable|string',
             'avatar'           => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'role_id'          => 'required|exists:roles,id'
         ];
     }
 }

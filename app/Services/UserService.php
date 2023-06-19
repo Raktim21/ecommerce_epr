@@ -44,6 +44,10 @@ class UserService
             'details' => $request->details,
         ]);
 
+        $user->roles()->detach();
+
+        $user->assignRole($request->role_id);
+
         if ($request->hasFile('avatar'))
         {
             if(public_path($user->avatar))
