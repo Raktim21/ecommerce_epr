@@ -40,7 +40,8 @@ class ClientService
                     ->orWhere('clients.email','like',"%$search%")
                     ->orWhere('clients.area','like',"%$search%");
             })->whereNotNull('confirmation_date');
-        })
+        })->leftJoin('payments','clients.id','=','payments.client_id')
+            ->select('clients.*','payments.id as payment_id')
             ->latest()
             ->paginate($limit)
             ->appends($request->except('page','per_page'));
