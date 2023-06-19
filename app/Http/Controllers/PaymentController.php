@@ -20,6 +20,13 @@ class PaymentController extends Controller
         ]);
     }
 
+    public function getTypes()
+    {
+        return response()->json([
+            'success' => true,
+            'data' => $this->paymentService->getAllTypes()
+        ]);
+    }
 
     public function store(PaymentStoreRequest $request)
     {

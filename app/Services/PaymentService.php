@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Clients;
 use App\Models\Payment;
+use App\Models\PaymentType;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -41,6 +42,11 @@ class PaymentService
 
             return false;
         }
+    }
+
+    public function getAllTypes()
+    {
+        return PaymentType::all();
     }
 
 }

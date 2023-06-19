@@ -91,4 +91,11 @@ class RolePermissionService
 
         $role->syncPermissions($request->permissions);
     }
+
+    public function updateRole(Request $request, $id)
+    {
+        $role = Role::find($id);
+
+        $role->syncPermissions($request->permissions);
+    }
 }

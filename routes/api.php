@@ -31,6 +31,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
         Route::get('roles', 'roleList')->middleware(['permission:get-role-list']);
         Route::get('roles/{id}', 'getRole')->middleware(['permission:get-role-info']);
         Route::post('roles', 'createRole')->middleware(['permission:create-role']);
+        Route::put('roles/{id}', 'updateRole')->middleware(['permission:update-role']);
         Route::delete('roles/{id}', 'deleteRole')->middleware(['permission:delete-role']);
         Route::get('permissions', 'permissionList')->middleware(['permission:get-permission-list']);
         Route::post('assign-role/{user_id}', 'assignRole')->middleware('permission:assign-role-to-user');
@@ -66,6 +67,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::controller(PaymentController::class)->group(function () {
         Route::get('clients-payments', 'index')->middleware('permission:get-client-payment');
         Route::post('clients-payments', 'store')->middleware('permission:create-client-payment');
+        Route::get('payment_types', 'getTypes')->middleware('permission:get-payment-type');
     });
 
 });

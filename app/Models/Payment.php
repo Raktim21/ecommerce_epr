@@ -11,6 +11,8 @@ class Payment extends Model
 
     protected $fillable = [
         'client_id',
+        'payment_type_id',
+        'transaction_id',
         'amount'
     ];
 
@@ -21,5 +23,10 @@ class Payment extends Model
     public function client()
     {
         return $this->belongsTo(Clients::class, 'client_id');
+    }
+
+    public function type()
+    {
+        return $this->belongsTo(PaymentType::class, 'payment_type_id');
     }
 }

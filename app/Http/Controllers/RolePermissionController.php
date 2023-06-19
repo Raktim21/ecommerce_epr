@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AssignRoleRequest;
 use App\Http\Requests\AssignUsersRequest;
 use App\Http\Requests\CreateRoleRequest;
+use App\Http\Requests\UpdateRoleRequest;
 use App\Services\RolePermissionService;
 use Illuminate\Http\Request;
 
@@ -48,6 +49,15 @@ class RolePermissionController extends Controller
         return response()->json([
             'success'  => true,
         ], 201);
+    }
+
+    public function updateRole(UpdateRoleRequest $request, $id)
+    {
+        $this->service->updateRole($request, $id);
+
+        return response()->json([
+            'success'  => true,
+        ]);
     }
 
     public function assignRole(AssignRoleRequest $request, $user_id)
