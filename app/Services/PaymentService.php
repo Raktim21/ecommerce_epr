@@ -14,7 +14,8 @@ class PaymentService
     public function getAll()
     {
         return Payment::leftJoin('clients','payments.client_id','=','clients.id')
-            ->select('payments.*','clients.id as client_id','clients.name as client_name')
+            ->leftJoin('payment_types', 'payments.payment_type_id','=','payment_types.id')
+            ->select('payments.*','clients.id as client_id','clients.name as client_name','payment_types.name as payment_type')
             ->paginate(10);
     }
 
@@ -25,6 +26,8 @@ class PaymentService
         try {
             Payment::create([
                 'client_id' => $request->client_id,
+                'payment_type_id' => $request->payment_type_id,
+                'transaction_id' => $request->transaction_id ?? 'N/A',
                 'amount' => $request->amount
             ]);
 

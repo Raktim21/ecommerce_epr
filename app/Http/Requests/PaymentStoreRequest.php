@@ -41,6 +41,8 @@ class PaymentStoreRequest extends FormRequest
                         $fail("The selected client must have an interest rate of 100.");
                     }
                 }],
+            'payment_type_id' => 'required|exists:payment_types,id',
+            'transaction_id' => 'nullable|string|',
             'amount' => 'required|numeric|in:999',
         ];
     }
