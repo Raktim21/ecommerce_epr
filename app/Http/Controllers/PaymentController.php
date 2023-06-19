@@ -32,10 +32,11 @@ class PaymentController extends Controller
     {
         $status = $this->paymentService->store($request);
 
-        if($status)
+        if($status != 0)
         {
             return response()->json([
                 'success' => true,
+                'payment_id' => $status
             ], 201);
         }
         else {

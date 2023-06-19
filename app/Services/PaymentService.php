@@ -24,7 +24,7 @@ class PaymentService
         DB::beginTransaction();
 
         try {
-            Payment::create([
+            $payment = Payment::create([
                 'client_id' => $request->client_id,
                 'payment_type_id' => $request->payment_type_id,
                 'transaction_id' => $request->transaction_id ?? 'N/A',
@@ -37,13 +37,13 @@ class PaymentService
 
             DB::commit();
 
-            return true;
+            return $payment->id;
         }
         catch (\Exception $e)
         {
             DB::rollback();
 
-            return false;
+            return 0;
         }
     }
 

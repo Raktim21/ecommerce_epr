@@ -3,9 +3,11 @@
 namespace App\Http\Requests;
 
 use App\Models\Clients;
+use App\Models\Payment;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\Rule;
 
 class PaymentStoreRequest extends FormRequest
 {
@@ -24,7 +26,9 @@ class PaymentStoreRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $transaction_id = $this->input('transaction_id');
+
+        $rules = [
             'client_id' => ['required','unique:payments,client_id',
                 function ($attr, $val, $fail)
                 {
@@ -42,16 +46,29 @@ class PaymentStoreRequest extends FormRequest
                     }
                 }],
             'payment_type_id' => 'required|exists:payment_types,id',
-            'transaction_id' => 'nullable|string|',
+            'transaction_id' => 'nullable|string',
             'amount' => 'required|numeric|in:999',
         ];
+
+        if($this->input('payment_type_id') == 2)
+        {
+            $rules['transaction_id'] = 'required';
+        }
+        if(!is_null($transaction_id))
+        {
+            $rules['transaction_id'] = [
+                Rule::notIn(Payment::pluck('transaction_id')->toArray())
+            ];
+        }
+
+        return $rules;
     }
 
     public function messages()
     {
         return [
             'client_id.unique' => 'The selected client has already paid.',
-            'amount.in' => 'The amount must be equal to 999.'
+            'amount.in' => 'The amount must be equal to 999.',
         ];
     }
 
