@@ -39,17 +39,16 @@ class UserController extends Controller
         return response()->json([
             'success' => true,
         ]);
-
     }
 
     public function show($id)
     {
         return response()->json([
             'success' => true,
-            'data' => $this->service->get($id)
+            'data' => $this->service->get($id),
+            'role' => $this->service->getRole($id)[0] ?? null
         ]);
     }
-
 
     public function destroy($id)
     {

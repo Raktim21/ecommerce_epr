@@ -56,7 +56,7 @@ class UserService
 
     public function get($id)
     {
-        return User::with('roles')->findOrFail($id);
+        return User::findOrFail($id);
     }
 
     public function delete($id)
@@ -76,5 +76,10 @@ class UserService
         {
             return false;
         }
+    }
+
+    public function getRole($id)
+    {
+        return User::findOrFail($id)->roles;
     }
 }
