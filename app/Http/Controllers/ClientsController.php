@@ -12,6 +12,8 @@ use App\Services\ClientService;
 
 class ClientsController extends Controller
 {
+    private $clientService;
+
     public function __construct(ClientService $clientService)
     {
         $this->clientService = $clientService;
@@ -45,9 +47,7 @@ class ClientsController extends Controller
 
     public function importClients(ClientImportRequest $request)
     {
-        $status = $this->clientService->import($request);
-
-        if($status)
+        if($this->clientService->import($request))
         {
             return response()->json([
                 'success' => true,

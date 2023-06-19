@@ -4,12 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UserStoreRequest;
 use App\Http\Requests\UserUpdateRequest;
-use App\Models\User;
 use App\Services\UserService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -66,6 +61,7 @@ class UserController extends Controller
         }
         return response()->json([
             'success' => false,
+            'error' => 'Something went wrong.'
         ], 500);
     }
 }

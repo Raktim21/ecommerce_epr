@@ -4,12 +4,10 @@ namespace App\Services;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 
 class UserService
 {
-
     public function getAll()
     {
         return User::paginate(10);
@@ -25,6 +23,8 @@ class UserService
             'details' => $request->details,
             'password' => Hash::make($request->password),
         ]);
+
+        $user->assignRole($request->role_id);
 
         if($request->file('avatar'))
         {

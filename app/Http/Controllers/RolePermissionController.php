@@ -7,7 +7,6 @@ use App\Http\Requests\AssignUsersRequest;
 use App\Http\Requests\CreateRoleRequest;
 use App\Http\Requests\UpdateRoleRequest;
 use App\Services\RolePermissionService;
-use Illuminate\Http\Request;
 
 class RolePermissionController extends Controller
 {
