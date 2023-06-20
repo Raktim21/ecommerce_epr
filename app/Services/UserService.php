@@ -10,7 +10,7 @@ class UserService
 {
     public function getAll()
     {
-        return User::paginate(10);
+        return User::with('roles')->paginate(10);
     }
 
     public function store(Request $request)
