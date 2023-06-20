@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
 
 class AuthService
 {
@@ -49,5 +50,17 @@ class AuthService
             'address' => $request->address,
             'details' => $request->details,
         ]);
+    }
+
+    public function getPermissions()
+    {
+        $role = User::findOrFail(auth()->user()->id)->roles;
+
+        if($role && $role[0])
+        {
+            return Role::find($role[0]['id'])->permissions;
+        }
+
+        return null;
     }
 }
