@@ -49,7 +49,7 @@ class AuthController extends Controller
         ]);
     }
 
-    public function updateAvater(AvatarRequest $request)
+    public function updateAvatar(AvatarRequest $request)
     {
         $this->service->storeAvatar($request);
 
