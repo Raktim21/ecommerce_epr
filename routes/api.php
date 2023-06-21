@@ -18,13 +18,14 @@ Route::post('login', [AuthController::class, 'login']);
 Route::group(['middleware' => ['jwt.auth']], function () {
 
     Route::controller(AuthController::class)->group(function () {
-        Route::get('logout', [AuthController::class, 'logout']);
-        Route::get('refresh', [AuthController::class, 'refresh']);
+        Route::get('logout', 'logout');
+        Route::get('refresh', 'refresh');
 
-        Route::get('profile', [AuthController::class, 'profile']);
-        Route::post('update-avatar', [AuthController::class, 'updateAvatar']);
-        Route::put('update-info', [AuthController::class, 'updateInfo']);
-        Route::put('update-password', [AuthController::class, 'updatePassword']);
+        Route::get('profile', 'profile');
+        Route::post('update-avatar', 'updateAvatar');
+        Route::put('update-info', 'updateInfo');
+        Route::put('update-password', 'updatePassword');
+        Route::get('auth-permissions', 'getPermissions');
     });
 
     Route::controller(RolePermissionController::class)->group(function () {

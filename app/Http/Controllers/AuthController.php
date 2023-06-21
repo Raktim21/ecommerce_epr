@@ -25,7 +25,6 @@ class AuthController extends Controller
 
             return response()->json([
                 'success' => true,
-                'permissions' => $this->service->getPermissions(),
                 'admin_access_token' => $token,
                 'token_type' => 'bearer',
                 'expires_in' => auth()->factory()->getTTL() * 60
@@ -93,6 +92,14 @@ class AuthController extends Controller
             'admin_access_token' => auth()->refresh(),
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60
+        ]);
+    }
+
+    public function getPermissions()
+    {
+        return response()->json([
+            'success' => true,
+            'data' => $this->service->getPermissions(),
         ]);
     }
 }
