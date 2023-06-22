@@ -27,7 +27,7 @@ class PaymentService
             $payment = Payment::create([
                 'client_id' => $request->client_id,
                 'payment_type_id' => $request->payment_type_id,
-                'transaction_id' => $request->transaction_id ?? 'N/A',
+                'transaction_id' => $request->transaction_id ?? null,
                 'invoice_no' => 'PAY-'.rand(100,999).'-'.time(),
                 'amount' => $request->amount
             ]);
