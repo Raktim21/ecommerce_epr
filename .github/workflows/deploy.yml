@@ -65,7 +65,6 @@ jobs:
               composer2 update
               php artisan migrate
               php artisan optimize
-              php artisan db:seed --class=RolePermissionSeeder
               php artisan cache:clear
   
         
