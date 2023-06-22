@@ -59,5 +59,9 @@ class RolePermissionSeeder extends Seeder
         ]);
 
         $role->givePermissionTo(Permission::all());
+
+        $user = User::where('email', 'admin@admin.com')->first();
+
+        $user->assignRole($role);
     }
 }
