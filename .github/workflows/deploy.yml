@@ -64,7 +64,6 @@ jobs:
               cd domains/sltm.selopia.com/public_html/
               composer2 update
               php artisan migrate
-              php arttisan db:seed --class=PaymentTypeSeeder
               php artisan optimize
               php artisan cache:clear
   
