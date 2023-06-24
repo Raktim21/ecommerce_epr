@@ -61,6 +61,6 @@ class UserController extends Controller
         return response()->json([
             'success' => false,
             'error' => 'This user can not be deleted.'
-        ], 500);
+        ], 422);
     }
 }
