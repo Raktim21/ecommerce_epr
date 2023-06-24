@@ -6,6 +6,7 @@ use App\Http\Controllers\FollowUpInfoController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\WebsiteController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -70,6 +71,11 @@ Route::group(['middleware' => ['jwt.auth']], function () {
         Route::post('clients-payments', 'store')->middleware('permission:create-client-payment');
         Route::get('payment_types', 'getTypes')->middleware('permission:get-payment-type');
         Route::get('payslip/{id}', 'getPayslip')->middleware('permission:get-payslip');
+    });
+
+    Route::controller(WebsiteController::class)->group(function () {
+        Route::get('websites', 'index');
+        Route::post('websites', 'store');
     });
 
 });
