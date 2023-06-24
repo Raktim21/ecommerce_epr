@@ -14,6 +14,15 @@ class WebsiteController extends Controller
     {
         $this->service = $service;
     }
+
+    public function index()
+    {
+        return response()->json([
+            'success' => true,
+            'data'    => $this->service->getAll()
+        ]);
+    }
+
     public function store(WebsiteRequest $request)
     {
         $this->service->store($request);

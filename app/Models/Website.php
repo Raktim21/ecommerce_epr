@@ -11,4 +11,9 @@ class Website extends Model
 
     protected $fillable = ['client_id','domain','auth_token'];
     protected $hidden = ['created_at','updated_at'];
+
+    public function client()
+    {
+        return $this->belongsTo(Clients::class, 'client_id');
+    }
 }

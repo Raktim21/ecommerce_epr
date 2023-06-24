@@ -74,8 +74,8 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     });
 
     Route::controller(WebsiteController::class)->group(function () {
-        Route::get('websites', 'index');
-        Route::post('websites', 'store');
+        Route::get('websites', 'index')->middleware('permission:get-website');
+        Route::post('websites', 'store')->middleware('permission:create-website');
     });
 
 });

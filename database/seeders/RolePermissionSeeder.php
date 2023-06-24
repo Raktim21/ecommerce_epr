@@ -42,7 +42,9 @@ class RolePermissionSeeder extends Seeder
             'get-client-payment',
             'create-client-payment',
             'get-payment-type',
-            'get-payslip'
+            'get-payslip',
+            'get-website',
+            'create-website'
         ];
 
         foreach ($permissions as $value)

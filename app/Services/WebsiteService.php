@@ -24,4 +24,9 @@ class WebsiteService
         ]);
     }
 
+    public function getAll()
+    {
+        return $this->website->newQuery()->with('client')->latest()->get();
+    }
+
 }

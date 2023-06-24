@@ -45,4 +45,9 @@ class Clients extends Model
     {
         return $this->belongsTo(User::class, 'added_by');
     }
+
+    public function website()
+    {
+        return $this->hasOne(Website::class, 'client_id');
+    }
 }
