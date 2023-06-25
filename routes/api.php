@@ -16,6 +16,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('login', [AuthController::class, 'login']);
 
+Route::post('reset-password', [AuthController::class, 'resetPassword']);
+Route::post('confirm-password', [AuthController::class, 'confirmPassword']);
+
 Route::group(['middleware' => ['jwt.auth']], function () {
 
     Route::controller(AuthController::class)->group(function () {

@@ -3,7 +3,9 @@
 namespace App\Services;
 
 use App\Models\User;
+use App\Notifications\ResetPasswordNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 
 class AuthService
@@ -62,5 +64,34 @@ class AuthService
         }
 
         return null;
+    }
+
+    public function resetPWD(Request $request)
+    {
+        $user = User::where('email', $request->email)->first();
+
+        $token = Hash::make(date('isd'));
+        $code = date('isd');
+
+        $user->update([
+            'password_reset_token' => $token,
+            'password_reset_code'  => $code,
+        ]);
+
+//        $user->notify(new ResetPasswordNotification($user->name, $code));
+
+        return $user->password_reset_token;
+    }
+
+    public function confirmPWD(Request $request)
+    {
+        $user = User::where('password_reset_token', $request->token)
+            ->where('password_reset_code',$request->code)->first();
+
+        $user->update([
+            'password' => bcrypt($request->password),
+            'password_reset_token' => null,
+            'password_reset_code' => null,
+        ]);
     }
 }

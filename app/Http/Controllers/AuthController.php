@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AuthInfoUpdateRequest;
 use App\Http\Requests\AvatarRequest;
+use App\Http\Requests\ConfirmPasswordRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\PasswordRequest;
+use App\Http\Requests\ResetPasswordRequest;
+use App\Models\User;
 use App\Services\AuthService;
 
 class AuthController extends Controller
@@ -69,6 +72,25 @@ class AuthController extends Controller
     public function updatePassword(PasswordRequest $request)
     {
         $this->service->changePassword($request);
+
+        return response()->json([
+            'success' => true,
+        ]);
+    }
+
+    public function resetPassword(ResetPasswordRequest $request)
+    {
+        $token = $this->service->resetPWD($request);
+
+        return response()->json([
+            'success'       => true,
+            'reset_token'   => $token
+        ]);
+    }
+
+    public function confirmPassword(ConfirmPasswordRequest $request)
+    {
+        $this->service->confirmPWD($request);
 
         return response()->json([
             'success' => true,
