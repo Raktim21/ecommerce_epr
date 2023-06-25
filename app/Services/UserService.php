@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\User;
+use App\Notifications\NewClientNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -86,4 +87,15 @@ class UserService
     {
         return User::findOrFail($id)->roles;
     }
+
+    public function sendNotification($message, $model, $id)
+    {
+        $users = User::role(1)->whereNot('id',auth()->user()->id)->get();
+
+        foreach ($users as $user)
+        {
+            $user->notify(new NewClientNotification($message, $model, $id));
+        }
+    }
+
 }

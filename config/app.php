@@ -171,6 +171,7 @@ return [
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
+        Illuminate\Notifications\NotificationServiceProvider::class,
     ])->toArray(),
 
     /*
