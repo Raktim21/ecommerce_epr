@@ -96,6 +96,10 @@ class RolePermissionService
     {
         $role = Role::find($id);
 
+        $role->update([
+            'name' => $request->role
+        ]);
+
         $role->syncPermissions($request->permissions);
     }
 }

@@ -29,31 +29,33 @@ class PaymentStoreRequest extends FormRequest
         $transaction_id = $this->input('transaction_id');
 
         $rules = [
-            'client_id' => ['required','unique:payments,client_id',
-                function ($attr, $val, $fail)
-                {
-                    $client = Clients::find($val);
+            'client_id'             => ['required','exists:clients,id',
+                                            function ($attr, $val, $fail)
+                                            {
+                                                $client = Clients::find($val);
 
-                    if(!$client || $client->company=='N/A' || $client->name=='N/A' || $client->email=='N/A' ||
-                        $client->phone_no=='N/A' || $client->area=='N/A' ||
-                        $client->product_type=='N/A' || $client->document==null)
-                    {
-                        $fail("Insufficient client information.");
-                    }
+                                                if($client->company=='N/A' || $client->name=='N/A' || $client->email=='N/A' ||
+                                                    $client->phone_no=='N/A' || $client->area=='N/A' ||
+                                                    $client->product_type=='N/A' || $client->document==null)
+                                                {
+                                                    $fail("Insufficient client information.");
+                                                }
 
-                    if(!$client || $client->interest_status != 100) {
-                        $fail("The selected client must have an interest rate of 100.");
-                    }
-                }],
-            'payment_type_id' => 'required|exists:payment_types,id',
-            'transaction_id' => 'nullable|string',
-            'amount' => 'required|numeric|in:999',
+                                                if(!$client || $client->interest_status != 100) {
+                                                    $fail("The selected client must have an interest rate of 100.");
+                                                }
+                                            }],
+            'payment_type_id'       => 'required|exists:payment_types,id',
+            'payment_category_id'   => 'required|exists:payment_categories,id',
+            'transaction_id'        => 'nullable|string',
+            'amount'                => 'required|numeric',
         ];
 
         if($this->input('payment_type_id') == 2)
         {
             $rules['transaction_id'] = 'required';
         }
+
         if(!is_null($transaction_id))
         {
             $rules['transaction_id'] = [
@@ -67,8 +69,8 @@ class PaymentStoreRequest extends FormRequest
     public function messages()
     {
         return [
-            'client_id.unique' => 'The selected client has already paid.',
-            'amount.in' => 'The amount must be equal to 999.',
+            'payment_type_id.required' => 'Please select a payment type.',
+            'payment_category_id.required' => 'Please select a payment category.',
         ];
     }
 

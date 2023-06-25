@@ -27,6 +27,7 @@ class PaymentService
             $payment = Payment::create([
                 'client_id' => $request->client_id,
                 'payment_type_id' => $request->payment_type_id,
+                'payment_category_id' => $request->payment_category_id,
                 'transaction_id' => $request->transaction_id ?? null,
                 'invoice_no' => 'PAY-'.rand(100,999).'-'.time(),
                 'amount' => $request->amount
@@ -56,6 +57,11 @@ class PaymentService
     public function read($id)
     {
         return Payment::with('client','type')->findOrFail($id);
+    }
+
+    public function getData($client)
+    {
+        return Payment::with('client','type','category')->where('client_id',$client)->latest()->get();
     }
 
 }

@@ -12,6 +12,7 @@ class Payment extends Model
     protected $fillable = [
         'client_id',
         'payment_type_id',
+        'payment_category_id',
         'transaction_id',
         'invoice_no',
         'amount'
@@ -29,5 +30,10 @@ class Payment extends Model
     public function type()
     {
         return $this->belongsTo(PaymentType::class, 'payment_type_id');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(PaymentCategory::class, 'payment_category_id');
     }
 }

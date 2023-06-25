@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PaymentDataRequest;
 use App\Http\Requests\PaymentStoreRequest;
 use App\Services\PaymentService;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -46,6 +47,14 @@ class PaymentController extends Controller
                 'error' => 'Something went wrong.'
             ], 500);
         }
+    }
+
+    public function getPayData(PaymentDataRequest $request)
+    {
+        return response()->json([
+            'success' => 'true',
+            'data' => $this->paymentService->getData($request->input('client_id'))
+        ]);
     }
 
     public function getPayslip($id)
