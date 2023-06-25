@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Models\User;
-use App\Notifications\NewClientNotification;
+use App\Notifications\AdminNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -31,6 +31,8 @@ class UserService
         {
             saveImage($request->file('avatar'), '/uploads/users/avatar/', $user, 'avatar');
         }
+
+        $this->sendNotification('A new user has been created.', 'user', $user->id);
     }
 
     public function updateUser(Request $request, $id)
@@ -64,7 +66,7 @@ class UserService
         return User::findOrFail($id);
     }
 
-    public function delete($id)
+    public function delete($id): bool
     {
         $user = User::findOrFail($id);
 
@@ -72,6 +74,8 @@ class UserService
             if(!$user->hasRole(1))
             {
                 $user->delete();
+
+                $this->sendNotification('A user has been deleted.', 'user', $user->id);
 
                 return true;
             }
@@ -88,13 +92,13 @@ class UserService
         return User::findOrFail($id)->roles;
     }
 
-    public function sendNotification($message, $model, $id)
+    public function sendNotification($message, $model, $id): void
     {
         $users = User::role(1)->whereNot('id',auth()->user()->id)->get();
 
         foreach ($users as $user)
         {
-            $user->notify(new NewClientNotification($message, $model, $id));
+            $user->notify(new AdminNotification($message, $model, $id));
         }
     }
 

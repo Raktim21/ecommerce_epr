@@ -90,6 +90,8 @@ class RolePermissionService
         ]);
 
         $role->syncPermissions($request->permissions);
+
+        (new UserService)->sendNotification('New role has been created.', 'role', $role->id);
     }
 
     public function updateRole(Request $request, $id)
@@ -101,5 +103,7 @@ class RolePermissionService
         ]);
 
         $role->syncPermissions($request->permissions);
+
+        (new UserService)->sendNotification('A role has been updated.', 'role', $role->id);
     }
 }

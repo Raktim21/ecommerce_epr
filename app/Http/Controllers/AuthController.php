@@ -21,8 +21,6 @@ class AuthController extends Controller
     {
         if($token = $this->service->login($request->only('email', 'password')))
         {
-            $user = auth()->user();
-
             return response()->json([
                 'success' => true,
                 'admin_access_token' => $token,

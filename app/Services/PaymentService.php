@@ -39,6 +39,8 @@ class PaymentService
 
             DB::commit();
 
+            (new UserService)->sendNotification('New payment has been stored.', 'client-payment', $payment->client_id);
+
             return $payment->id;
         }
         catch (\Exception $e)

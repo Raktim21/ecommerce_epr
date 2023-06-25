@@ -65,27 +65,27 @@ class ClientService
 
     public function create(Request $request)
     {
-//        $client = Clients::create([
-//            'company'         => $request->company,
-//            'name'            => $request->name,
-//            'email'           => $request->email ?? 'N/A',
-//            'phone_no'        => $request->phone_no,
-//            'area'            => $request->area,
-//            'interest_status' => $request->interest_status ?? 0,
-//            'product_type'    => $request->product_type ?? 'N/A',
-//            'client_opinion'  => $request->client_opinion ?? 'N/A',
-//            'officer_opinion' => $request->officer_opinion ?? 'N/A',
-//            'added_by'        => auth()->user()->id,
-//            'latitude'        => $request->latitude,
-//            'longitude'       => $request->longitude,
-//        ]);
-//
-//        if ($request->hasFile('document'))
-//        {
-//            $this->uploadDoc($request, $client);
-//        }
+        $client = Clients::create([
+            'company'         => $request->company,
+            'name'            => $request->name,
+            'email'           => $request->email ?? 'N/A',
+            'phone_no'        => $request->phone_no,
+            'area'            => $request->area,
+            'interest_status' => $request->interest_status ?? 0,
+            'product_type'    => $request->product_type ?? 'N/A',
+            'client_opinion'  => $request->client_opinion ?? 'N/A',
+            'officer_opinion' => $request->officer_opinion ?? 'N/A',
+            'added_by'        => auth()->user()->id,
+            'latitude'        => $request->latitude,
+            'longitude'       => $request->longitude,
+        ]);
 
-        (new UserService)->sendNotification('A new client has been created.', 'client', 1);
+        if ($request->hasFile('document'))
+        {
+            $this->uploadDoc($request, $client);
+        }
+
+        (new UserService)->sendNotification('A new client has been created.', 'client', $client->id);
     }
 
     public function isConfirmed($id)
@@ -103,6 +103,8 @@ class ClientService
 
         try {
             Excel::import(new ClientsImport, $file);
+
+            (new UserService)->sendNotification('New clients have been imported.', 'client-import', 0);
 
             return true;
         }

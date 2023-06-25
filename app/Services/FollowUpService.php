@@ -10,13 +10,15 @@ class FollowUpService
 {
     public function store(Request $request)
     {
-        FollowUpInfo::create([
+        $follow = FollowUpInfo::create([
             'client_id' => $request->client_id,
             'detail' => $request->detail,
             'occurred_on' => $request->occurred_on,
             'latitude' => $request->latitude,
             'longitude' => $request->longitude
         ]);
+
+        (new UserService)->sendNotification('New client follow-up has been created.', 'follow-up', $follow->id);
     }
 
     public function show($id)
@@ -31,20 +33,6 @@ class FollowUpService
                 THEN 'VALID'
                 ELSE 'INVALID'
                 END AS status")->get();
-
-        // Clients::findOrFail($id)->follow_ups()
-        //                 ->join('clients', 'clients.id', '=', 'follow_up_infos.client_id')
-        //                 ->selectRaw("
-        //                     clients.*,
-        //                     CASE WHEN ST_Distance_Sphere(
-        //                         point(clients.longitude, clients.latitude),
-        //                         point(follow_up_infos.longitude, follow_up_infos.latitude)
-        //                     ) <= 100
-        //                     THEN 'VALID'
-        //                     ELSE 'INVALID'
-        //                     END AS status
-        //                 ")
-        //                 ->get();
     }
 
     public function update(Request $request, $id)
