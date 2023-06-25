@@ -8,7 +8,6 @@ use App\Http\Requests\ConfirmPasswordRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\PasswordRequest;
 use App\Http\Requests\ResetPasswordRequest;
-use App\Models\User;
 use App\Services\AuthService;
 
 class AuthController extends Controller
@@ -22,7 +21,12 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request)
     {
-        if($token = $this->service->login($request->only('email', 'password')))
+        $credentials = array(
+            (filter_var($request->get('email'), FILTER_VALIDATE_EMAIL) ? 'email' : 'phone') => $request->get('email'),
+            'password' => $request->get('password')
+        );
+
+        if($token = $this->service->login($credentials))
         {
             return response()->json([
                 'success' => true,
