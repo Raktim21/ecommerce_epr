@@ -37,10 +37,12 @@ class FollowUpService
 
     public function update(Request $request, $id)
     {
-        FollowUpInfo::findOrFail($id)->update([
+        $follow = FollowUpInfo::findOrFail($id)->update([
             'detail' => $request->detail,
             'occurred_on' => $request->occurred_on
         ]);
+
+        (new UserService)->sendNotification("A client's follow-up information has been updated.", 'client', $follow->client_id);
     }
 
     public function delete($id)

@@ -59,6 +59,8 @@ class UserService
             }
             saveImage($request->file('avatar'), '/uploads/users/avatar/', $user, 'avatar');
         }
+
+        $this->sendNotification("A user's information has been updated.", 'user', $user->id);
     }
 
     public function get($id)

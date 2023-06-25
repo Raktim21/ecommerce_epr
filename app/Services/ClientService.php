@@ -110,7 +110,6 @@ class ClientService
         }
         catch (\Exception $ex)
         {
-            Log::info($ex->getMessage());
             return false;
         }
     }
@@ -132,6 +131,8 @@ class ClientService
             'latitude'        => $request->latitude,
             'longitude'       => $request->longitude,
         ]);
+
+        (new UserService)->sendNotification("A client's information have been updated.", 'client', $id);
     }
 
     public function updateDoc(Request $request, $id)
@@ -147,6 +148,8 @@ class ClientService
         }
 
         $this->uploadDoc($request, $client);
+
+        (new UserService)->sendNotification("A client's document has been stored.", 'client', $id);
     }
 
     private function uploadDoc(Request $request, $client)
