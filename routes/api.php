@@ -14,16 +14,20 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('login', [AuthController::class, 'login']);
-
-Route::post('reset-password', [AuthController::class, 'resetPassword']);
-Route::post('confirm-password', [AuthController::class, 'confirmPassword']);
+Route::controller(AuthController::class)->group(function () {
+    Route::post('login', 'login');
+    Route::post('reset-password', 'resetPassword');
+    Route::post('confirm-password', 'confirmPassword');
+});
 
 Route::group(['middleware' => ['jwt.auth']], function () {
 
     Route::controller(AuthController::class)->group(function () {
         Route::get('logout', 'logout');
         Route::get('refresh', 'refresh');
+
+        Route::get('notifications', 'getNotifications');
+        Route::get('notifications/read/{id}', 'readNotification');
 
         Route::get('profile', 'profile');
         Route::post('update-avatar', 'updateAvatar');

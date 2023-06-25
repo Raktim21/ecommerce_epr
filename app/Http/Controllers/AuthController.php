@@ -53,6 +53,23 @@ class AuthController extends Controller
         ]);
     }
 
+    public function getNotifications()
+    {
+        return response()->json([
+            'success'   => true,
+            'data'      => auth()->user()->notifications,
+        ]);
+    }
+
+    public function readNotification($id)
+    {
+        auth()->user()->unreadNotifications->where('id', $id)->markAsRead();
+
+        return response()->json([
+            'success' => true,
+        ]);
+    }
+
     public function updateAvatar(AvatarRequest $request)
     {
         $this->service->storeAvatar($request);
