@@ -57,7 +57,7 @@ class AuthController extends Controller
     {
         return response()->json([
             'success'   => true,
-            'data'      => auth()->user()->notifications,
+            'data'      => auth()->user()->notifications->whereNull('read_at'),
         ]);
     }
 
