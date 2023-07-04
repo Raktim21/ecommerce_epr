@@ -68,4 +68,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(UserPoint::class, 'user_id');
     }
+
+    public function allowances()
+    {
+        return $this->hasMany(TransportAllowance::class, 'created_by');
+    }
 }

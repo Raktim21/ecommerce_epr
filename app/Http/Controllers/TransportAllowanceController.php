@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\TransportAllowance;
+use App\Services\AllowanceService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -10,13 +11,19 @@ use Illuminate\Support\Facades\Http;
 
 class TransportAllowanceController extends Controller
 {
+    private $service;
+
+    public function __construct(AllowanceService $service)
+    {
+        $this->service = $service;
+    }
 
     public function index(){
-        
+
         return response()->json([
             'success' => true,
-            'data'    => TransportAllowance::where('created_by', auth()->user()->id)->get()
-        ],200);
+            'data'    => $this->service->getAll(),
+        ]);
     }
 
 
@@ -45,7 +52,7 @@ class TransportAllowanceController extends Controller
             $allowance->note           = $request->note ?? null;
             $allowance->save();
 
-            
+
             if ($request->hasFile('document')){
                 saveImage($request->file('document'), 'uploads/travel_allowance/documents/', $allowance, 'document');
             }
@@ -67,7 +74,7 @@ class TransportAllowanceController extends Controller
             ],500);
         }
 
-        
+
     }
 
 
@@ -97,7 +104,7 @@ class TransportAllowanceController extends Controller
             $allowance->note           = $request->note ?? null;
             $allowance->save();
 
-            
+
             if ($request->hasFile('document')){
                 saveImage($request->file('document'), 'uploads/travel_allowance/documents/', $allowance, 'document');
             }
@@ -119,7 +126,7 @@ class TransportAllowanceController extends Controller
             ],500);
         }
 
-        
+
     }
 
 
@@ -136,6 +143,6 @@ class TransportAllowanceController extends Controller
 
     private function getAddress($lat, $lng)
     {
-         
+
     }
 }

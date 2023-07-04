@@ -19,23 +19,22 @@ function deleteFile($filepath): void
     }
 }
 
-
-
-function getAddress($lat , $lng){
-    
+function getAddress($lat , $lng)
+{
     try {
         $response = Http::get('https://maps.googleapis.com/maps/api/geocode/json', [
             'latlng' => $lat.','.$lng,
             'sensor' => 'false',
             'key'    => env('GOOGLE_MAPS_API_KEY')
         ]);
-    
+
         $data = $response->json();
         return $data['results'][0]['formatted_address'];
 
-    } catch (\Throwable $th) {
+    }
+    catch (\Throwable $th) {
         return null;
     }
-    
-    
+
+
 }

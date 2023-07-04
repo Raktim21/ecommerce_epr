@@ -50,4 +50,9 @@ class Clients extends Model
     {
         return $this->hasOne(Website::class, 'client_id');
     }
+
+    public function allowance()
+    {
+        return $this->hasMany(TransportAllowance::class, 'client_id');
+    }
 }

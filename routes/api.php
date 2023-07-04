@@ -98,7 +98,6 @@ Route::group(['middleware' => ['jwt.auth']], function () {
         Route::post('websites', 'store')->middleware('permission:create-website');
     });
 
-
     Route::controller(TransportAllowanceController::class)->group(function () {
         Route::get('transport-allowances', 'index');
     });

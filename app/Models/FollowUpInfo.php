@@ -26,4 +26,9 @@ class FollowUpInfo extends Model
     {
         return $this->belongsTo(Clients::class, 'client_id');
     }
+
+    public function allowances()
+    {
+        return $this->hasMany(TransportAllowance::class, 'follow_up_id');
+    }
 }
