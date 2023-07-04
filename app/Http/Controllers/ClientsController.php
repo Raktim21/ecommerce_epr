@@ -38,11 +38,15 @@ class ClientsController extends Controller
 
     public function store(ClientStoreRequest $request)
     {
-        $this->clientService->create($request);
-
+        if($this->clientService->create($request))
+        {
+            return response()->json([
+                'success' => true,
+            ], 201);
+        }
         return response()->json([
-            'success' => true,
-        ], 201);
+            'success' => false,
+        ], 500);
     }
 
     public function importClients(ClientImportRequest $request)

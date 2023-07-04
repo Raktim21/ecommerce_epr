@@ -37,6 +37,8 @@ class PaymentService
                 'confirmation_date' => Carbon::now(),
             ]);
 
+            (new UserPointService())->savePoints(2);
+
             DB::commit();
 
             (new UserService)->sendNotification('New payment has been stored.', 'client-payment', $payment->client_id);
