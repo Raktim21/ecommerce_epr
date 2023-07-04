@@ -39,6 +39,16 @@ class AllowanceService
     {
         $allowance = TransportAllowance::findOrFail($id);
 
+        if(!is_null($allowance->end_time))
+        {
+            return 1;
+        }
+
+        if($allowance->created_by != auth()->user()->id)
+        {
+            return 2;
+        }
+
         $allowance->update([
             'to_lat'         => $request->from_lat,
             'to_lng'         => $request->from_lng,

@@ -34,7 +34,15 @@ class TransportAllowanceController extends Controller
 
     public function end(AllowanceEndRequest $request, $id)
     {
-        $this->service->endJourney($request, $id);
+        $status = $this->service->endJourney($request, $id);
+        if($status == 1)
+        {
+            return response()->json(['success' => false, 'error' => 'You have already entered the information']);
+        }
+        if($status == 2)
+        {
+            return response()->json(['success' => false, 'error' => 'You are not authorized to update the information.']);
+        }
         return response()->json(['success' => true]);
     }
 
