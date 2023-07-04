@@ -26,16 +26,16 @@ class ClientService
         $status = $request->confirmed ?? '';
         $limit = $request->per_page;
 
-        return $this->client->newQuery()->
-        when($status==0, function ($query) use($search) {
+        return $this->client->newQuery()
+        ->when($status==0, function ($query) use($search) {
             return $query->where(function ($query) use ($search) {
                 $query->where('company','like',"%$search%")
                     ->orWhere('clients.name','like',"%$search%")
                     ->orWhere('clients.email','like',"%$search%")
                     ->orWhere('clients.area','like',"%$search%");
             })->whereNull('confirmation_date');
-        })->
-        when($status==1, function ($query) use($search) {
+        })
+        ->when($status==1, function ($query) use($search) {
             return $query->where(function ($query) use ($search) {
                 $query->where('company','like',"%$search%")
                     ->orWhere('clients.name','like',"%$search%")
