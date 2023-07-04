@@ -44,7 +44,7 @@ class ClientService
             })->whereNotNull('confirmation_date');
         })->leftJoin('payments','clients.id','=','payments.client_id')
             ->leftJoin('users','clients.added_by','=','users.id')
-            ->select('clients.*','payments.id as payment_id','users.name as user')
+            ->select('clients.*','payments.id as payment_id','users.name as added_by')
             ->latest()
             ->paginate($limit)
             ->appends($request->except('page','per_page'));
