@@ -13,6 +13,8 @@ class UserPoint extends Model
 
     protected $fillable = ['user_id','point_id','points'];
 
+    protected $hidden = ['updated_at'];
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');

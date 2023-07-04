@@ -63,4 +63,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
+    public function point_list()
+    {
+        return $this->hasMany(UserPoint::class, 'user_id');
+    }
 }

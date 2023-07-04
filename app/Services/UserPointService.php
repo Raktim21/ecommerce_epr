@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Point;
+use App\Models\User;
 use App\Models\UserPoint;
 use Illuminate\Http\Request;
 
@@ -27,5 +28,10 @@ class UserPointService
             'point_id'  => $point_id,
             'points'    => Point::find($point_id)->point
         ]);
+    }
+
+    public function getUserPoints($user_id)
+    {
+        return User::with('point_list.point_detail')->findOrFail($user_id)->point_list;
     }
 }

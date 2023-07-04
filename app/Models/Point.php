@@ -15,6 +15,8 @@ class Point extends Model
 
     protected $fillable = ['point'];
 
+    protected $hidden = ['created_at','updated_at'];
+
     public function users()
     {
         return $this->hasMany(UserPoint::class, 'point_id');

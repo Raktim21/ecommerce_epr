@@ -49,7 +49,8 @@ class RolePermissionSeeder extends Seeder
             'create-payment-category',
             'delete-payment-category',
             'get-point-type-list',
-            'update-point-type'
+            'update-point-type',
+            'get-user-point-data'
         ];
 
         foreach ($permissions as $value)

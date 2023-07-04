@@ -23,6 +23,14 @@ class UserPointController extends Controller
         ]);
     }
 
+    public function pointData($user_id)
+    {
+        return response()->json([
+            'success' => true,
+            'data'    => $this->service->getUserPoints($user_id)
+        ]);
+    }
+
     public function updatePoint(PointRequest $request, $id)
     {
         $this->service->update($request, $id);
