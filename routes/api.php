@@ -5,6 +5,7 @@ use App\Http\Controllers\ClientsController;
 use App\Http\Controllers\FollowUpInfoController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\RolePermissionController;
+use App\Http\Controllers\TransportAllowanceController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserPointController;
 use App\Http\Controllers\WebsiteController;
@@ -95,6 +96,11 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::controller(WebsiteController::class)->group(function () {
         Route::get('websites', 'index')->middleware('permission:get-website');
         Route::post('websites', 'store')->middleware('permission:create-website');
+    });
+
+
+    Route::controller(TransportAllowanceController::class)->group(function () {
+        Route::get('transport-allowances', 'index');
     });
 
 });
