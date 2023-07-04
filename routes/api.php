@@ -6,6 +6,7 @@ use App\Http\Controllers\FollowUpInfoController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserPointController;
 use App\Http\Controllers\WebsiteController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -45,6 +46,11 @@ Route::group(['middleware' => ['jwt.auth']], function () {
         Route::get('permissions', 'permissionList')->middleware(['permission:get-permission-list']);
         Route::post('assign-role/{user_id}', 'assignRole')->middleware('permission:assign-role-to-user');
         Route::post('users-assign-role', 'assignUsers')->middleware('permission:assign-role-to-user');
+    });
+
+    Route::controller(UserPointController::class)->group(function () {
+        Route::get('point-types', 'getList')->middleware(['permission:get-point-type-list']);
+        Route::put('point-types/{id}', 'updatePoint')->middleware(['permission:update-point-type']);
     });
 
     Route::controller(UserController::class)->group(function () {
