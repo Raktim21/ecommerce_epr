@@ -100,6 +100,8 @@ Route::group(['middleware' => ['jwt.auth']], function () {
 
     Route::controller(TransportAllowanceController::class)->group(function () {
         Route::get('transport-allowances', 'index');
+        Route::post('transport-allowances/start', 'start');
+        Route::post('transport-allowances/end/{id}', 'end');
     });
 
 });
