@@ -28,7 +28,6 @@ class Clients extends Model
 
     protected $hidden = [
         'updated_at',
-        'created_at'
     ];
 
     public function follow_ups()

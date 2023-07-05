@@ -106,6 +106,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
         Route::put('transport-allowances/change-status/{id}', 'changeStatus')->middleware('permission:change-transport-allowance-status');
 
         Route::get('food-allowances', 'foodAllowanceList');
+        Route::post('food-allowances', 'foodAllowanceList');
     });
 
 });
