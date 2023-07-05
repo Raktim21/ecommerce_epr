@@ -26,8 +26,12 @@ class TransportAllowanceExport implements FromCollection, WithHeadings
             $result[] = array(
                 '#'             => $key + 1,
                 'user'          => $datum->user,
-                'from'          => getAddress($datum->from_lat, $datum->from_lng),
-                'to'            => getAddress($datum->to_lat, $datum->to_lng),
+                'from_lat'      => $datum->from_lat,
+                'from_lng'          => $datum->from_lng,
+                'from'          => $datum->from_address,
+                'to_lat'            => $datum->to_lat,
+                'to_lng'          => $datum->to_lng,
+                'to'            => $datum->to_address,
                 'start'         => $datum->start_time,
                 'end'           => $datum->end_time,
                 'visit'         => $datum->visit_type,
@@ -45,7 +49,8 @@ class TransportAllowanceExport implements FromCollection, WithHeadings
     public function headings(): array
     {
         return [
-            '#','User','From','To','Start Time','End Time','Visit Type','Transport Type','Amount',
+            '#','User','From Latitude','From Longitude','To Latitude','From Longitude',
+            'Start Time','End Time','Visit Type','Transport Type','Amount',
             'Travel Status', 'Allowance Status'
         ];
     }
