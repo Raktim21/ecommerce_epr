@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AllowanceEndRequest;
 use App\Http\Requests\AllowanceStartRequest;
+use App\Http\Requests\AllowanceStatusRequest;
 use App\Services\AllowanceService;
 
 class TransportAllowanceController extends Controller
@@ -40,6 +41,12 @@ class TransportAllowanceController extends Controller
         {
             return response()->json(['success' => false, 'error' => 'You are not authorized to update the information.'],401);
         }
+        return response()->json(['success' => true]);
+    }
+
+    public function changeStatus(AllowanceStatusRequest $request, $id)
+    {
+        $this->service->updateStatus($request, $id);
         return response()->json(['success' => true]);
     }
 

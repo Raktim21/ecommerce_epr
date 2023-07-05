@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\TransportAllowance;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class AllowanceService
 {
@@ -59,7 +58,8 @@ class AllowanceService
             'amount'         => $request->amount,
             'note'           => $request->note ?? null,
             'client_id'      => $request->client_id ?? null,
-            'follow_up_id'   => $request->follow_up_id ?? null
+            'follow_up_id'   => $request->follow_up_id ?? null,
+            'travel_status'  => 1
         ]);
 
         if ($request->hasFile('document')){
@@ -67,5 +67,12 @@ class AllowanceService
         }
 
         return 3;
+    }
+
+    public function updateStatus(Request $request, $id): void
+    {
+        TransportAllowance::findOrFail($id)->update([
+            'allowance_status' => $request->allowance_status
+        ]);
     }
 }
