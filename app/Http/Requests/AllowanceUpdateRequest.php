@@ -24,8 +24,8 @@ class AllowanceUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'document' => 'nullable|file',
-            'note' => 'nullable|string'
+            'document'       => 'nullable|file',
+            'note'           => 'nullable|string',
         ];
     }
 

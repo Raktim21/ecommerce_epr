@@ -28,7 +28,7 @@ class AllowanceStartRequest extends FormRequest
             'from_lat'       => 'required',
             'from_lng'       => 'required',
             'visit_type'     => 'required|string|in:Client Hunt, Client Re-visit, Both',
-            'transport_type' => 'nullable|string',
+            'transport_type' => 'nullable|string|in:Bus,CNG,Uber,Rickshaw,Plane,Train',
             'amount'         => 'nullable|numeric',
             'document'       => 'nullable|file',
             'note'           => 'nullable|string',

@@ -102,7 +102,7 @@ class AllowanceService
         $allowance = TransportAllowance::findOrFail($id);
 
         $allowance->update([
-            'note' => $request->note,
+            'note' => $request->note ?? $allowance->note,
         ]);
 
         if ($request->hasFile('document'))
