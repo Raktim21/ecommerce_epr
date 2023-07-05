@@ -50,16 +50,16 @@ class AllowanceService
         }
 
         $allowance->update([
-            'to_lat'         => $request->from_lat,
-            'to_lng'         => $request->from_lng,
+            'to_lat'         => $request->to_lat,
+            'to_lng'         => $request->to_lng,
             'to_address'     => getAddress($request->to_lat, $request->to_lng),
             'end_time'       => Carbon::now()->timezone('Asia/Dhaka'),
             'visit_type'     => $request->visit_type,
             'transport_type' => $request->transport_type,
-            'amount'         => $request->amount ?? 0.00,
+            'amount'         => $request->amount,
             'note'           => $request->note ?? null,
-            'client_id'      => $request->client_id,
-            'follow_up_id'   => $request->follow_up_id
+            'client_id'      => $request->client_id ?? null,
+            'follow_up_id'   => $request->follow_up_id ?? null
         ]);
 
         if ($request->hasFile('document')){

@@ -4,10 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AllowanceEndRequest;
 use App\Http\Requests\AllowanceStartRequest;
-use App\Models\TransportAllowance;
 use App\Services\AllowanceService;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 
 class TransportAllowanceController extends Controller
 {
