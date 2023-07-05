@@ -6,6 +6,7 @@ use App\Models\FoodAllowance;
 use App\Models\TransportAllowance;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AllowanceService
 {
@@ -167,5 +168,19 @@ class AllowanceService
     public function getTransportAllowance($id)
     {
         return TransportAllowance::with('created_by_info','client','follow_up')->findOrFail($id);
+    }
+
+    public function getSearchResult(Request $request)
+    {
+        return DB::table('transport_allowances')
+            ->leftJoin('users','transport_allowances.created_by','=','users.id')
+            ->when($request->start_date!=null && $request->end_date!=null, function($query) use($request) {
+                return $query->whereBetween('transport_allowances.created_at',[$request->start_date, $request->end_date]);
+            })
+            ->when($request->search!=null, function($query) use($request) {
+                return $query->where('users.name','like',"%$request->search%");
+            })
+            ->select('transport_allowances.*','users.name')
+            ->get();
     }
 }

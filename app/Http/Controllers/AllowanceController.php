@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\TransportAllowanceExport;
 use App\Http\Requests\AllowanceEndRequest;
+use App\Http\Requests\AllowanceFilterRequest;
 use App\Http\Requests\AllowanceStartRequest;
 use App\Http\Requests\AllowanceStatusRequest;
 use App\Http\Requests\AllowanceUpdateRequest;
@@ -34,6 +35,14 @@ class AllowanceController extends Controller
         return response()->json([
             'success' => true,
             'data'    => $this->service->getTransportAllowance($id),
+        ]);
+    }
+
+    public function transportAllowanceSearch(AllowanceFilterRequest $request)
+    {
+        return response()->json([
+            'success' => true,
+            'data'    => $this->service->getSearchResult($request),
         ]);
     }
 
