@@ -181,6 +181,7 @@ class AllowanceService
                 return $query->where('users.name','like',"%$request->search%");
             })
             ->select('transport_allowances.*','users.name')
+            ->orderBy('transport_allowances.id', 'desc')
             ->get();
     }
 }
