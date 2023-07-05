@@ -73,4 +73,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(TransportAllowance::class, 'created_by');
     }
+
+    public function food_allowances()
+    {
+        return $this->hasMany(FoodAllowance::class, 'created_by');
+    }
 }

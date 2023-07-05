@@ -55,4 +55,9 @@ class Clients extends Model
     {
         return $this->hasMany(TransportAllowance::class, 'client_id');
     }
+
+    public function food_allowance()
+    {
+        return $this->hasMany(FoodAllowance::class, 'client_id');
+    }
 }

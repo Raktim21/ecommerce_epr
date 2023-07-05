@@ -11,7 +11,6 @@ use Spatie\Permission\Models\Role;
 
 class RolePermissionService
 {
-
     public function roles()
     {
         return Role::with('permissions')->orderBy('id')->get();
@@ -94,16 +93,24 @@ class RolePermissionService
         (new UserService)->sendNotification('New role has been created.', 'role', $role->id);
     }
 
-    public function updateRole(Request $request, $id)
+    public function updateRole(Request $request, $id): bool
     {
-        $role = Role::find($id);
+        if(!$this->isSuperAdmin($id))
+        {
+            $role = Role::find($id);
 
-        $role->update([
-            'name' => $request->role
-        ]);
+            $role->update([
+                'name' => $request->role
+            ]);
 
-        $role->syncPermissions($request->permissions);
+            $role->syncPermissions($request->permissions);
 
-        (new UserService)->sendNotification('A role has been updated.', 'role', $role->id);
+            (new UserService)->sendNotification('A role has been updated.', 'role', $role->id);
+
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 }

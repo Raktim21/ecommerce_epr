@@ -8,7 +8,16 @@ use Illuminate\Http\Request;
 
 class AllowanceService
 {
-    public function getAll()
+    public function getAllTransportAllowance()
+    {
+        if(auth()->user()->hasRole('Super Admin'))
+        {
+            return TransportAllowance::with('created_by_info','client','follow_up')->latest()->get();
+        }
+        return TransportAllowance::with('client','follow_up')->where('created_by', auth()->user()->id)->orderBy('id','desc')->get();
+    }
+
+    public function getAllFoodAllowance()
     {
         if(auth()->user()->hasRole('Super Admin'))
         {
@@ -113,4 +122,6 @@ class AllowanceService
             saveImage($request->file('document'), 'uploads/travel_allowance/documents/', $allowance, 'document');
         }
     }
+
+
 }

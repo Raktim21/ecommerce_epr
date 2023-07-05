@@ -31,4 +31,9 @@ class FollowUpInfo extends Model
     {
         return $this->hasMany(TransportAllowance::class, 'follow_up_id');
     }
+
+    public function food_allowances()
+    {
+        return $this->hasMany(FoodAllowance::class, 'follow_up_id');
+    }
 }

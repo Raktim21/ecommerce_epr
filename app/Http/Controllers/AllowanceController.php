@@ -8,7 +8,7 @@ use App\Http\Requests\AllowanceStatusRequest;
 use App\Http\Requests\AllowanceUpdateRequest;
 use App\Services\AllowanceService;
 
-class TransportAllowanceController extends Controller
+class AllowanceController extends Controller
 {
     private $service;
 
@@ -17,11 +17,19 @@ class TransportAllowanceController extends Controller
         $this->service = $service;
     }
 
-    public function index(){
+    public function transportAllowanceList(){
 
         return response()->json([
             'success' => true,
-            'data'    => $this->service->getAll(),
+            'data'    => $this->service->getAllTransportAllowance(),
+        ]);
+    }
+
+    public function foodAllowanceList()
+    {
+        return response()->json([
+            'success' => true,
+            'data'    => $this->service->getAllFoodAllowance(),
         ]);
     }
 
@@ -43,21 +51,21 @@ class TransportAllowanceController extends Controller
         if($status == 1)
         {
             return response()->json([
-                'success' => false, 
+                'success' => false,
                 'error' => 'You have already entered the information.'
             ],422);
         }
         else if($status == 2)
         {
             return response()->json([
-                'success' => false, 
+                'success' => false,
                 'error' => 'You are not authorized to update the information.'
             ],401);
         }
         else if($status == 3)
         {
             return response()->json([
-                'success' => false, 
+                'success' => false,
                 'error' => 'Please provide all required information first.'
             ],422);
         }

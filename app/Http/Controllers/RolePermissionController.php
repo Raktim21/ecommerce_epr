@@ -52,11 +52,16 @@ class RolePermissionController extends Controller
 
     public function updateRole(UpdateRoleRequest $request, $id)
     {
-        $this->service->updateRole($request, $id);
-
+        if($this->service->updateRole($request, $id))
+        {
+            return response()->json([
+                'success'  => true,
+            ]);
+        }
         return response()->json([
-            'success'  => true,
-        ]);
+            'success' => false,
+            'error'   => 'The selected role can not be updated.'
+        ], 422);
     }
 
     public function assignRole(AssignRoleRequest $request, $user_id)

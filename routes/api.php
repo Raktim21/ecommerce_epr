@@ -5,7 +5,7 @@ use App\Http\Controllers\ClientsController;
 use App\Http\Controllers\FollowUpInfoController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\RolePermissionController;
-use App\Http\Controllers\TransportAllowanceController;
+use App\Http\Controllers\AllowanceController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserPointController;
 use App\Http\Controllers\WebsiteController;
@@ -98,12 +98,14 @@ Route::group(['middleware' => ['jwt.auth']], function () {
         Route::post('websites', 'store')->middleware('permission:create-website');
     });
 
-    Route::controller(TransportAllowanceController::class)->group(function () {
-        Route::get('transport-allowances', 'index');
+    Route::controller(AllowanceController::class)->group(function () {
+        Route::get('transport-allowances', 'transportAllowanceList');
         Route::post('transport-allowances/start', 'start');
         Route::post('transport-allowances/end/{id}', 'end');
         Route::put('transport-allowances/update/{id}', 'update');
         Route::put('transport-allowances/change-status/{id}', 'changeStatus')->middleware('permission:change-transport-allowance-status');
+
+        Route::get('food-allowances', 'foodAllowanceList');
     });
 
 });
