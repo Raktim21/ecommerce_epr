@@ -59,11 +59,23 @@ class ClientService
 
     public function unpaidClients()
     {
-        return $this->client->where('confirmation_date',null)->where('interest_status',100)
-            ->whereNotNull('document')->whereNot('company','N/A')->whereNot('name','N/A')
-            ->whereNot('phone_no','N/A')
-            ->whereNot('email','N/A')
-            ->get();
+        if(auth()->user()->hasRole('Super Admin'))
+        {
+            return $this->client->where('confirmation_date',null)->where('interest_status',100)
+                ->whereNotNull('document')->whereNot('company','N/A')->whereNot('name','N/A')
+                ->whereNot('phone_no','N/A')
+                ->whereNot('email','N/A')
+                ->get();
+        }
+        else {
+            return $this->client->where('added_by',auth()->user()->id)
+                ->where('confirmation_date',null)->where('interest_status',100)
+                ->whereNotNull('document')->whereNot('company','N/A')->whereNot('name','N/A')
+                ->whereNot('phone_no','N/A')
+                ->whereNot('email','N/A')
+                ->get();
+        }
+
     }
 
     public function create(Request $request)
