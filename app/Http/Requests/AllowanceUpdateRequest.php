@@ -2,12 +2,11 @@
 
 namespace App\Http\Requests;
 
-use App\Models\TransportAllowance;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class AllowanceStartRequest extends FormRequest
+class AllowanceUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,15 +24,8 @@ class AllowanceStartRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'from_lat'       => 'required',
-            'from_lng'       => 'required',
-            'visit_type'     => 'required|string|in:Client Hunt, Client Re-visit, Both',
-            'transport_type' => 'nullable|string',
-            'amount'         => 'nullable|numeric',
-            'document'       => 'nullable|file',
-            'note'           => 'nullable|string',
-            'client_id'      => 'nullable|exists:clients,id',
-            'follow_up_id'   => 'nullable|exists:follow_up_infos,id'
+            'document' => 'nullable|file',
+            'note' => 'nullable|string'
         ];
     }
 

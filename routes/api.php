@@ -102,6 +102,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
         Route::get('transport-allowances', 'index');
         Route::post('transport-allowances/start', 'start');
         Route::post('transport-allowances/end/{id}', 'end');
+        Route::put('transport-allowances/update/{id}', 'update');
         Route::put('transport-allowances/change-status/{id}', 'changeStatus')->middleware('permission:change-transport-allowance-status');
     });
 

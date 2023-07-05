@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AllowanceEndRequest;
 use App\Http\Requests\AllowanceStartRequest;
 use App\Http\Requests\AllowanceStatusRequest;
+use App\Http\Requests\AllowanceUpdateRequest;
 use App\Services\AllowanceService;
 
 class TransportAllowanceController extends Controller
@@ -26,8 +27,14 @@ class TransportAllowanceController extends Controller
 
     public function start(AllowanceStartRequest $request)
     {
-        $this->service->startJourney($request);
-        return response()->json(['success' => true], 201);
+        if($this->service->startJourney($request))
+        {
+            return response()->json(['success' => true], 201);
+        }
+        return response()->json([
+            'success' => false,
+            'error'   => 'You cannot start a new journey without ending previous one.'
+        ], 422);
     }
 
     public function end(AllowanceEndRequest $request, $id)
@@ -41,6 +48,17 @@ class TransportAllowanceController extends Controller
         {
             return response()->json(['success' => false, 'error' => 'You are not authorized to update the information.'],401);
         }
+        else if($status == 3)
+        {
+            return response()->json(['success' => false, 'error' => 'Please provide all required information first.'],422);
+        }
+
+        return response()->json(['success' => true]);
+    }
+
+    public function update(AllowanceUpdateRequest $request, $id)
+    {
+        $this->service->updateInfo($request, $id);
         return response()->json(['success' => true]);
     }
 

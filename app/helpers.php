@@ -27,14 +27,10 @@ function getAddress($lat , $lng)
             'sensor' => 'false',
             'key'    => env('GOOGLE_MAPS_API_KEY')
         ]);
-
         $data = $response->json();
         return $data['results'][0]['formatted_address'];
-
     }
     catch (\Throwable $th) {
         return null;
     }
-
-
 }
