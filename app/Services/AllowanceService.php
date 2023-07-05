@@ -14,7 +14,7 @@ class AllowanceService
         {
             return TransportAllowance::with('created_by_info','client','follow_up')->latest()->get();
         }
-        return TransportAllowance::where('created_by', auth()->user()->id)->orderBy('id','desc')->get();
+        return TransportAllowance::with('client','follow_up')->where('created_by', auth()->user()->id)->orderBy('id','desc')->get();
     }
 
     public function startJourney(Request $request): bool
