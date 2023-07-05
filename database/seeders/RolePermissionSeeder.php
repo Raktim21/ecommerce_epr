@@ -51,7 +51,8 @@ class RolePermissionSeeder extends Seeder
             'get-point-type-list',
             'update-point-type',
             'get-user-point-data',
-            'change-transport-allowance-status'
+            'change-transport-allowance-status',
+            'change-food-allowance-status'
         ];
 
         foreach ($permissions as $value)
