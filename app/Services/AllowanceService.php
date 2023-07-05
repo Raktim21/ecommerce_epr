@@ -163,4 +163,9 @@ class AllowanceService
 
         return true;
     }
+
+    public function getTransportAllowance($id)
+    {
+        return TransportAllowance::with('created_by_info','client','follow_up')->findOrFail($id);
+    }
 }

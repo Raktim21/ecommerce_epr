@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\TransportAllowanceExport;
 use App\Http\Requests\AllowanceEndRequest;
 use App\Http\Requests\AllowanceStartRequest;
 use App\Http\Requests\AllowanceStatusRequest;
 use App\Http\Requests\AllowanceUpdateRequest;
+use App\Http\Requests\FileTypeRequest;
 use App\Http\Requests\FoodAllowanceStoreRequest;
 use App\Services\AllowanceService;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AllowanceController extends Controller
 {
@@ -23,6 +26,14 @@ class AllowanceController extends Controller
         return response()->json([
             'success' => true,
             'data'    => $this->service->getAllTransportAllowance(),
+        ]);
+    }
+
+    public function transportAllowance($id)
+    {
+        return response()->json([
+            'success' => true,
+            'data'    => $this->service->getTransportAllowance($id),
         ]);
     }
 
@@ -109,6 +120,13 @@ class AllowanceController extends Controller
     {
         $this->service->updateFoodStatus($request, $id);
         return response()->json(['success' => true]);
+    }
+
+    public function transportAllowanceExport(FileTypeRequest $request)
+    {
+        $file_name = 'transport_allowance' . date('dis') . '.' . $request->type;
+
+        return Excel::download(new TransportAllowanceExport(), $file_name);
     }
 
 }
