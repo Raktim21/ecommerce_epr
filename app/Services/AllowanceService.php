@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Http\Requests\AllowanceUpdateRequest;
 use App\Models\TransportAllowance;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -13,7 +12,7 @@ class AllowanceService
     {
         if(auth()->user()->hasRole('Super Admin'))
         {
-            return TransportAllowance::latest()->get();
+            return TransportAllowance::with('created_by_info','client','follow_up')->latest()->get();
         }
         return TransportAllowance::where('created_by', auth()->user()->id)->orderBy('id','desc')->get();
     }
