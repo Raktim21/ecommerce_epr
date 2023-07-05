@@ -42,15 +42,24 @@ class TransportAllowanceController extends Controller
         $status = $this->service->endJourney($request, $id);
         if($status == 1)
         {
-            return response()->json(['success' => false, 'error' => 'You have already entered the information.'],422);
+            return response()->json([
+                'success' => false, 
+                'error' => 'You have already entered the information.'
+            ],422);
         }
         else if($status == 2)
         {
-            return response()->json(['success' => false, 'error' => 'You are not authorized to update the information.'],401);
+            return response()->json([
+                'success' => false, 
+                'error' => 'You are not authorized to update the information.'
+            ],401);
         }
         else if($status == 3)
         {
-            return response()->json(['success' => false, 'error' => 'Please provide all required information first.'],422);
+            return response()->json([
+                'success' => false, 
+                'error' => 'Please provide all required information first.'
+            ],422);
         }
 
         return response()->json(['success' => true]);
