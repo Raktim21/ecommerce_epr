@@ -35,7 +35,7 @@ class AllowanceService
         }
     }
 
-    public function endJourney(Request $request, $id)
+    public function endJourney(Request $request, $id): int
     {
         $allowance = TransportAllowance::findOrFail($id);
 
@@ -65,5 +65,7 @@ class AllowanceService
         if ($request->hasFile('document')){
             saveImage($request->file('document'), 'uploads/travel_allowance/documents/', $allowance, 'document');
         }
+
+        return 3;
     }
 }
