@@ -68,11 +68,6 @@ class AllowanceService
             return 2;
         }
 
-        if(is_null($allowance->document) && !$request->hasFile('document'))
-        {
-            return 3;
-        }
-
         $allowance->update([
             'to_lat'         => $request->to_lat,
             'to_lng'         => $request->to_lng,
@@ -106,6 +101,13 @@ class AllowanceService
         ]);
     }
 
+    public function updateFoodStatus(Request $request, $id)
+    {
+        FoodAllowance::findOrFail($id)->update([
+            'allowance_status' => $request->allowance_status
+        ]);
+    }
+
     public function updateInfo(Request $request, $id): void
     {
         $allowance = TransportAllowance::findOrFail($id);
@@ -124,5 +126,41 @@ class AllowanceService
         }
     }
 
+    public function currentTransport()
+    {
+        return TransportAllowance::with('client','follow_up')->where('created_by',auth()->user()->id)->where('travel_status',0)->first();
+    }
 
+    public function createFoodAllowance(Request $request): void
+    {
+        $allowance = FoodAllowance::create([
+            'lat'           => $request->lat,
+            'lng'           => $request->lng,
+            'address'       => getAddress($request->lat, $request->lng),
+            'amount'        => $request->amount,
+            'note'          => $request->note,
+            'occurred_on'   => Carbon::now()->timezone('Asia/Dhaka'),
+            'created_by'    => auth()->user()->id,
+            'client_id'     => $request->client_id,
+            'follow_up_id'  => $request->follow_up_id
+        ]);
+
+        if ($request->hasFile('document')){
+            saveImage($request->file('document'), 'uploads/food_allowance/documents/', $allowance, 'document');
+        }
+    }
+
+    public function deleteFoodAllowance($id): bool
+    {
+        $food = FoodAllowance::findOrFail($id);
+
+        if($food->allowance_status != 0)
+        {
+            return false;
+        }
+
+        $food->delete();
+
+        return true;
+    }
 }

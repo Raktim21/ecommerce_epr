@@ -6,6 +6,7 @@ use App\Http\Requests\AllowanceEndRequest;
 use App\Http\Requests\AllowanceStartRequest;
 use App\Http\Requests\AllowanceStatusRequest;
 use App\Http\Requests\AllowanceUpdateRequest;
+use App\Http\Requests\FoodAllowanceStoreRequest;
 use App\Services\AllowanceService;
 
 class AllowanceController extends Controller
@@ -30,6 +31,14 @@ class AllowanceController extends Controller
         return response()->json([
             'success' => true,
             'data'    => $this->service->getAllFoodAllowance(),
+        ]);
+    }
+
+    public function currentTransportAllowance()
+    {
+        return response()->json([
+            'success' => true,
+            'data'    => $this->service->currentTransport(),
         ]);
     }
 
@@ -62,13 +71,6 @@ class AllowanceController extends Controller
                 'error' => 'You are not authorized to update the information.'
             ],401);
         }
-        else if($status == 3)
-        {
-            return response()->json([
-                'success' => false,
-                'error' => 'Please provide all required information first.'
-            ],422);
-        }
 
         return response()->json(['success' => true]);
     }
@@ -82,6 +84,30 @@ class AllowanceController extends Controller
     public function changeStatus(AllowanceStatusRequest $request, $id)
     {
         $this->service->updateStatus($request, $id);
+        return response()->json(['success' => true]);
+    }
+
+    public function foodAllowanceStore(FoodAllowanceStoreRequest $request)
+    {
+        $this->service->createFoodAllowance($request);
+        return response()->json(['success' => true],201);
+    }
+
+    public function foodAllowanceDelete($id)
+    {
+        if($this->service->deleteFoodAllowance($id))
+        {
+            return response()->json(['success' => true]);
+        }
+        return response()->json([
+            'success' => false,
+            'error'   => 'You cannot delete this food allowance now.'
+        ],422);
+    }
+
+    public function foodAllowanceUpdate(AllowanceStatusRequest $request, $id)
+    {
+        $this->service->updateFoodStatus($request, $id);
         return response()->json(['success' => true]);
     }
 
