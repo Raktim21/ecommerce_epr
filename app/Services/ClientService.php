@@ -20,7 +20,7 @@ class ClientService
         $this->client = $client;
     }
 
-    public function getAll(Request $request)
+    public function getAll(Request $request, $isSuperAdmin)
     {
         $search = $request->search ?? '';
         $status = $request->confirmed ?? '';
@@ -45,6 +45,9 @@ class ClientService
         })->leftJoin('payments','clients.id','=','payments.client_id')
             ->leftJoin('users','clients.added_by','=','users.id')
             ->select('clients.*','payments.id as payment_id','users.name as added_by')
+            ->when($isSuperAdmin==false, function($query) {
+                return $query->where('clients.added_by', auth()->user()->id);
+            })
             ->latest()
             ->paginate($limit)
             ->appends($request->except('page','per_page'));

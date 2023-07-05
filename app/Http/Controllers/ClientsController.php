@@ -23,7 +23,7 @@ class ClientsController extends Controller
     {
         return response()->json([
             'success' => true,
-            'data' => $this->clientService->getAll($request),
+            'data' => $this->clientService->getAll($request, auth()->user()->hasRole('Super Admin') ?? false),
             'search' => $request->search ?? ''
         ]);
     }
