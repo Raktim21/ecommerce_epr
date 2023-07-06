@@ -197,6 +197,7 @@ class AllowanceService
     public function getTransportSearchResult(Request $request)
     {
         $search             = $request->search;
+        $status             = $request->status;
         $start_date         = $request->start_date;
         $end_date           = $request->end_date;
         $amount_start_range = $request->amount_start_range;
@@ -219,6 +220,9 @@ class AllowanceService
             })
             ->when($search!=null, function($query) use($search) {
                 return $query->where('users.name','like',"%$search%");
+            })
+            ->when($status!=null, function($query) use($status) {
+                return $query->where('transport_allowances.allowance_status',$status);
             })
             ->when($amount_end_range!=null, function ($query) use($amount_start_range, $amount_end_range) {
                 return $query->whereBetween('amount',[$amount_start_range,$amount_end_range]);

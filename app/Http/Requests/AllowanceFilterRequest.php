@@ -27,6 +27,7 @@ class AllowanceFilterRequest extends FormRequest
             'start_date'         => 'sometimes|required|date|date_format:Y-m-d|before:end_date|before:today',
             'end_date'           => 'sometimes|required|date|date_format:Y-m-d|after:start_date',
             'search'             => 'sometimes|string',
+            'status'             => 'sometimes|in:0,1,2,3',
             'amount_start_range' => 'sometimes|numeric|gte:0',
             'amount_end_range'   => 'sometimes|numeric',
         ];
