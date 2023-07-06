@@ -54,6 +54,8 @@ class AllowanceService
             saveImage($request->file('document'), 'uploads/travel_allowance/documents/', $allowance, 'document');
         }
 
+        (new UserService)->sendNotification('A new transport allowance has been created.', 'transport-allowance', $allowance->id);
+
         return true;
     }
 
@@ -93,22 +95,28 @@ class AllowanceService
             }
             saveImage($request->file('document'), 'uploads/travel_allowance/documents/', $allowance, 'document');
         }
+        (new UserService)->sendNotification('A transport allowance has been completed.', 'transport-allowance', $allowance->id);
 
         return 0;
     }
 
     public function updateStatus(Request $request, $id): void
     {
-        TransportAllowance::findOrFail($id)->update([
+        $allowance = TransportAllowance::findOrFail($id);
+        $allowance->update([
             'allowance_status' => $request->allowance_status
         ]);
+
+        (new UserService)->sendNotification('Status of a transport allowance has been changed.', 'transport-allowance', $allowance->id);
     }
 
     public function updateFoodStatus(Request $request, $id): void
     {
-        FoodAllowance::findOrFail($id)->update([
+        $allowance = FoodAllowance::findOrFail($id);
+        $allowance->update([
             'allowance_status' => $request->allowance_status
         ]);
+        (new UserService)->sendNotification('Status of a food allowance has been changed.', 'food-allowance', $allowance->id);
     }
 
     public function updateInfo(Request $request, $id): bool
@@ -131,6 +139,7 @@ class AllowanceService
             }
             saveImage($request->file('document'), 'uploads/travel_allowance/documents/', $allowance, 'document');
         }
+        (new UserService)->sendNotification('A transport allowance information has been updated.', 'transport-allowance', $allowance->id);
         return true;
     }
 
@@ -156,6 +165,7 @@ class AllowanceService
         if ($request->hasFile('document')){
             saveImage($request->file('document'), 'uploads/food_allowance/documents/', $allowance, 'document');
         }
+        (new UserService)->sendNotification('A new food transport allowance has been created.', 'food-allowance', $allowance->id);
     }
 
     public function deleteFoodAllowance($id): bool
@@ -168,6 +178,8 @@ class AllowanceService
         }
 
         $food->delete();
+
+        (new UserService)->sendNotification('Status of a food allowance has been changed.', 'food-allowance', $food->id);
 
         return true;
     }

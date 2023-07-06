@@ -28,7 +28,7 @@ class AllowanceEndRequest extends FormRequest
             'to_lng'         => 'required',
             'visit_type'     => 'required|string|in:Client Hunt,Client Visit,Both',
             'transport_type' => 'required|string|in:Bus,CNG,Uber,Rickshaw,Plane,Train',
-            'amount'         => 'required|numeric',
+            'amount'         => 'required|numeric|gt:0',
             'document'       => 'nullable|file',
             'note'           => 'nullable|string',
             'client_id'      => 'nullable|exists:clients,id',

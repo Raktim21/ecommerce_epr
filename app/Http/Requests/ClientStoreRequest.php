@@ -26,7 +26,7 @@ class ClientStoreRequest extends FormRequest
         return [
             'company'          => 'required|string|max:255',
             'name'             => 'required|string|max:255',
-            'email'            => 'nullable|email|unique:clients,email',
+            'email'            => 'nullable|email',
             'phone_no'         =>   [
                 'required',
                 'regex:/^(?:\+?88|0088)?01[3-9]\d{8}$/',
