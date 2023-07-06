@@ -45,10 +45,11 @@ class ClientService
         })->leftJoin('payments','clients.id','=','payments.client_id')
             ->leftJoin('users','clients.added_by','=','users.id')
             ->select('clients.*','payments.id as payment_id','users.name as added_by')
+            ->withCount('follow_ups')
             ->when($isSuperAdmin==false, function($query) {
                 return $query->where('clients.added_by', auth()->user()->id);
             })
-            ->latest()
+            ->latest('clients.created_at')
             ->paginate($limit)
             ->appends($request->except('page','per_page'));
     }
