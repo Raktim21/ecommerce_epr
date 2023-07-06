@@ -51,7 +51,13 @@ class RolePermissionSeeder extends Seeder
             'get-point-type-list',
             'update-point-type',
             'get-user-point-data',
+            'get-transport-allowance',
+            'export-transport-allowance',
+            'create-update-transport-allowance',
             'change-transport-allowance-status',
+            'get-food-allowance',
+            'export-food-allowance',
+            'create-delete-food-allowance',
             'change-food-allowance-status'
         ];
 
@@ -63,10 +69,12 @@ class RolePermissionSeeder extends Seeder
             ]);
         }
 
-        $role = Role::create([
-            'name' => 'Super Admin',
-            'guard_name' => 'api'
-        ]);
+//        $role = Role::create([
+//            'name' => 'Super Admin',
+//            'guard_name' => 'api'
+//        ]);
+
+        $role = Role::find(1);
 
         $role->givePermissionTo(Permission::all());
 

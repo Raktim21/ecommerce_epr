@@ -99,7 +99,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     });
 
     Route::controller(AllowanceController::class)->group(function () {
-        Route::middleware('permission:get-transport-allowance-list')->group(function() {
+        Route::middleware('permission:get-transport-allowance')->group(function() {
 
             Route::get('transport-allowances', 'transportAllowanceList');
             Route::get('transport-allowances/filter', 'transportAllowanceSearch');
@@ -112,12 +112,12 @@ Route::group(['middleware' => ['jwt.auth']], function () {
 
             Route::post('transport-allowances/start', 'start');
             Route::post('transport-allowances/end/{id}', 'end');
-            Route::put('transport-allowances/update/{id}', 'update');
+            Route::post('transport-allowances/update/{id}', 'update');
         });
 
         Route::put('transport-allowances/change-status/{id}', 'changeStatus')->middleware('permission:change-transport-allowance-status');
 
-        Route::middleware('permission:get-food-allowance-list')->group(function() {
+        Route::middleware('permission:get-food-allowance')->group(function() {
 
             Route::get('food-allowances', 'foodAllowanceList');
             Route::get('food-allowances/filter', 'foodAllowanceSearch');

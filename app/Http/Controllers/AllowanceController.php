@@ -31,6 +31,14 @@ class AllowanceController extends Controller
         ]);
     }
 
+    public function foodAllowanceList()
+    {
+        return response()->json([
+            'success' => true,
+            'data'    => $this->service->getAllFoodAllowance(),
+        ]);
+    }
+
     public function transportAllowance($id)
     {
         return response()->json([
@@ -60,14 +68,6 @@ class AllowanceController extends Controller
         return response()->json([
             'success' => true,
             'data'    => $this->service->getFoodSearchResult($request),
-        ]);
-    }
-
-    public function foodAllowanceList()
-    {
-        return response()->json([
-            'success' => true,
-            'data'    => $this->service->getAllFoodAllowance(),
         ]);
     }
 

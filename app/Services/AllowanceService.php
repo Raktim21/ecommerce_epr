@@ -24,9 +24,10 @@ class AllowanceService
     {
         if(auth()->user()->hasRole('Super Admin'))
         {
-            return FoodAllowance::with('created_by_info','client','follow_up')->latest()->get();
+            return FoodAllowance::with('created_by_info','client','follow_up')->latest()->paginate(request()->input('per_page') ?? 10);
         }
-        return FoodAllowance::with('client','follow_up')->where('created_by', auth()->user()->id)->orderBy('id','desc')->get();
+        return FoodAllowance::with('client','follow_up')->where('created_by', auth()->user()->id)->orderBy('id','desc')
+            ->paginate(request()->input('per_page') ?? 10);
     }
 
     public function startJourney(Request $request): bool
