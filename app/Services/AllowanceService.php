@@ -170,15 +170,34 @@ class AllowanceService
         return TransportAllowance::with('created_by_info','client','follow_up')->findOrFail($id);
     }
 
-    public function getSearchResult(Request $request)
+    public function getTransportSearchResult(Request $request)
     {
+        $search             = $request->search;
+        $start_date         = $request->start_date;
+        $end_date           = $request->end_date;
+        $amount_start_range = $request->amount_start_range;
+        $amount_end_range   = $request->amount_end_range;
+
+        if($start_date && is_null($end_date))
+        {
+            $end_date = date('Y-m-d');
+        }
+
+        if($amount_end_range && is_null($amount_start_range))
+        {
+            $amount_start_range = 0;
+        }
+
         return DB::table('transport_allowances')
             ->leftJoin('users','transport_allowances.created_by','=','users.id')
-            ->when($request->start_date!=null && $request->end_date!=null, function($query) use($request) {
-                return $query->whereBetween('transport_allowances.created_at',[$request->start_date, $request->end_date]);
+            ->when($start_date!=null, function($query) use($start_date, $end_date) {
+                return $query->whereBetween('transport_allowances.created_at',[$start_date, $end_date]);
             })
-            ->when($request->search!=null, function($query) use($request) {
-                return $query->where('users.name','like',"%$request->search%");
+            ->when($search!=null, function($query) use($search) {
+                return $query->where('users.name','like',"%$search%");
+            })
+            ->when($amount_end_range!=null, function ($query) use($amount_start_range, $amount_end_range) {
+                return $query->whereBetween('amount',[$amount_start_range,$amount_end_range]);
             })
             ->select('transport_allowances.*','users.name')
             ->orderBy('transport_allowances.id', 'desc')

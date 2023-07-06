@@ -23,11 +23,25 @@ class AllowanceFilterRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'start_date' => 'sometimes|required|date|date_format:Y-m-d|before:end_date|before:today',
-            'end_date' => 'sometimes|required|date|date_format:Y-m-d|after:start_date',
-            'search' => 'sometimes|string',
+        $rules = [
+            'start_date'         => 'sometimes|required|date|date_format:Y-m-d|before:end_date|before:today',
+            'end_date'           => 'sometimes|required|date|date_format:Y-m-d|after:start_date',
+            'search'             => 'sometimes|string',
+            'amount_start_range' => 'sometimes|numeric|gte:0',
+            'amount_end_range'   => 'sometimes|numeric',
         ];
+
+        if($this->input('end_date'))
+        {
+            $rules['start_date'] = 'required';
+        }
+
+        if($this->input('amount_end_range'))
+        {
+            $rules['amount_start_range'] = 'required|gte:'.$this->input('amount_start_range');
+        }
+
+        return $rules;
     }
 
     protected function failedValidation(Validator $validator)

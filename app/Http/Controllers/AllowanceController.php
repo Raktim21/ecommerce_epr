@@ -42,7 +42,7 @@ class AllowanceController extends Controller
     {
         return response()->json([
             'success' => true,
-            'data'    => $this->service->getSearchResult($request),
+            'data'    => $this->service->getTransportSearchResult($request),
         ]);
     }
 
