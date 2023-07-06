@@ -114,8 +114,11 @@ class AllowanceController extends Controller
 
     public function update(AllowanceUpdateRequest $request, $id)
     {
-        $this->service->updateInfo($request, $id);
-        return response()->json(['success' => true]);
+        if($this->service->updateInfo($request, $id))
+        {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false, 'error' => 'You cannot update this allowance.'],422);
     }
 
     public function changeStatus(AllowanceStatusRequest $request, $id)

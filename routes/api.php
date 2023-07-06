@@ -99,23 +99,38 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     });
 
     Route::controller(AllowanceController::class)->group(function () {
-        Route::get('transport-allowances', 'transportAllowanceList');
-        Route::get('transport-allowances/filter', 'transportAllowanceSearch');
-        Route::get('transport-allowances/export/all', 'transportAllowanceExport');
-        Route::get('transport-allowances/get/{id}', 'transportAllowance');
-        Route::get('transport-allowances/current', 'currentTransportAllowance');
-        Route::post('transport-allowances/start', 'start');
-        Route::post('transport-allowances/end/{id}', 'end');
-        Route::put('transport-allowances/update/{id}', 'update');
+        Route::middleware('permission:get-transport-allowance-list')->group(function() {
+
+            Route::get('transport-allowances', 'transportAllowanceList');
+            Route::get('transport-allowances/filter', 'transportAllowanceSearch');
+            Route::get('transport-allowances/get/{id}', 'transportAllowance');
+            Route::get('transport-allowances/current', 'currentTransportAllowance');
+        });
+        Route::get('transport-allowances/export/all', 'transportAllowanceExport')->middleware('permission:export-transport-allowance');
+
+        Route::middleware('permission:create-update-transport-allowance')->group(function() {
+
+            Route::post('transport-allowances/start', 'start');
+            Route::post('transport-allowances/end/{id}', 'end');
+            Route::put('transport-allowances/update/{id}', 'update');
+        });
+
         Route::put('transport-allowances/change-status/{id}', 'changeStatus')->middleware('permission:change-transport-allowance-status');
 
-        Route::get('food-allowances', 'foodAllowanceList');
-        Route::get('food-allowances/filter', 'foodAllowanceSearch');
-        Route::get('food-allowances/export/all', 'foodAllowanceExport');
-        Route::get('food-allowances/get/{id}', 'foodAllowance');
-        Route::post('food-allowances', 'foodAllowanceStore');
-        Route::put('food-allowances/update-status/{id}', 'foodAllowanceUpdate')->middleware('permission:change-food-allowance-status');
-        Route::delete('food-allowances/delete/{id}', 'foodAllowanceDelete');
-    });
+        Route::middleware('permission:get-food-allowance-list')->group(function() {
 
+            Route::get('food-allowances', 'foodAllowanceList');
+            Route::get('food-allowances/filter', 'foodAllowanceSearch');
+            Route::get('food-allowances/get/{id}', 'foodAllowance');
+        });
+
+        Route::middleware('permission:create-delete-food-allowance')->group(function() {
+
+            Route::post('food-allowances', 'foodAllowanceStore');
+            Route::delete('food-allowances/delete/{id}', 'foodAllowanceDelete');
+        });
+
+        Route::get('food-allowances/export/all', 'foodAllowanceExport')->middleware('permission:export-food-allowance');
+        Route::put('food-allowances/update-status/{id}', 'foodAllowanceUpdate')->middleware('permission:change-food-allowance-status');
+    });
 });

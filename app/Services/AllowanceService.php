@@ -103,17 +103,21 @@ class AllowanceService
         ]);
     }
 
-    public function updateFoodStatus(Request $request, $id)
+    public function updateFoodStatus(Request $request, $id): void
     {
         FoodAllowance::findOrFail($id)->update([
             'allowance_status' => $request->allowance_status
         ]);
     }
 
-    public function updateInfo(Request $request, $id): void
+    public function updateInfo(Request $request, $id): bool
     {
         $allowance = TransportAllowance::findOrFail($id);
 
+        if($allowance->created_by != auth()->user()->id)
+        {
+            return false;
+        }
         $allowance->update([
             'note' => $request->note ?? $allowance->note,
         ]);
@@ -126,6 +130,7 @@ class AllowanceService
             }
             saveImage($request->file('document'), 'uploads/travel_allowance/documents/', $allowance, 'document');
         }
+        return true;
     }
 
     public function currentTransport()
@@ -156,7 +161,7 @@ class AllowanceService
     {
         $food = FoodAllowance::findOrFail($id);
 
-        if($food->allowance_status != 0)
+        if($food->allowance_status != 0 || $food->created_by != auth()->user()->id)
         {
             return false;
         }
