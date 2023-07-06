@@ -36,9 +36,9 @@ class AllowanceFilterRequest extends FormRequest
             $rules['start_date'] = 'required';
         }
 
-        if($this->input('amount_end_range'))
+        if($this->input('amount_start_range'))
         {
-            $rules['amount_start_range'] = 'required|gte:'.$this->input('amount_start_range');
+            $rules['amount_end_range'] = 'required|gte:'.$this->input('amount_start_range');
         }
 
         return $rules;
