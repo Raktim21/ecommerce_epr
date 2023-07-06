@@ -216,7 +216,7 @@ class AllowanceService
         return DB::table('transport_allowances')
             ->leftJoin('users','transport_allowances.created_by','=','users.id')
             ->when($start_date!=null, function($query) use($start_date, $end_date) {
-                return $query->whereBetween('transport_allowances.created_at',[$start_date, $end_date]);
+                return $query->whereBetween('transport_allowances.created_at',[$start_date, date('Y-m-d', strtotime($end_date . '+1 day'))]);
             })
             ->when($search!=null, function($query) use($search) {
                 return $query->where('users.name','like',"%$search%");
@@ -229,7 +229,7 @@ class AllowanceService
             })
             ->select('transport_allowances.*','users.name')
             ->orderBy('transport_allowances.id', 'desc')
-            ->paginate(request()->input('per_page') ?? 10);
+            ->paginate(request()->input('per_page') ?? 10)->appends($request->except('page','per_page'));
     }
 
     public function getFoodSearchResult(Request $request)
