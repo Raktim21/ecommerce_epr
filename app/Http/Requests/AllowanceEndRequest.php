@@ -26,7 +26,7 @@ class AllowanceEndRequest extends FormRequest
         return [
             'to_lat'         => 'required',
             'to_lng'         => 'required',
-            'visit_type'     => 'required|string|in:Client Hunt, Client Re-visit, Both',
+            'visit_type'     => 'required|string|in:Client Hunt,Client Visit,Both',
             'transport_type' => 'required|string|in:Bus,CNG,Uber,Rickshaw,Plane,Train',
             'amount'         => 'required|numeric',
             'document'       => 'nullable|file',

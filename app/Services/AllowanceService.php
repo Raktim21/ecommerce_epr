@@ -171,6 +171,11 @@ class AllowanceService
         return TransportAllowance::with('created_by_info','client','follow_up')->findOrFail($id);
     }
 
+    public function getFoodAllowance($id)
+    {
+        return FoodAllowance::with('created_by_info','client','follow_up')->findOrFail($id);
+    }
+
     public function getTransportSearchResult(Request $request)
     {
         $search             = $request->search;

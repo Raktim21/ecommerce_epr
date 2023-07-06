@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\FoodAllowanceExport;
 use App\Exports\TransportAllowanceExport;
 use App\Http\Requests\AllowanceEndRequest;
 use App\Http\Requests\AllowanceFilterRequest;
@@ -35,6 +36,14 @@ class AllowanceController extends Controller
         return response()->json([
             'success' => true,
             'data'    => $this->service->getTransportAllowance($id),
+        ]);
+    }
+
+    public function foodAllowance($id)
+    {
+        return response()->json([
+            'success' => true,
+            'data'    => $this->service->getFoodAllowance($id),
         ]);
     }
 
@@ -136,6 +145,13 @@ class AllowanceController extends Controller
         $file_name = 'transport_allowance' . date('dis') . '.' . $request->type;
 
         return Excel::download(new TransportAllowanceExport(), $file_name);
+    }
+
+    public function foodAllowanceExport(FileTypeRequest $request)
+    {
+        $file_name = 'food_allowance' . date('dis') . '.' . $request->type;
+
+        return Excel::download(new FoodAllowanceExport(), $file_name);
     }
 
 }

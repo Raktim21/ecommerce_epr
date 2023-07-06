@@ -110,6 +110,8 @@ Route::group(['middleware' => ['jwt.auth']], function () {
         Route::put('transport-allowances/change-status/{id}', 'changeStatus')->middleware('permission:change-transport-allowance-status');
 
         Route::get('food-allowances', 'foodAllowanceList');
+        Route::get('food-allowances/export/all', 'foodAllowanceExport');
+        Route::get('food-allowances/get/{id}', 'foodAllowance');
         Route::post('food-allowances', 'foodAllowanceStore');
         Route::put('food-allowances/update-status/{id}', 'foodAllowanceUpdate')->middleware('permission:change-food-allowance-status');
         Route::delete('food-allowances/delete/{id}', 'foodAllowanceDelete');
