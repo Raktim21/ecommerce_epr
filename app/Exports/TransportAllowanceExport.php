@@ -49,7 +49,7 @@ class TransportAllowanceExport implements FromCollection, WithHeadings
     public function headings(): array
     {
         return [
-            '#','User','From Latitude','From Longitude','To Latitude','From Longitude',
+            '#','User','From Latitude','From Longitude','From','To Latitude','To Longitude','To',
             'Start Time','End Time','Visit Type','Transport Type','Amount',
             'Travel Status', 'Allowance Status'
         ];

@@ -33,7 +33,7 @@ class ClientStoreRequest extends FormRequest
                 'unique:clients,phone_no',
             ],
             'area'             => 'nullable|string',
-            'interest_status'  => 'nullable|lte:100',
+            'interest_status'  => 'nullable|integer|lte:100',
             'product_type'     => 'required|string|max:255',
             'client_opinion'   => 'nullable|string',
             'officer_opinion'  => 'nullable|string',
