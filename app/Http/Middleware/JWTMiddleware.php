@@ -18,15 +18,15 @@ class JWTMiddleware
      */
     public function handle(Request $request, Closure $next,  $guard = 'api')
     {
-        if ($guard != null) {
-            \Config::set('auth.defaults.guard',$guard);
-            auth()->shouldUse($guard);
-        }
+        // if ($guard != null) {
+        //     \Config::set('auth.defaults.guard',$guard);
+        //     auth()->shouldUse($guard);
+        // }
 
         if (!auth()->check()) {
             return response()->json([
                 'status' => false,
-                'message' => 'Unauthenticated'
+                'message' => 'Unauthenticated, Please login'
             ], 401);
         }
 

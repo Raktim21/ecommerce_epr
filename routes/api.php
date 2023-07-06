@@ -22,7 +22,7 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('confirm-password', 'confirmPassword');
 });
 
-Route::group(['middleware' => ['jwt.auth']], function () {
+Route::group(['middleware' => ['jwt.verify']], function () {
 
     Route::controller(AuthController::class)->group(function () {
         Route::get('logout', 'logout');
