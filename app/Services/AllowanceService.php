@@ -209,4 +209,38 @@ class AllowanceService
             ->orderBy('transport_allowances.id', 'desc')
             ->paginate(request()->input('per_page') ?? 10);
     }
+
+    public function getFoodSearchResult(Request $request)
+    {
+        $search             = $request->search;
+        $start_date         = $request->start_date;
+        $end_date           = $request->end_date;
+        $amount_start_range = $request->amount_start_range;
+        $amount_end_range   = $request->amount_end_range;
+
+        if($start_date && is_null($end_date))
+        {
+            $end_date = date('Y-m-d');
+        }
+
+        if($amount_end_range && is_null($amount_start_range))
+        {
+            $amount_start_range = 0;
+        }
+
+        return DB::table('food_allowances')
+            ->leftJoin('users','food_allowances.created_by','=','users.id')
+            ->when($start_date!=null, function($query) use($start_date, $end_date) {
+                return $query->whereBetween('food_allowances.created_at',[$start_date, $end_date]);
+            })
+            ->when($search!=null, function($query) use($search) {
+                return $query->where('users.name','like',"%$search%");
+            })
+            ->when($amount_end_range!=null, function ($query) use($amount_start_range, $amount_end_range) {
+                return $query->whereBetween('amount',[$amount_start_range,$amount_end_range]);
+            })
+            ->select('food_allowances.*','users.name')
+            ->orderBy('food_allowances.id', 'desc')
+            ->paginate(request()->input('per_page') ?? 10);
+    }
 }

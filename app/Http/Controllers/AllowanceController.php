@@ -55,6 +55,14 @@ class AllowanceController extends Controller
         ]);
     }
 
+    public function foodAllowanceSearch(AllowanceFilterRequest $request)
+    {
+        return response()->json([
+            'success' => true,
+            'data'    => $this->service->getFoodSearchResult($request),
+        ]);
+    }
+
     public function foodAllowanceList()
     {
         return response()->json([
