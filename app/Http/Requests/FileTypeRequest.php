@@ -24,7 +24,7 @@ class FileTypeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'type' => 'required|in:xlsx,csv'
+            'type' => 'required|in:xlsx,csv,pdf'
         ];
     }
 
