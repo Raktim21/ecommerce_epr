@@ -66,6 +66,11 @@ class ClientsController extends Controller
         }
     }
 
+    public function ClientsExport()
+    {
+
+    }
+
     public function updateInfo(ClientUpdateInfoRequest $request, $id)
     {
         if(!$this->clientService->isConfirmed($id))

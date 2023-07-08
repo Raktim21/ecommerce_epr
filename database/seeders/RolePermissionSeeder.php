@@ -29,6 +29,7 @@ class RolePermissionSeeder extends Seeder
             'update-user',
             'delete-user',
             'get-client-list',
+            'export-client-list',
             'get-unpaid-client-list',
             'get-client-info',
             'create-client',

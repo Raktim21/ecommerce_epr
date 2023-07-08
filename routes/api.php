@@ -72,6 +72,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         Route::put('clients-info-update/{id}', 'updateInfo')->middleware('permission:update-client');
         Route::post('clients-document-update/{id}', 'updateDoc')->middleware('permission:update-client');
         Route::post('clients/delete', 'destroy')->middleware('permission:delete-client');
+        Route::get('clients/export/all', 'ClientsExport')->middleware('permission:export-client-list');
     });
 
     Route::controller(FollowUpInfoController::class)->group(function () {
@@ -133,4 +134,5 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         Route::get('food-allowances/export/all', 'foodAllowanceExport')->middleware('permission:export-food-allowance');
         Route::put('food-allowances/update-status/{id}', 'foodAllowanceUpdate')->middleware('permission:change-food-allowance-status');
     });
+
 });
