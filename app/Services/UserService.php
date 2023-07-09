@@ -11,7 +11,8 @@ class UserService
 {
     public function getAll()
     {
-        return User::with('roles')->paginate(10);
+        return User::with('roles')
+            ->withSum('point_list', 'points')->paginate(10);
     }
 
     public function store(Request $request)
