@@ -12,7 +12,6 @@ use App\Http\Requests\ClientUpdateInfoRequest;
 use App\Http\Requests\FileTypeRequest;
 use App\Services\ClientService;
 use Maatwebsite\Excel\Facades\Excel;
-use Barryvdh\DomPDF\Facade\Pdf;
 
 class ClientsController extends Controller
 {
@@ -72,22 +71,9 @@ class ClientsController extends Controller
 
     public function ClientsExport(FileTypeRequest $request)
     {
-        if($request->type == 'pdf')
-        {
-            $data = [
-                'title' => 'Client List',
-                'date' => date('Y-m-d'),
-                'client_list' => $this->clientService->getPdfData()
-            ];
+        $file_name = 'client-list-' . date('dis') . '.' . $request->type;
 
-            $pdf = Pdf::loadview('client-list', $data)->setPaper('a4', 'landscape');
-
-            return $pdf->stream('client-list-'.date('dis').'.pdf');
-        } else {
-            $file_name = 'client-list-' . date('dis') . '.' . $request->type;
-
-            return Excel::download(new ClientExport(), $file_name);
-        }
+        return Excel::download(new ClientExport(), $file_name);
     }
 
     public function updateInfo(ClientUpdateInfoRequest $request, $id)
