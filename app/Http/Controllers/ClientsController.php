@@ -80,9 +80,9 @@ class ClientsController extends Controller
                 'client_list' => $this->clientService->getPdfData()
             ];
 
-            $pdf = PDF::loadview('client-list', $data);
+            $pdf = Pdf::loadview('client-list', $data)->setPaper('a4', 'landscape');
 
-            return $pdf->stream('client-list-'.date('isy').'.pdf');
+            return $pdf->stream('client-list-'.date('dis').'.pdf');
         } else {
             $file_name = 'client-list-' . date('dis') . '.' . $request->type;
 
