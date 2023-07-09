@@ -23,22 +23,6 @@ class AllowanceController extends Controller
         $this->service = $service;
     }
 
-    public function transportAllowanceList(){
-
-        return response()->json([
-            'success' => true,
-            'data'    => $this->service->getAllTransportAllowance(),
-        ]);
-    }
-
-    public function foodAllowanceList()
-    {
-        return response()->json([
-            'success' => true,
-            'data'    => $this->service->getAllFoodAllowance(),
-        ]);
-    }
-
     public function transportAllowance($id)
     {
         return response()->json([

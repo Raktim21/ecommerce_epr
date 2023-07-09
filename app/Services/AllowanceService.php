@@ -10,26 +10,6 @@ use Illuminate\Support\Facades\DB;
 
 class AllowanceService
 {
-    public function getAllTransportAllowance()
-    {
-        if(auth()->user()->hasRole('Super Admin'))
-        {
-            return TransportAllowance::with('created_by_info','client','follow_up')->latest()->paginate(request()->input('per_page') ?? 10);
-        }
-        return TransportAllowance::with('client','follow_up')->where('created_by', auth()->user()->id)->orderBy('id','desc')
-            ->paginate(request()->input('per_page') ?? 10);
-    }
-
-    public function getAllFoodAllowance()
-    {
-        if(auth()->user()->hasRole('Super Admin'))
-        {
-            return FoodAllowance::with('created_by_info','client','follow_up')->latest()->paginate(request()->input('per_page') ?? 10);
-        }
-        return FoodAllowance::with('client','follow_up')->where('created_by', auth()->user()->id)->orderBy('id','desc')
-            ->paginate(request()->input('per_page') ?? 10);
-    }
-
     public function startJourney(Request $request): bool
     {
         if(TransportAllowance::where('created_by',auth()->user()->id)->where('travel_status',0)->exists())
@@ -215,6 +195,9 @@ class AllowanceService
 
         return DB::table('transport_allowances')
             ->leftJoin('users','transport_allowances.created_by','=','users.id')
+            ->when(!auth()->user()->hasRole('Super Admin'), function($query) {
+                return $query->where('transport_allowances.created_by', auth()->user()->id);
+            })
             ->when($start_date!=null, function($query) use($start_date, $end_date) {
                 return $query->whereBetween('transport_allowances.created_at',[$start_date, date('Y-m-d', strtotime($end_date . '+1 day'))]);
             })
@@ -252,6 +235,9 @@ class AllowanceService
 
         return DB::table('food_allowances')
             ->leftJoin('users','food_allowances.created_by','=','users.id')
+            ->when(!auth()->user()->hasRole('Super Admin'), function($query) {
+                return $query->where('food_allowances.created_by', auth()->user()->id);
+            })
             ->when($start_date!=null, function($query) use($start_date, $end_date) {
                 return $query->whereBetween('food_allowances.created_at',[$start_date, $end_date]);
             })
