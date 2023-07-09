@@ -67,9 +67,9 @@ class ClientService
             ->when(request()->input('confirmed') == 0 , function ($query) {
                 return $query->where('clients.confirmation_date',null);
             })
-//            ->when(!auth()->user()->hasRole('Super Admin'), function($query) {
-//                return $query->where('clients.added_by', auth()->user()->id);
-//            })
+            ->when(!auth()->user()->hasRole('Super Admin'), function($query) {
+                return $query->where('clients.added_by', auth()->user()->id);
+            })
             ->latest('clients.created_at')->get();
     }
 
