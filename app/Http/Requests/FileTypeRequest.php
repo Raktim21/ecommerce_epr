@@ -23,9 +23,17 @@ class FileTypeRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'type' => 'required|in:xlsx,csv,pdf'
+        $rules = [
+            'type' => 'required|in:xlsx,csv,pdf',
+            'confirmed' => 'sometimes|in:0,1'
         ];
+
+        if($this->input('type') == 'pdf')
+        {
+            $rules['confirmed'] = 'required';
+        }
+
+        return $rules;
     }
 
     protected function failedValidation(Validator $validator)
