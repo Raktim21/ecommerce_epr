@@ -2,8 +2,11 @@
 
 namespace App\Services;
 
+use App\Events\SendNotification;
 use App\Imports\ClientsImport;
 use App\Models\Clients;
+use App\Models\User;
+use App\Notifications\AdminNotification;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -75,6 +78,7 @@ class ClientService
 
     public function show($id)
     {
+        broadcast(new AdminNotification('hello', 'user', 1));
         return $this->client->with(['added_by' => function($q) {
                 $q->select('id','name');
             }])->findOrFail($id);

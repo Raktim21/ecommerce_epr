@@ -2,14 +2,18 @@
 
 namespace App\Notifications;
 
+use Illuminate\Broadcasting\InteractsWithBroadcasting;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Log;
 
-class AdminNotification extends Notification implements ShouldQueue
+class AdminNotification extends Notification implements ShouldBroadcast
 {
-    use Queueable;
+    use InteractsWithBroadcasting;
 
     protected $message, $model, $model_id;
 
@@ -30,8 +34,20 @@ class AdminNotification extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        return ['database'];
+        return ['database','broadcast'];
     }
+
+    /**
+     * Get the broadcastable representation of the notification.
+     */
+//    public function toBroadcast(object $notifiable): BroadcastMessage
+//    {
+//        return new BroadcastMessage([
+//            'message'   => $this->message,
+//            'model'     => $this->model,
+//            'model_id'  => $this->model_id,
+//        ]);
+//    }
 
     /**
      * Get the array representation of the notification.
