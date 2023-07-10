@@ -9,6 +9,10 @@ class PaymentCategory extends Model
 {
     use HasFactory;
 
+    protected $table = 'payment_categories';
+
+    protected $fillable = ['name'];
+
     protected $hidden = ['created_at','updated_at'];
 
     public function payments()
