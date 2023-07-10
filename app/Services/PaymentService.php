@@ -4,8 +4,10 @@ namespace App\Services;
 
 use App\Models\Clients;
 use App\Models\Payment;
+use App\Models\PaymentCategory;
 use App\Models\PaymentType;
 use Carbon\Carbon;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -66,6 +68,29 @@ class PaymentService
     public function getData($client)
     {
         return Payment::with('client','type','category')->where('client_id',$client)->latest()->get();
+    }
+
+    public function getAllCategories()
+    {
+        return PaymentCategory::all();
+    }
+
+    public function storeCategory(Request $request): void
+    {
+        PaymentCategory::create([
+            'name' => $request->name,
+        ]);
+    }
+
+    public function deleteCategory($id): bool
+    {
+        try {
+            PaymentCategory::findOrFail($id)->delete();
+            return true;
+        } catch (QueryException $ex)
+        {
+            return false;
+        }
     }
 
 }

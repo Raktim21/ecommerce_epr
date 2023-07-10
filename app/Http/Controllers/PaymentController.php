@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PaymentCategoryStoreRequest;
 use App\Http\Requests\PaymentDataRequest;
 use App\Http\Requests\PaymentStoreRequest;
 use App\Services\PaymentService;
@@ -28,6 +29,23 @@ class PaymentController extends Controller
             'success' => true,
             'data' => $this->paymentService->getAllTypes()
         ]);
+    }
+
+    public function getCategories()
+    {
+        return response()->json([
+            'success' => true,
+            'data' => $this->paymentService->getAllCategories()
+        ]);
+    }
+
+    public function storeCategories(PaymentCategoryStoreRequest $request)
+    {
+        $this->paymentService->storeCategory($request);
+
+        return response()->json([
+            'success' => true
+        ],201);
     }
 
     public function store(PaymentStoreRequest $request)
@@ -68,5 +86,14 @@ class PaymentController extends Controller
         $pdf = Pdf::loadView('payslip', $info);
 
         return $pdf->stream('payslip_' . now() . '.pdf');
+    }
+
+    public function deleteCategories($id)
+    {
+        if($this->paymentService->deleteCategory($id))
+        {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false], 500);
     }
 }
