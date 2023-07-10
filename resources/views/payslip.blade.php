@@ -34,6 +34,7 @@
         </p>
         <br><br>
         <p style="float: right;font-size: 14px">
+            <span style="font-size: 16px;font-weight: 600">{{ $data['category']['name'] }}</span> <br>
             Payment Method: {{ $data['type']['name'] }} <br>
             @if($data['transaction_id'] != null)
                 Transaction No: {{ $data['transaction_id'] }}

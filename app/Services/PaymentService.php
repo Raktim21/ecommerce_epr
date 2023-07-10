@@ -62,7 +62,7 @@ class PaymentService
 
     public function read($id)
     {
-        return Payment::with('client','type')->findOrFail($id);
+        return Payment::with('client','type','category')->findOrFail($id);
     }
 
     public function getData($client)
