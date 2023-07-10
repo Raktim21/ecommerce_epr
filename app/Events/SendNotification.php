@@ -32,11 +32,11 @@ class SendNotification implements ShouldBroadcastNow
      */
     public function broadcastOn(): array
     {
-        return ['admin-notification'];
+        return ['my-channel'];
     }
 
     public function broadcastAs()
     {
-        return new PrivateChannel('user.'.$this->message->to);
+        return 'my-event';
     }
 }
