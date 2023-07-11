@@ -44,7 +44,14 @@ class AllowanceController extends Controller
         return response()->json([
             'success' => true,
             'data'    => $this->service->getTransportSearchResult($request),
-            'search'  => request()->input('search')
+            'search'  => array(
+                'name'                  => $request->search,
+                'start_date'            => $request->start_date,
+                'end_date'              => $request->end_date,
+                'amount_start_range'    => $request->amount_start_range,
+                'amount_end_range'      => $request->amount_end_range,
+                'status'                => $request->status,
+            )
         ]);
     }
 
@@ -53,7 +60,14 @@ class AllowanceController extends Controller
         return response()->json([
             'success' => true,
             'data'    => $this->service->getFoodSearchResult($request),
-            'search'  => request()->input('search')
+            'search'  => array(
+                'name'                  => $request->search,
+                'start_date'            => $request->start_date,
+                'end_date'              => $request->end_date,
+                'amount_start_range'    => $request->amount_start_range,
+                'amount_end_range'      => $request->amount_end_range,
+                'status'                => $request->status,
+            )
         ]);
     }
 

@@ -2,9 +2,12 @@
 
 namespace App\Services;
 
+use App\Models\Employee;
 use App\Models\User;
 use App\Notifications\AdminNotification;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class UserService
@@ -17,23 +20,52 @@ class UserService
 
     public function store(Request $request)
     {
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'address' => $request->address,
-            'details' => $request->details,
-            'password' => Hash::make($request->password),
-        ]);
+        DB::beginTransaction();
 
-        $user->assignRole($request->role_id);
+        try {
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'address' => $request->address,
+                'details' => $request->details,
+                'password' => Hash::make($request->password),
+            ]);
 
-        if($request->file('avatar'))
-        {
-            saveImage($request->file('avatar'), '/uploads/users/avatar/', $user, 'avatar');
+            if($request->is_employee == 1)
+            {
+                $employee = Employee::create([
+                    'user_id'           => $user->id,
+                    'salary'            => $request->salary,
+                    'general_kpi'       => $request->general_kpi,
+                    'incentive_kpi'     => $request->incentive_kpi,
+                    'incentive_bonus'   => $request->incentive_bonus,
+                    'joining_date'      => $request->joining_date
+                ]);
+
+                if($request->file('document'))
+                {
+                    saveImage($request->file('document'), '/uploads/users/document/', $employee, 'document');
+                }
+            }
+
+            $user->assignRole($request->role_id);
+
+            if($request->file('avatar'))
+            {
+                saveImage($request->file('avatar'), '/uploads/users/avatar/', $user, 'avatar');
+            }
+
+            DB::commit();
+
+            $this->sendNotification('A new user has been created.', 'user', $user->id);
+            return true;
         }
-
-        $this->sendNotification('A new user has been created.', 'user', $user->id);
+        catch (QueryException $ex)
+        {
+            DB::rollback();
+            return false;
+        }
     }
 
     public function updateUser(Request $request, $id)

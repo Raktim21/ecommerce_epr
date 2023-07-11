@@ -23,7 +23,7 @@ class UserStoreRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'name'    => 'required|string|max:255',
             'email'   => 'required|string|email|max:255|unique:users,email',
             'phone'   =>   [
@@ -36,8 +36,30 @@ class UserStoreRequest extends FormRequest
             'avatar'           => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'password'         => 'required|string|min:6',
             'confirm_password' => 'required|same:password',
-            'role_id'          => 'required|exists:roles,id'
+            'role_id'          => 'required|exists:roles,id',
+            'is_employee'      => 'required|in:0,1',
+            'salary'           => 'sometimes|numeric',
+            'general_kpi'      => 'sometimes|integer',
+            'incentive_kpi'    => 'sometimes|integer',
+            'incentive_bonus'  => 'sometimes|integer',
+            'document'         => 'sometimes|file|max:2048',
+            'joining_date'     => 'sometimes|date_format:Y-m-d'
         ];
+
+        if($this->input('is_employee') == 1)
+        {
+            $rules['salary']            = 'required';
+            $rules['general_kpi']       = 'required';
+            $rules['document']          = 'required';
+            $rules['joining_date']      = 'required';
+        }
+
+        if(!is_null($this->input('incentive_kpi')))
+        {
+            $rules['incentive_bonus'] = 'required';
+        }
+
+        return $rules;
     }
 
     protected function failedValidation(Validator $validator)
