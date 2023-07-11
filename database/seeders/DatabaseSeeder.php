@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             RolePermissionSeeder::class,
             PaymentTypeSeeder::class,
+            PaymentCategorySeeder::class,
             PointSeeder::class
         ]);
     }
