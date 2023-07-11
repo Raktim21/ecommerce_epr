@@ -38,8 +38,6 @@ class UserService
                     'user_id'           => $user->id,
                     'salary'            => $request->salary,
                     'general_kpi'       => $request->general_kpi,
-                    'incentive_kpi'     => $request->incentive_kpi,
-                    'incentive_bonus'   => $request->incentive_bonus,
                     'joining_date'      => $request->joining_date
                 ]);
 
