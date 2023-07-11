@@ -35,7 +35,7 @@ class AllowanceController extends Controller
     {
         return response()->json([
             'success' => true,
-            'data'    => $this->service->getFoodAllowance($id),
+            'data'    => $this->service->getFoodAllowance($id)
         ]);
     }
 
@@ -44,6 +44,7 @@ class AllowanceController extends Controller
         return response()->json([
             'success' => true,
             'data'    => $this->service->getTransportSearchResult($request),
+            'search'  => request()->input('search')
         ]);
     }
 
@@ -52,6 +53,7 @@ class AllowanceController extends Controller
         return response()->json([
             'success' => true,
             'data'    => $this->service->getFoodSearchResult($request),
+            'search'  => request()->input('search')
         ]);
     }
 
