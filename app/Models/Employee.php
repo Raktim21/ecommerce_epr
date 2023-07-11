@@ -11,8 +11,7 @@ class Employee extends Model
 
     protected $table = 'employees';
 
-    protected $fillable = ['user_id','salary','general_kpi','incentive_kpi','incentive_bonus',
-        'document','joining_date'];
+    protected $fillable = ['user_id','salary','general_kpi','document','joining_date'];
 
     protected $hidden = ['updated_at','created_at'];
 

@@ -40,8 +40,6 @@ class UserStoreRequest extends FormRequest
             'is_employee'      => 'required|in:0,1',
             'salary'           => 'sometimes|numeric',
             'general_kpi'      => 'sometimes|integer',
-            'incentive_kpi'    => 'sometimes|integer',
-            'incentive_bonus'  => 'sometimes|integer',
             'document'         => 'sometimes|file|max:2048',
             'joining_date'     => 'sometimes|date_format:Y-m-d'
         ];
@@ -52,11 +50,6 @@ class UserStoreRequest extends FormRequest
             $rules['general_kpi']       = 'required';
             $rules['document']          = 'required';
             $rules['joining_date']      = 'required';
-        }
-
-        if(!is_null($this->input('incentive_kpi')))
-        {
-            $rules['incentive_bonus'] = 'required';
         }
 
         return $rules;

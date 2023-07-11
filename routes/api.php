@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClientsController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\FollowUpInfoController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\RolePermissionController;
@@ -61,6 +62,11 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         Route::post('users', 'store')->middleware('permission:create-user');
         Route::post('users-update/{id}', 'update')->middleware('permission:update-user');
         Route::delete('users/{id}', 'destroy')->middleware('permission:delete-user');
+    });
+
+    Route::controller(EmployeeController::class)->group(function () {
+        Route::get('employees/payable-salary-list', 'getEmployeeList');
+        Route::post('employees/salary', 'storeSalary');
     });
 
     Route::controller(ClientsController::class)->group(function () {

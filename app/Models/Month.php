@@ -11,4 +11,9 @@ class Month extends Model
 
     protected $table = 'months';
     protected $guarded = ['id','name'];
+
+    public function salaries()
+    {
+        return $this->hasMany(Salary::class, 'month_id');
+    }
 }
