@@ -14,7 +14,7 @@ class UserService
 {
     public function getAll()
     {
-        return User::with('roles')
+        return User::with('roles','employee')
             ->withSum('point_list', 'points')->paginate(10);
     }
 
@@ -96,7 +96,7 @@ class UserService
 
     public function get($id)
     {
-        return User::findOrFail($id);
+        return User::with('employee')->findOrFail($id);
     }
 
     public function delete($id): bool

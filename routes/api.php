@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClientsController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\FollowUpInfoController;
+use App\Http\Controllers\KPILookUpController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\AllowanceController;
@@ -48,6 +49,11 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         Route::get('permissions', 'permissionList')->middleware(['permission:get-permission-list']);
         Route::post('assign-role/{user_id}', 'assignRole')->middleware('permission:assign-role-to-user');
         Route::post('users-assign-role', 'assignUsers')->middleware('permission:assign-role-to-user');
+    });
+
+    Route::controller(KPILookUpController::class)->group(function() {
+        Route::get('kpi-lookups', 'index');
+        Route::post('kpi-lookups', 'create');
     });
 
     Route::controller(UserPointController::class)->group(function () {
