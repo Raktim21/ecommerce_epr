@@ -4,29 +4,35 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\KPILookUpRequest;
 use App\Models\KPILookUp;
+use App\Services\KPIService;
 use Illuminate\Http\Request;
 
 class KPILookUpController extends Controller
 {
+    private $service;
+
+    public function __construct(KPIService $service)
+    {
+        $this->service = $service;
+    }
+
     public function index()
     {
         return response()->json([
             'success' => true,
-            'data'    => KPILookUp::all(),
+            'data'    => $this->service->getAll(),
         ]);
     }
 
     public function create(KPILookUpRequest $request)
     {
-        KPILookUp::create([
-            'category'          => $request->category,
-            'client_count'      => $request->client_count,
-            'amount'            => $request->amount,
-            'per_client_amount' => $request->per_client_amount
-        ]);
+        $this->service->store($request);
 
         return response()->json([
             'success' => true,
         ], 201);
     }
+
+    public function update()
+    {}
 }
