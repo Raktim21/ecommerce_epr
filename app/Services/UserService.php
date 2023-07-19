@@ -84,12 +84,17 @@ class UserService
 
         if ($request->hasFile('avatar'))
         {
-            if(public_path($user->avatar))
+            if($user->avatar)
             {
                 deleteFile($user->avatar);
             }
             saveImage($request->file('avatar'), '/uploads/users/avatar/', $user, 'avatar');
         }
+
+        Employee::where('user_id', $id)->update([
+            'salary'         => $request->salary,
+            'general_kpi'    => $request->general_kpi
+        ]);
 
         $this->sendNotification("A user's information has been updated.", 'user', $user->id);
     }

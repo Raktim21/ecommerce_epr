@@ -36,13 +36,16 @@ class UserUpdateRequest extends FormRequest
             'address'          => 'nullable|string',
             'details'          => 'nullable|string',
             'avatar'           => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'role_id'          => 'required|exists:roles,id'
+            'role_id'          => 'required|exists:roles,id',
+            'salary'           => 'sometimes|numeric',
+            'general_kpi'      => 'sometimes|integer',
+            'joining_date'     => 'sometimes|date_format:Y-m-d'
         ];
     }
 
     function messages()
     {
-        
+
         return [
             'name.required'    => 'Please provide a name',
             'name.string'      => 'Invalid name',
@@ -65,7 +68,7 @@ class UserUpdateRequest extends FormRequest
         ];
 
     }
-     
+
 
     protected function failedValidation(Validator $validator)
     {
