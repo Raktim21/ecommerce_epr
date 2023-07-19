@@ -91,10 +91,17 @@ class UserService
             saveImage($request->file('avatar'), '/uploads/users/avatar/', $user, 'avatar');
         }
 
-        Employee::where('user_id', $id)->update([
+        $employee = Employee::where('user_id', $id)->update([
             'salary'         => $request->salary,
             'general_kpi'    => $request->general_kpi
         ]);
+
+        if($request->hasFile('document')) {
+            if($employee->document) {
+                deleteFile($employee->document);
+            }
+            saveImage($request->file('document'), '/uploads/users/document/', $employee, 'document');
+        }
 
         $this->sendNotification("A user's information has been updated.", 'user', $user->id);
     }
