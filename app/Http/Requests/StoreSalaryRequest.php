@@ -24,10 +24,11 @@ class StoreSalaryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'employees'         => 'required|array',
+            'employees'         => 'required|array|min:1',
             'employees.*'       => 'required|exists:employees,id',
             'year_name'         => 'required|date_format:Y|before:' . (date('Y') + 1),
             'month_id'          => 'required|exists:months,id',
+            'filter'            => 'required|in:1,2,3' // 1: both allowance and salary, 2: only salary 3: only allowance
         ];
     }
 

@@ -5,6 +5,7 @@ use App\Http\Controllers\ClientsController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\FollowUpInfoController;
 use App\Http\Controllers\KPILookUpController;
+use App\Http\Controllers\MonthController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\AllowanceController;
@@ -25,6 +26,8 @@ Route::controller(AuthController::class)->group(function () {
 });
 
 Route::group(['middleware' => ['jwt.verify']], function () {
+
+    Route::get('months', [MonthController::class, 'getAll']);
 
     Route::controller(AuthController::class)->group(function () {
         Route::get('logout', 'logout');

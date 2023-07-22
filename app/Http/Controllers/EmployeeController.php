@@ -24,5 +24,12 @@ class EmployeeController extends Controller
     }
 
     public function storeSalary(StoreSalaryRequest $request)
-    {}
+    {
+        if($this->service->giveSalary($request))
+        {
+            return response()->json(['success' => true]);
+        } else {
+            return response()->json(['success' => false], 500);
+        }
+    }
 }
