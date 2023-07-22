@@ -11,12 +11,15 @@ class EmployeeService
 
     public function getAll()
     {
-        return User::with('employee')->withCount(['clients' => function($q) {
+        return User::whereHas('employee')->with('employee')->withCount(['clients' => function($q) {
             $q->whereNotNull('confirmation_date');
         }])->get();
     }
 
     public function giveSalary(Request $request)
     {
+        foreach($request->employees as $employee) {
+
+        }
     }
 }
