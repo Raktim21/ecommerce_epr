@@ -65,10 +65,12 @@ class RolePermissionSeeder extends Seeder
 
         foreach ($permissions as $value)
         {
-            Permission::create([
-                'name' => $value,
-                'guard_name' => 'api'
-            ]);
+            if (!Permission::where('name', $value)->exists()) {
+                Permission::create([
+                    'name' => $value,
+                    'guard_name' => 'api'
+                ]);
+            }
         }
 
 //        $role = Role::create([
