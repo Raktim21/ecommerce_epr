@@ -11,10 +11,16 @@ class Salary extends Model
 
     protected $table = 'salaries';
 
-    protected $fillable = ['employee_id','year_name','month_id','payable_amount','paid_amount','incentive_paid'];
+    protected $fillable = ['employee_id','year_name','month_id','payable_amount',
+        'paid_amount','incentive_paid','pay_status'];
 
     public function month()
     {
         return $this->belongsTo(Month::class, 'month_id');
+    }
+
+    public function employee()
+    {
+        return $this->belongsTo(Employee::class, 'employee_id');
     }
 }

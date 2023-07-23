@@ -17,19 +17,21 @@ class EmployeeController extends Controller
 
     public function getEmployeeList()
     {
+        $data = $this->service->getAll();
+
         return response()->json([
             'success' => true,
-            'data'    => $this->service->getAll()
-        ]);
+            'data'    => $data
+        ], count($data)==0 ? 204 : 200);
     }
 
     public function storeSalary(StoreSalaryRequest $request)
     {
-        if($this->service->giveSalary($request))
-        {
-            return response()->json(['success' => true]);
+        if($this->service->giveSalary($request)) {
+            return response()->json(['success'=>true], 201);
         } else {
-            return response()->json(['success' => false], 500);
+            return response()->json(['success'=>false], 500);
         }
+
     }
 }
