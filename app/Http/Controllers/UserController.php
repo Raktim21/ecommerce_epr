@@ -25,17 +25,17 @@ class UserController extends Controller
 
     public function store(UserStoreRequest $request)
     {
-        if($this->service->store($request))
-        {
+//        if($this->service->store($request))
+//        {
             return response()->json([
                 'success' => true,
             ], 201);
-        } else {
-            return response()->json([
-                'success' => false,
-                'error'   => 'Something went wrong.'
-            ], 500);
-        }
+//        } else {
+//            return response()->json([
+//                'success' => false,
+//                'error'   => 'Something went wrong.'
+//            ], 500);
+//        }
     }
 
     public function update(UserUpdateRequest $request, $id)
