@@ -34,10 +34,12 @@ class EmployeeService
                 $emp = Employee::find($employee);
 
                 $total = TransportAllowance::where('created_by', $emp->user_id)
+                    ->where('allowance_status', 1)
                     ->whereRaw('year(created_at)='.$request->year_name)
                     ->whereRaw('month(created_at)='.$request->month_id)
                     ->sum('amount');
                 $total += FoodAllowance::where('created_by', $emp->user_id)
+                    ->where('allowance_status', 1)
                     ->whereRaw('year(created_at)='.$request->year_name)
                     ->whereRaw('month(created_at)='.$request->month_id)
                     ->sum('amount');
