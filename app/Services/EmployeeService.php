@@ -6,7 +6,6 @@ use App\Models\Employee;
 use App\Models\FoodAllowance;
 use App\Models\Salary;
 use App\Models\TransportAllowance;
-use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -20,8 +19,8 @@ class EmployeeService
                 $q->select('id','name','email','phone','avatar');
             }])
             ->with(['salary_data' => function($q) {
-                $q->where('month_id', request()->input('month_id'))
-                  ->whereYear('created_at', request()->input('year_name'));
+                $q->where('month_id', request()->input('month_id') ?? date('n'))
+                  ->whereYear('created_at', request()->input('year_name') ?? date('Y'));
             }])->get();
     }
 

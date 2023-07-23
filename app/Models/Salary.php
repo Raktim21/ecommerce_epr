@@ -14,6 +14,8 @@ class Salary extends Model
     protected $fillable = ['employee_id','year_name','month_id','payable_amount',
         'paid_amount','incentive_paid','pay_status'];
 
+    protected $hidden = ['updated_at'];
+
     public function month()
     {
         return $this->belongsTo(Month::class, 'month_id');
