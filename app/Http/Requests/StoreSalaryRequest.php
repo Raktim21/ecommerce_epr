@@ -35,13 +35,13 @@ class StoreSalaryRequest extends FormRequest
                                             ->first();
 
                                         if($existing && $this->input('pay_status') == 1) {
-                                            $fail('Both allowance and salary can not be paid.');
+                                            $fail('Both allowance and salary can not be paid to '. $existing->employee->user->name . '.');
                                         }
                                         else if($existing && $existing->pay_status == $this->input('pay_status')) {
-                                            $fail('Salary has already been given for the given type.');
+                                            $fail('Salary has already been given to '. $existing->employee->user->name .' for the given type.');
                                         }
                                         else if($existing && $existing->pay_status == 1) {
-                                            $fail('Both allowance and salary have been paid for the selected month.');
+                                            $fail('Both allowance and salary have been paid to '. $existing->employee->user->name .' for the selected month.');
                                         }
 
 
