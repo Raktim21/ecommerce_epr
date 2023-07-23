@@ -20,7 +20,8 @@ class EmployeeService
                 $q->select('id','name','email','phone','avatar');
             }])
             ->with(['salary_data' => function($q) {
-                $q->where('month_id', request()->input('month_id'));
+                $q->where('month_id', request()->input('month_id'))
+                  ->whereYear('created_at', request()->input('year_name'));
             }])->get();
     }
 
