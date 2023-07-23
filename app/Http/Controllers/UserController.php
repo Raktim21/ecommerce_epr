@@ -25,10 +25,12 @@ class UserController extends Controller
 
     public function store(UserStoreRequest $request)
     {
+        $msg = $this->service->store($request);
 //        if($this->service->store($request))
 //        {
             return response()->json([
                 'success' => true,
+                'message' => $msg
             ], 201);
 //        } else {
 //            return response()->json([

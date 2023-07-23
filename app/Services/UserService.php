@@ -62,7 +62,7 @@ class UserService
         catch (QueryException $ex)
         {
             DB::rollback();
-            return false;
+            return $ex->getMessage();
         }
     }
 
