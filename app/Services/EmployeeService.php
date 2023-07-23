@@ -16,7 +16,8 @@ class EmployeeService
     public function getAll()
     {
         return Employee::with(['user' => function($q) {
-                $q->select('id','name','email','phone','avatar');
+                $q->select('id','name','email','phone','avatar')
+                  ->withSum('allowances', 'amount');
             }])
             ->with(['salary_data' => function($q) {
                 $q->where('month_id', request()->input('month_id') ?? date('n'))
