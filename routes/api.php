@@ -69,6 +69,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         Route::get('users', 'index')->middleware('permission:get-user-list');
         Route::get('users/{id}', 'show')->middleware('permission:get-user-info');
         Route::post('users', 'store')->middleware('permission:create-user');
+        Route::post('create-employee-profile', 'createProfile')->middleware('permission:create-user-employee-profile');
         Route::post('users-update/{id}', 'update')->middleware('permission:update-user');
         Route::delete('users/{id}', 'destroy')->middleware('permission:delete-user');
     });

@@ -38,6 +38,9 @@ class UserController extends Controller
         }
     }
 
+    public function createProfile()
+    {}
+
     public function update(UserUpdateRequest $request, $id)
     {
         $this->service->updateUser($request, $id);
