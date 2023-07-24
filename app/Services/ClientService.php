@@ -57,25 +57,6 @@ class ClientService
             ->appends($request->except('page','per_page'));
     }
 
-    public function getPdfData()
-    {
-        return $this->client->newQuery()
-            ->leftJoin('payments','clients.id','=','payments.client_id')
-            ->leftJoin('users','clients.added_by','=','users.id')
-            ->select('clients.*','payments.id as payment_id','users.name as added_by')
-            ->withCount('follow_ups')
-            ->when(request()->input('confirmed') == 1 , function ($query) {
-                return $query->whereNotNull('clients.confirmation_date');
-            })
-            ->when(request()->input('confirmed') == 0 , function ($query) {
-                return $query->where('clients.confirmation_date',null);
-            })
-            ->when(!auth()->user()->hasRole('Super Admin'), function($query) {
-                return $query->where('clients.added_by', auth()->user()->id);
-            })
-            ->latest('clients.created_at')->get();
-    }
-
     public function show($id)
     {
         broadcast(new AdminNotification('hello', 'user', 1));

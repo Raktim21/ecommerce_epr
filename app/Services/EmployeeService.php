@@ -15,11 +15,14 @@ class EmployeeService
 
     public function getAll()
     {
-        return Employee::with('user')
-            ->with(['salary_data' => function($q) {
-                $q->where('month_id', request()->input('month_id') ?? date('n'))
-                  ->whereYear('created_at', request()->input('year_name') ?? date('Y'));
-            }])->get();
+        return Employee::when(!auth()->user()->hasRole('Super Admin'), function($q) {
+            return $q->where('user_id', auth()->user()->id);
+        })
+        ->with('user')
+        ->with(['salary_data' => function($q) {
+            $q->where('month_id', request()->input('month_id') ?? date('n'))
+              ->whereYear('created_at', request()->input('year_name') ?? date('Y'));
+        }])->get();
     }
 
     public function giveSalary(Request $request)
@@ -56,7 +59,7 @@ class EmployeeService
             return true;
         } catch(QueryException $e) {
             DB::rollback();
-            return $e->getMessage();
+            return false;
         }
     }
 }
