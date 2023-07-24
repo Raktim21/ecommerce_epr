@@ -14,7 +14,8 @@ class UserService
 {
     public function getAll()
     {
-        return User::with('roles','employee')
+        return User::with('roles')
+            ->whereDoesntHave('employee')
             ->withSum('point_list', 'points')->paginate(10);
     }
 
