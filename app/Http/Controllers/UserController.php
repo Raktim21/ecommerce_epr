@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\EmployeeProfileStoreRequest;
 use App\Http\Requests\UserStoreRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\Services\UserService;
@@ -38,8 +39,12 @@ class UserController extends Controller
         }
     }
 
-    public function createProfile()
-    {}
+    public function createProfile(EmployeeProfileStoreRequest $request)
+    {
+        $this->service->storeProfile($request);
+
+        return response()->json(['success' => true], 201);
+    }
 
     public function update(UserUpdateRequest $request, $id)
     {

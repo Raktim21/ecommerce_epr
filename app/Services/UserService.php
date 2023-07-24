@@ -148,4 +148,18 @@ class UserService
         }
     }
 
+    public function storeProfile(Request $request): void
+    {
+        $employee = Employee::create([
+            'user_id'       => $request->user_id,
+            'salary'        => $request->salary,
+            'general_kpi'   => $request->general_kpi,
+            'joining_date'  => $request->joining_date
+        ]);
+
+        if($request->hasFile('document')) {
+            saveImage($request->file('document'), '/uploads/users/document/', $employee, 'document');
+        }
+    }
+
 }
