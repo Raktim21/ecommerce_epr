@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\DB;
 
 class EmployeeService
 {
-
     public function getAll()
     {
         return Employee::when(!auth()->user()->hasRole('Super Admin'), function($q) {

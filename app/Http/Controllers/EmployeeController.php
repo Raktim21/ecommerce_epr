@@ -32,6 +32,5 @@ class EmployeeController extends Controller
         } else {
             return response()->json(['success'=>false], 500);
         }
-
     }
 }

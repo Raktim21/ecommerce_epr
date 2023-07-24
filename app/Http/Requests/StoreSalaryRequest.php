@@ -47,7 +47,14 @@ class StoreSalaryRequest extends FormRequest
 
                                     }],
             'year_name'         => 'required|date_format:Y|before:' . (date('Y') + 1),
-            'month_id'          => 'required|exists:months,id',
+            'month_id'          => ['required','exists:months,id',
+                                    function($attr, $val, $fail) {
+                                        if($this->input('year_name') == date('Y')) {
+                                            if($val > date('n')) {
+                                                $fail('Salary for future months can not be given.');
+                                            }
+                                        }
+                                    }],
             'pay_status'        => 'required|in:1,2,3' // 1: both allowance and salary, 2: only salary 3: only allowance
         ];
     }
