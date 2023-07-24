@@ -24,7 +24,7 @@ class EmployeeProfileStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id'       => 'required|unique:employees,id|exists:users,id',
+            'user_id'       => 'required|unique:employees,user_id|exists:users,id',
             'salary'        => 'required|numeric',
             'general_kpi'   => 'required|integer|min:1',
             'document'      => 'sometimes|file|max:2048',
