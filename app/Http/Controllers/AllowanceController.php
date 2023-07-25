@@ -153,7 +153,6 @@ class AllowanceController extends Controller
             'transport_allowance_id'   => 'required|array',
             'transport_allowance_id.*' => 'required|exists:transport_allowances,id',
         ]);
-        // dd($request->all());
 
         if ($validate->fails()) {
             return response()->json([

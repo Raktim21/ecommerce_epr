@@ -27,8 +27,8 @@ class TransportAllowancPaymentStatusRequest extends FormRequest
         return [
             
             'payment_status' => 'required|in:0,1',
-            'allowance_id'   => 'required|array',
-            'allowance_id.*' => 'required|exists:transport_allowances,id',
+            'transport_allowance_id'   => 'required|array',
+            'transport_allowance_id.*' => 'required|exists:transport_allowances,id',
             
         ];
     }
@@ -40,10 +40,10 @@ class TransportAllowancPaymentStatusRequest extends FormRequest
         return [
             'payment_status.required'  => 'Please select a payment status.',
             'payment_status.in'        => 'Please select a valid payment status.',
-            'allowance_id.required'    => 'Please select an allowance.',
-            'allowance_id.array'       => 'Please select a valid allowance.',
-            'allowance_id.*.required'  => 'Please select an allowance.',
-            'allowance_id.*.exists'    => 'Please select a valid allowance.',
+            'transport_allowance_id.required'    => 'Please select an allowance.',
+            'transport_allowance_id.array'       => 'Please select a valid allowance.',
+            'transport_allowance_id.*.required'  => 'Please select an allowance.',
+            'transport_allowance_id.*.exists'    => 'Please select a valid allowance.',
         ];
     }
 
