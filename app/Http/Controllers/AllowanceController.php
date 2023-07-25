@@ -163,12 +163,12 @@ class AllowanceController extends Controller
         }
 
 
-        if (TransportAllowance::whereRaw('id IN (' . implode(',', $request->transport_allowance_id) . ')')->distinct('created_by')->count() != count($request->transport_allowance_id)) {
+        if (TransportAllowance::whereRaw('id IN (' . implode(',', $request->transport_allowance_id) . ')')->distinct('created_by')->count() > 1) {
            
             return response()->json([
                 'success' => false,
                 'errors'  => "Please select only one user's allowance."
-            ]);
+            ],304);
         }
 
 
