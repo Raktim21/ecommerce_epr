@@ -135,7 +135,7 @@ class AllowanceController extends Controller
 
     public function transportAllowanceChangePaymentStatus(TransportAllowancPaymentStatusRequest $request){
 
-        foreach ($request->allowance_id as $value) {
+        foreach ($request->transport_allowance_id as $value) {
             $this->service->transportAllowanceUpdatePaymentStatus($request, $value);
         }
 

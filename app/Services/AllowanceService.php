@@ -98,11 +98,11 @@ class AllowanceService
 
         $allowence = TransportAllowance::findOrFail($id);
 
-        if($allowence->transport_allowance_id != 2)
+        if($allowence->allowance_status != 2)
         {
             $allowence->is_paid = $request->payment_status;
 
-            $allowence->transport_allowance_id =  $request->payment_status == 0 ? 0 : 1;
+            $allowence->allowance_status =  $request->payment_status == 0 ? 0 : 1;
 
             // if ($request->payment_status == 0) {
             //     $allowence->allowance_status = 0;
