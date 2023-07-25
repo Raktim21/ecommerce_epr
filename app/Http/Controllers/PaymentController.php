@@ -42,7 +42,7 @@ class PaymentController extends Controller
 
     public function storeCategories(PaymentCategoryStoreRequest $request)
     {
-        $this->paymentService->storeCategory($request);
+        $this->paymentService->storeCategallory($request);
 
         return response()->json([
             'success' => true

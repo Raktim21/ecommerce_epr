@@ -28,6 +28,7 @@ class AllowanceService
             'created_by'    => auth()->user()->id,
             'client_id'      => $request->client_id,
             'follow_up_id'   => $request->follow_up_id
+            
         ]);
 
         if ($request->hasFile('document')){
@@ -240,7 +241,8 @@ class AllowanceService
             ->when($amount_end_range!=null, function ($query) use($amount_start_range, $amount_end_range) {
                 return $query->whereBetween('amount',[$amount_start_range,$amount_end_range]);
             })
-            ->select('transport_allowances.*','users.name')
+            ->leftJoin('clients','transport_allowances.client_id','=','clients.id')
+            ->select('transport_allowances.*','users.name','clients.name as client_name')
             ->orderBy('transport_allowances.id', 'desc')
             ->paginate(request()->input('per_page') ?? 10)->appends($request->except('page','per_page'));
     }

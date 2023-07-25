@@ -147,12 +147,13 @@ class AllowanceController extends Controller
     }
 
 
-    public function foodAllowancePaymentSlip(Request $request, $id)
+    public function transportAllowancePaymentSlip(Request $request)
     {
         $validate = Validator::make($request->all(), [
-            'transport_allowance_id' => 'required|array',
+            'transport_allowance_id'   => 'required|array',
             'transport_allowance_id.*' => 'required|exists:transport_allowances,id',
         ]);
+        // dd($request->all());
 
         if ($validate->fails()) {
             return response()->json([
@@ -162,7 +163,7 @@ class AllowanceController extends Controller
         }
 
 
-        if (TransportAllowance::findMany('transport_allowance_id')->distinct('created_by')->count() != count($request->transport_allowance_id)) {
+        if (TransportAllowance::whereRaw('id IN (' . implode(',', $request->transport_allowance_id) . ')')->distinct('created_by')->count() != count($request->transport_allowance_id)) {
            
             return response()->json([
                 'success' => false,
@@ -174,13 +175,13 @@ class AllowanceController extends Controller
         $user =  User::find(TransportAllowance::find($request->transport_allowance_id[0])->created_by);
 
         $data = [
-            'transport_allowances' => TransportAllowance::findMany('transport_allowance_id'),
+            'transport_allowances' => TransportAllowance::whereRaw('id IN (' . implode(',', $request->transport_allowance_id) . ')')->get(),
             'user' => $user,
         ];
 
         
-        $pdf = PDF::loadView('transport_allowance_payment_slip', $data);
-        return $pdf->stream('billing_'. $user->id . '-'. rand(1000, 9999) .'.pdf');
+        $pdf = PDF::loadView('transport_allowance_payment_slip', compact('data'));
+        return $pdf->stream('travel_alowance_payment_slip_'. $user->id . '-'. rand(1000, 9999) .'.pdf');
 
     }
 

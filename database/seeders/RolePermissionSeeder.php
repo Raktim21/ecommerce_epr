@@ -57,12 +57,14 @@ class RolePermissionSeeder extends Seeder
             'export-transport-allowance',
             'create-update-transport-allowance',
             'change-transport-allowance-status',
+            'trandport-allowance-payment-slip',
             'get-food-allowance',
             'export-food-allowance',
             'create-delete-food-allowance',
             'change-food-allowance-status',
             'employee-payable-salary-list',
-            'store-salary'
+            'store-salary',
+            'create-user-employee-profile'
         ];
 
         foreach ($permissions as $value)

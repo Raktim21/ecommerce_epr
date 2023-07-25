@@ -124,6 +124,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         });
         Route::get('transport-allowances/export/all', 'transportAllowanceExport')->middleware('permission:export-transport-allowance');
         Route::post('transport-allowances/update-payment-status', 'transportAllowanceChangePaymentStatus')->middleware('permission:update-transport-payment-status');
+        Route::get('transport-allowance-payment-slip', 'transportAllowancePaymentSlip')->middleware('permission:trandport-allowance-payment-slip');
 
         Route::middleware('permission:create-update-transport-allowance')->group(function() {
 
