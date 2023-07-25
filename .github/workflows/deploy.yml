@@ -63,6 +63,7 @@ jobs:
             script: |
               cd domains/sltm.selopia.com/public_html/
               # composer2 update
+              php artisan db:seed --class=RolePermissionSeeder
               php artisan migrate
               php artisan optimize
               php artisan cache:clear

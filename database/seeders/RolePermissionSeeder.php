@@ -53,6 +53,7 @@ class RolePermissionSeeder extends Seeder
             'update-point-type',
             'get-user-point-data',
             'get-transport-allowance',
+            'update-transport-payment-status',
             'export-transport-allowance',
             'create-update-transport-allowance',
             'change-transport-allowance-status',

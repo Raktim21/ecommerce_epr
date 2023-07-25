@@ -90,6 +90,36 @@ class AllowanceService
         (new UserService)->sendNotification('Status of a transport allowance has been changed.', 'transport-allowance', $allowance->id);
     }
 
+
+
+    public function transportAllowanceUpdatePaymentStatus(Request $request, $id): void
+    {
+
+        $allowence = TransportAllowance::findOrFail($id);
+
+        if($allowence->allowance_status != 2)
+        {
+            $allowence->is_paid = $request->payment_status;
+
+            $allowence->allowance_status =  $request->payment_status == 0 ? 0 : 1;
+
+            // if ($request->payment_status == 0) {
+            //     $allowence->allowance_status = 0;
+            // }else {
+            //     $allowence->allowance_status = 1;
+            // }
+            $allowence->update();
+
+            (new UserService)->sendNotification('Your transport allowance has been paid.', 'transport-allowance', $allowence->id);
+            
+        }
+
+    }
+
+
+
+
+
     public function updateFoodStatus(Request $request, $id): void
     {
         $allowance = FoodAllowance::findOrFail($id);

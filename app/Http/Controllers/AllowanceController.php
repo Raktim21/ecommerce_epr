@@ -11,7 +11,13 @@ use App\Http\Requests\AllowanceStatusRequest;
 use App\Http\Requests\AllowanceUpdateRequest;
 use App\Http\Requests\FileTypeRequest;
 use App\Http\Requests\FoodAllowanceStoreRequest;
+use App\Http\Requests\TransportAllowancPaymentStatusRequest;
+use App\Models\TransportAllowance;
+use App\Models\User;
 use App\Services\AllowanceService;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 
 class AllowanceController extends Controller
@@ -125,6 +131,57 @@ class AllowanceController extends Controller
     {
         $this->service->updateStatus($request, $id);
         return response()->json(['success' => true]);
+    }
+
+    public function transportAllowanceChangePaymentStatus(TransportAllowancPaymentStatusRequest $request){
+
+        foreach ($request->allowance_id as $value) {
+            $this->service->transportAllowanceUpdatePaymentStatus($request, $value);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Status of a transport allowance has been changed.'
+        ]);
+        
+    }
+
+
+    public function foodAllowancePaymentSlip(Request $request, $id)
+    {
+        $validate = Validator::make($request->all(), [
+            'transport_allowance_id' => 'required|array',
+            'transport_allowance_id.*' => 'required|exists:transport_allowances,id',
+        ]);
+
+        if ($validate->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors'  => $validate->errors()->first()
+            ], 422);
+        }
+
+
+        if (TransportAllowance::findMany('transport_allowance_id')->distinct('created_by')->count() != count($request->transport_allowance_id)) {
+           
+            return response()->json([
+                'success' => false,
+                'errors'  => "Please select only one user's allowance."
+            ]);
+        }
+
+
+        $user =  User::find(TransportAllowance::find($request->transport_allowance_id[0])->created_by);
+
+        $data = [
+            'transport_allowances' => TransportAllowance::findMany('transport_allowance_id'),
+            'user' => $user,
+        ];
+
+        
+        $pdf = PDF::loadView('transport_allowance_payment_slip', $data);
+        return $pdf->stream('billing_'. $user->id . '-'. rand(1000, 9999) .'.pdf');
+
     }
 
     public function foodAllowanceStore(FoodAllowanceStoreRequest $request)
