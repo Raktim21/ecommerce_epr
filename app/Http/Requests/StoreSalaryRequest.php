@@ -55,7 +55,7 @@ class StoreSalaryRequest extends FormRequest
                                             }
                                         }
                                     }],
-            'pay_status'        => 'required|in:1,2,3' // 1: both allowance and salary, 2: only salary 3: only allowance
+            'pay_status'        => 'required|in:0,1' // 0 = unpaid, 1 = paid
         ];
     }
 

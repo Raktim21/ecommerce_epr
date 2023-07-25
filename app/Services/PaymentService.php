@@ -72,13 +72,15 @@ class PaymentService
 
     public function getAllCategories()
     {
-        return PaymentCategory::all();
+        return PaymentCategory::get();
     }
 
     public function storeCategory(Request $request): void
     {
         PaymentCategory::create([
             'name' => $request->name,
+            'description' => $request->description,
+            'price' => $request->price,
         ]);
     }
 
