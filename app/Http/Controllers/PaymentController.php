@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PaymentCategoryStoreRequest;
 use App\Http\Requests\PaymentDataRequest;
 use App\Http\Requests\PaymentStoreRequest;
+use App\Models\Payment;
+use App\Models\PaymentCategory;
 use App\Services\PaymentService;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -91,6 +93,13 @@ class PaymentController extends Controller
 
     public function deleteCategories($id)
     {
+
+        if (Payment::where('payment_category_id', $id)->exists()) {
+            return response()->json([
+                'success' => false,
+                'errors'  => 'This payment category can not be deleted.'
+            ], 404);
+        }
         if($this->paymentService->deleteCategory($id))
         {
             return response()->json(['success' => true]);
