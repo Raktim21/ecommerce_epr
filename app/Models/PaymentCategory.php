@@ -11,7 +11,7 @@ class PaymentCategory extends Model
 
     protected $table = 'payment_categories';
 
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'description', 'price'];
 
     protected $hidden = ['created_at','updated_at'];
 
