@@ -27,7 +27,7 @@ class EmployeeProfileStoreRequest extends FormRequest
             'user_id'       => 'required|unique:employees,user_id|exists:users,id',
             'salary'        => 'required|numeric',
             'general_kpi'   => 'required|integer|min:1',
-            'document'      => 'sometimes|file|max:2048',
+            'document'      => 'sometimes|nullable|file|max:2048',
             'joining_date'  => 'required|date_format:Y-m-d'
         ];
     }
