@@ -24,7 +24,7 @@ class PaymentCategoryStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'        => 'required|string|unique:payment_categories,name'.$this->id,
+            'name'        => 'required|string|unique:payment_categories,name,~'.$this->id,
             'description' => 'nullable|string',
             'price'       => 'required|numeric|max:999999.99',
         ];
