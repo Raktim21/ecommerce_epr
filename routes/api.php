@@ -104,9 +104,10 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         Route::get('payment_types', 'getTypes')->middleware('permission:get-payment-type');
         Route::get('client-payment-data', 'getPayData')->middleware('permission:get-client-payment');
         Route::get('payslip/{id}', 'getPayslip')->middleware('permission:get-payslip');
-
+        
         Route::get('payment_categories', 'getCategories')->middleware('permission:get-payment-category');
         Route::post('payment_categories', 'storeCategories')->middleware('permission:create-payment-category');
+        Route::post('payment_categories-update/{id}', 'updateCategories')->middleware('permission:update-payment-category');
         Route::delete('payment_categories/{id}', 'deleteCategories')->middleware('permission:delete-payment-category');
     });
 

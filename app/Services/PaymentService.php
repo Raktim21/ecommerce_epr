@@ -84,6 +84,27 @@ class PaymentService
         ]);
     }
 
+
+    public function updateCategory(Request $request , $id)
+    {
+        
+     
+        try {
+
+            $payment_category = PaymentCategory::find($id);
+            $payment_category->name = $request->name;
+            $payment_category->description = $request->description;
+            $payment_category->price = $request->price;
+            $payment_category->save();
+
+            return true;
+
+        } catch (\Throwable $th) {
+           return false;
+        }
+        
+    }
+
     public function deleteCategory($id): bool
     {
         try {

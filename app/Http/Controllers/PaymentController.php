@@ -51,6 +51,23 @@ class PaymentController extends Controller
         ],201);
     }
 
+    public function updateCategories(PaymentCategoryStoreRequest $request, $id)
+    {
+
+        if ($this->paymentService->updateCategory($request, $id)) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Category updated successfully.'
+            ],200);
+        }else {
+            return response()->json([
+                'success' => false,
+                'errors'   => 'Invalide payment category ID.'
+            ],422);
+        }
+
+    }
+
     public function store(PaymentStoreRequest $request)
     {
         $status = $this->paymentService->store($request);
