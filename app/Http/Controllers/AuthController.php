@@ -27,7 +27,7 @@ class AuthController extends Controller
             'password' => $request->get('password')
         );
 
-        if (User::where($request->email)->first()->is_active != 1) {
+        if (User::where('email',$request->email)->first()->is_active != 1) {
             return response()->json([
                 'success' => false,
                 'error' => 'Unauthorized'

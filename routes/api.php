@@ -71,11 +71,14 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         Route::post('users', 'store')->middleware('permission:create-user');
         Route::post('create-employee-profile', 'createProfile')->middleware('permission:create-user-employee-profile');
         Route::post('users-update/{id}', 'update')->middleware('permission:update-user');
-        Route::delete('users/{id}', 'destroy')->middleware('permission:delete-user');
+        Route::post('users-status/{id}', 'changeStatus')->middleware('permission:update-user');
+        // Route::delete('users/{id}', 'destroy')->middleware('permission:delete-user');
     });
 
     Route::controller(EmployeeController::class)->group(function () {
         Route::get('employees', 'getEmployeeList')->middleware('permission:employee-payable-salary-list');
+        Route::post('employees-update/{id}', 'updateEmployeeInfo')->middleware('permission:update-employee');
+        Route::post('employees-status-update/{id}', 'updateEmployeeActive')->middleware('permission:update-employee');
         Route::post('employees/salary', 'storeSalary')->middleware('permission:store-salary');
     });
 

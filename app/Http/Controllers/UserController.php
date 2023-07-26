@@ -6,6 +6,8 @@ use App\Http\Requests\EmployeeProfileStoreRequest;
 use App\Http\Requests\UserStoreRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\Services\UserService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -64,14 +66,41 @@ class UserController extends Controller
         ]);
     }
 
-    public function destroy($id)
+    // public function destroy($id)
+    // {
+    //     if($this->service->delete($id))
+    //     {
+    //         return response()->json([
+    //             'success' => true,
+    //         ]);
+    //     }
+    //     return response()->json([
+    //         'success' => false,
+    //         'error' => 'This user can not be deleted.'
+    //     ], 422);
+    // }
+
+    public function changeStatus(Request $request,$id)
     {
-        if($this->service->delete($id))
+        $validate = Validator::make($request->all(), [
+            'is_active' => 'required|in:0,1',
+        ]);
+
+        if ($validate->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validate->errors()
+            ], 422);
+        }
+
+        if($this->service->activeStatus($request, $id))
         {
             return response()->json([
                 'success' => true,
             ]);
         }
+
+
         return response()->json([
             'success' => false,
             'error' => 'This user can not be deleted.'
