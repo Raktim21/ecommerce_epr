@@ -8,6 +8,7 @@ use App\Http\Requests\ConfirmPasswordRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\PasswordRequest;
 use App\Http\Requests\ResetPasswordRequest;
+use App\Models\User;
 use App\Services\AuthService;
 
 class AuthController extends Controller
@@ -25,6 +26,13 @@ class AuthController extends Controller
             (filter_var($request->get('email'), FILTER_VALIDATE_EMAIL) ? 'email' : 'phone') => $request->get('email'),
             'password' => $request->get('password')
         );
+
+        if (User::where($request->email)->first()->is_active != 1) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Unauthorized'
+            ], 401);
+        }
 
         if($token = $this->service->login($credentials))
         {

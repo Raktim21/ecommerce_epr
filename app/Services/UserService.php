@@ -15,8 +15,8 @@ class UserService
     public function getAll()
     {
         return User::with('roles')
-            ->whereDoesntHave('employee')
-            ->withSum('point_list', 'points')->paginate(10);
+            // ->whereDoesntHave('employee')
+            ->withSum('point_list', 'points')->paginate(15);
     }
 
     public function store(Request $request)
@@ -120,9 +120,10 @@ class UserService
         try {
             if(!$user->hasRole(1))
             {
-                $user->delete();
+                $user->is_active = 0;
+                $user->save();
 
-                $this->sendNotification('A user has been deleted.', 'user', $user->id);
+                $this->sendNotification('A user has been inactiveted.', 'user', $user->id);
 
                 return true;
             }
