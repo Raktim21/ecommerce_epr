@@ -97,13 +97,14 @@ class UserController extends Controller
         {
             return response()->json([
                 'success' => true,
-            ]);
+                'message' => 'Employee has been updated.'
+            ],200);
         }
 
 
         return response()->json([
             'success' => false,
-            'error' => 'This user can not be deleted.'
+            'error' => 'This user can not be updatees.'
         ], 422);
     }
 }

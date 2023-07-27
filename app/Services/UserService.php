@@ -146,7 +146,7 @@ class UserService
                 $user->is_active =  $request->is_active;
                 $user->save();
 
-                $this->sendNotification('A user has been inactiveted.', 'user', $user->id);
+                $this->sendNotification('A user has been'. ($request->is_active == 1 ? ' activated' : ' inactivated') , 'user', $user->id);
 
                 return true;
             }
