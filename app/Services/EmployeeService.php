@@ -9,6 +9,7 @@ use App\Models\TransportAllowance;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class EmployeeService
 {
@@ -31,11 +32,10 @@ class EmployeeService
     public function giveSalary(Request $request)
     {
         DB::beginTransaction();
-
+        
         try {
             foreach($request->employees as $employee) {
                 $emp = Employee::find($employee);
-
                 if ($emp->is_active == 1) {
                     // $total = TransportAllowance::where('created_by', $emp->user_id)
                     //     ->where('allowance_status', 1)
@@ -47,18 +47,17 @@ class EmployeeService
                     //     ->whereRaw('year(created_at)='.$request->year_name)
                     //     ->whereRaw('month(created_at)='.$request->month_id)
                     //     ->sum('amount');
-    
+        
                     Salary::create([
                         'employee_id'       => $employee,
                         'year_name'         => $request->year_name,
                         'month_id'          => $request->month_id,
-                        'payable_amount'    => $emp->salary,
-                        'paid_amount'       => $emp->salary,
+                        'salary_paid'       => $emp->salary,
                         'incentive_paid'    => 0,
                         'pay_status'        => $request->pay_status
                     ]);
                 }
-
+    
             }
             DB::commit();
             return true;

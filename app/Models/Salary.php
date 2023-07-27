@@ -11,8 +11,7 @@ class Salary extends Model
 
     protected $table = 'salaries';
 
-    protected $fillable = ['employee_id','year_name','month_id','payable_amount',
-        'paid_amount','incentive_paid','pay_status'];
+    protected $guarded = ['id'];
 
     protected $hidden = ['updated_at'];
 
