@@ -62,7 +62,7 @@ class PaymentController extends Controller
         }else {
             return response()->json([
                 'success' => false,
-                'errors'   => 'Invalide payment category ID.'
+                'errors'   => 'Invalid payment category ID.'
             ],422);
         }
 
