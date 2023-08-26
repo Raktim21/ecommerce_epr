@@ -122,7 +122,7 @@
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td style="padding-left: 10px">{{ $data['transport_allowances']->where('is_paid',0)->sum('amount') }}/-</td>
+                    <td style="padding-left: 10px">{{ $data['transport_allowances']->where('is_paid',1)->sum('amount') }}/-</td>
                 </tr>
 
                 <tr>
@@ -130,7 +130,7 @@
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td style="padding-left: 10px">{{ $data['transport_allowances']->where('is_paid',1)->sum('amount') }}/-</td>
+                    <td style="padding-left: 10px">{{ $data['transport_allowances']->where('is_paid',0)->sum('amount') }}/-</td>
                 </tr>
 
             <tr>
