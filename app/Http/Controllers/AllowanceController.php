@@ -143,7 +143,7 @@ class AllowanceController extends Controller
             'success' => true,
             'message' => 'Status of a transport allowance has been changed.'
         ]);
-        
+
     }
 
 
@@ -163,7 +163,7 @@ class AllowanceController extends Controller
 
 
         if (TransportAllowance::whereRaw('id IN (' . implode(',', $request->transport_allowance_id) . ')')->distinct('created_by')->count() > 1) {
-           
+
             return response()->json([
                 'success' => false,
                 'errors'  => "Please select only one user's allowance."
@@ -178,9 +178,9 @@ class AllowanceController extends Controller
             'user' => $user,
         ];
 
-        
+
         $pdf = PDF::loadView('transport_allowance_payment_slip', compact('data'));
-        return $pdf->stream('travel_alowance_payment_slip_'. $user->id . '-'. rand(1000, 9999) .'.pdf');
+        return $pdf->stream('travel_allowance_payment_slip_'. $user->id . '-'. rand(1000, 9999) .'.pdf');
 
     }
 

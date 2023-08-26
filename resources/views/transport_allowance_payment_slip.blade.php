@@ -3,7 +3,7 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Order confirmation</title>
+    <title>Transport Allowance</title>
     <meta name="robots" content="noindex,nofollow" />
     <meta name="viewport" content="width=device-width; initial-scale=1.0;" />
     <style type="text/css">
@@ -37,18 +37,12 @@
                             <td width="400" align="left">
                                 <h2 style="margin: 0; color: #e63c3c">Selopia</h2>
                             </td>
-                            <td width="400" align="right">
-                                <button style="border: none; padding: 5px; background: #c51e1e; color: white;">
-                                    DEBIT VOUCHER
-                                </button>
-                            </td>
                         </tr>
                     </table>
                     <p style="padding: 0; margin: 0; line-height: 16px; font-size: 14px">
-                        Head Office : 704,Concord Tower,113 Kazi Nazrul Islam Ave,Dhaka -
-                        1205 Registered Address : 5B Navana Zohura Square,28 Mymensingh
-                        Road,Dhaka-1205 Phone : +88 0963 888 4444, Email :
-                        hello@selopia.com, Website : www.selopia.com
+                        Head Office : 704,Concord Tower,113 Kazi Nazrul Islam Ave,Dhaka-1205 <br>
+                        Registered Address : 5B Navana Zohura Square,28 Mymensingh Road,Dhaka-1205 <br>
+                        Phone: +88 0963 888 4444, Email: hello@selopia.com, Website:www.selopia.com
                     </p>
                 </td>
             </tr>
@@ -59,7 +53,7 @@
                 <td width="300">
                     Voucher No : {{ $data['user']->id }}-{{ rand(10000, 99999) }}
                 </td>
-                <td width="150"></td>
+                <td width="44"></td>
                 <td width="150">Date : {{ \Carbon\Carbon::now()->format('d M, Y') }}
                 </td>
             </tr>
@@ -67,8 +61,10 @@
 
         <table>
             <tr>
-                <td width="300">Name : {{ $data['user']->name }}</td>
-                <td width="300">Email : {{ $data['user']->email }}</td>
+                <td width="300">
+                    Name : {{ $data['user']->name }} <br>
+                    Email : {{ $data['user']->email }}
+                </td>
             </tr>
         </table>
         <table width="100%"
@@ -80,7 +76,7 @@
             <thead>
                 <tr>
                     <th style="border: 1px solid rgb(201, 201, 201); padding: 10px" align="left">
-                        Journy details
+                        Journey details
                     </th>
                     <th style="border: 1px solid rgb(201, 201, 201); padding: 10px" align="left">
                         Vehicle type
@@ -98,9 +94,9 @@
             @foreach ($data['transport_allowances'] as $transport_allowance)
                 <tr>
                     <td style="border: 1px solid rgb(201, 201, 201); padding-left: 10px">
-                        {!! $transport_allowance->start_from ?? '<span style="color: red">Undefained</span>' !!}  to {!! $transport_allowance->end_to ?? '<span style="color: red">Undefained</span>' !!}
+                        {!! $transport_allowance->from_address ?? '<span style="color: red">Undefined</span>' !!}  to {!! $transport_allowance->to_address ?? '<span style="color: red">Undefined</span>' !!}
                     </td>
-                    
+
                     <td style="border: 1px solid rgb(201, 201, 201); padding-left: 10px">
                         {{ $transport_allowance->transport_type }}
                     </td>
@@ -125,11 +121,11 @@
 
         <table width="100%" align="center" style="margin-top: 100px;">
             <tr>
-                <td width="250" align="center">
+                <td width="50" align="center">
                     <input type="text" style="background: transparent;border: none;border-bottom: 1px dotted gray;width: 80%;" />
-                    Recieved by
+                    Received by
                 </td>
-                <td width="250" align="center">
+                <td width="50" align="center">
                     <input type="text"
                         style="
                 background: transparent;
@@ -139,7 +135,7 @@
               " />
                     Prepared by
                 </td>
-                <td width="250" align="center">
+                <td width="50" align="center">
                     <input type="text"
                         style="
                 background: transparent;
