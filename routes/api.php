@@ -107,7 +107,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         Route::get('payment_types', 'getTypes')->middleware('permission:get-payment-type');
         Route::get('client-payment-data', 'getPayData')->middleware('permission:get-client-payment');
         Route::get('payslip/{id}', 'getPayslip')->middleware('permission:get-payslip');
-        
+
         Route::get('payment_categories', 'getCategories')->middleware('permission:get-payment-category');
         Route::post('payment_categories', 'storeCategories')->middleware('permission:create-payment-category');
         Route::post('payment_categories-update/{id}', 'updateCategories')->middleware('permission:update-payment-category');
@@ -128,7 +128,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         });
         Route::get('transport-allowances/export/all', 'transportAllowanceExport')->middleware('permission:export-transport-allowance');
         Route::post('transport-allowances/update-payment-status', 'transportAllowanceChangePaymentStatus')->middleware('permission:update-transport-payment-status');
-        Route::post('transport-allowance-payment-slip', 'transportAllowancePaymentSlip')->middleware('permission:trandport-allowance-payment-slip');
+        Route::post('transport-allowance-payment-slip', 'transportAllowancePaymentSlip')->middleware('permission:transport-allowance-payment-slip');
 
         Route::middleware('permission:create-update-transport-allowance')->group(function() {
 
