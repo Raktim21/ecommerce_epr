@@ -67,6 +67,7 @@ class RolePermissionSeeder extends Seeder
             'create-user-employee-profile',
             'update-payment-category',
             'update-employee',
+            'get-client-gps-data',
         ];
 
         foreach ($permissions as $value)

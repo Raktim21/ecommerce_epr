@@ -9,6 +9,7 @@ use App\Http\Controllers\MonthController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\AllowanceController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserPointController;
 use App\Http\Controllers\WebsiteController;
@@ -28,6 +29,8 @@ Route::controller(AuthController::class)->group(function () {
 Route::group(['middleware' => ['jwt.verify']], function () {
 
     Route::get('months', [MonthController::class, 'getAll']);
+
+    Route::get('dashboard', [DashboardController::class, 'index']);
 
     Route::controller(AuthController::class)->group(function () {
         Route::get('logout', 'logout');
@@ -73,6 +76,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         Route::post('users-update/{id}', 'update')->middleware('permission:update-user');
         Route::post('users-status/{id}', 'changeStatus')->middleware('permission:update-user');
         // Route::delete('users/{id}', 'destroy')->middleware('permission:delete-user');
+        Route::get('sales-person', 'UserSalesPerson')->middleware('permission:get-user-list');
     });
 
     Route::controller(EmployeeController::class)->group(function () {
@@ -83,6 +87,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     });
 
     Route::controller(ClientsController::class)->group(function () {
+        Route::get('client-gps-data', 'clientGps')->middleware('permission:get-client-gps-data');
         Route::get('clients', 'index')->middleware('permission:get-client-list');
         Route::get('get-unpaid-clients', 'unpaidClients')->middleware('permission:get-unpaid-client-list');
         Route::get('clients/{id}', 'show')->middleware('permission:get-client-info');

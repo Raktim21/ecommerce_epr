@@ -5,12 +5,15 @@ namespace App\Http\Controllers;
 use App\Exports\ClientExport;
 use App\Http\Requests\ClientDeleteRequest;
 use App\Http\Requests\ClientGetRequest;
+use App\Http\Requests\ClientGpsRequest;
 use App\Http\Requests\ClientImportRequest;
 use App\Http\Requests\ClientStoreRequest;
 use App\Http\Requests\ClientUpdateDocRequest;
 use App\Http\Requests\ClientUpdateInfoRequest;
 use App\Http\Requests\FileTypeRequest;
+use App\Models\Clients;
 use App\Services\ClientService;
+use Illuminate\Support\Facades\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ClientsController extends Controller
@@ -117,4 +120,16 @@ class ClientsController extends Controller
             'data' => $this->clientService->unpaidClients()
         ]);
     }
+
+
+    public function clientGps(ClientGpsRequest $request)
+    {
+        $clients = Clients::where('added_by', $request->user_id)->whereDate('created_at',$request->date)->select('id', 'name', 'latitude', 'longitude', 'interest_status' )->get();
+
+        return response()->json([
+            'status' => true,
+            'data' => $clients
+        ], 200);
+    }
+
 }

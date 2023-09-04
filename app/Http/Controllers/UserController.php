@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\EmployeeProfileStoreRequest;
 use App\Http\Requests\UserStoreRequest;
 use App\Http\Requests\UserUpdateRequest;
+use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -106,5 +107,16 @@ class UserController extends Controller
             'success' => false,
             'error' => 'This user can not be updatees.'
         ], 422);
+    }
+
+
+    public function UserSalesPerson()
+    {
+        $users = User::role('Frontline Warior')->select('id', 'name')->get();
+
+        return response()->json([
+           'success' => true,
+           'data' => $users
+        ]);
     }
 }
