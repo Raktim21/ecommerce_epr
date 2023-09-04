@@ -58,7 +58,7 @@ jobs:
           with:
             host: selopia.com
             username: u652464815
-            password: 123jdfgkaJDSG2633A^$
+            password: wew2Weqsdf@ssfa3
             port: 65002
             script: |
               cd domains/sltm.selopia.com/public_html/
