@@ -7,6 +7,7 @@ use App\Models\TransportAllowance;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class AllowanceService
 {
@@ -17,15 +18,16 @@ class AllowanceService
             return false;
         }
         $allowance = TransportAllowance::create([
-            'from_lat'      => $request->from_lat,
-            'from_lng'      => $request->from_lng,
-            'from_address'  => getAddress($request->from_lat, $request->from_lng),
-            'start_time'    => Carbon::now()->timezone('Asia/Dhaka'),
-            'visit_type'    => $request->visit_type,
-            'transport_type'=> $request->transport_type ?? null,
-            'amount'        => $request->amount ?? 0.00,
-            'note'          => $request->note ?? null,
-            'created_by'    => auth()->user()->id,
+            'from_lat'       => $request->from_lat,
+            'from_lng'       => $request->from_lng,
+            'from_address'   => $request->from_address,
+            'to_address'     => $request->to_address,
+            'start_time'     => Carbon::now()->timezone('Asia/Dhaka'),
+            'visit_type'     => $request->visit_type,
+            'transport_type' => $request->transport_type ?? null,
+            'amount'         => $request->amount ?? 0.00,
+            'note'           => $request->note ?? null,
+            'created_by'     => auth()->user()->id,
             'client_id'      => $request->client_id,
             'follow_up_id'   => $request->follow_up_id
             
@@ -57,7 +59,9 @@ class AllowanceService
         $allowance->update([
             'to_lat'         => $request->to_lat,
             'to_lng'         => $request->to_lng,
-            'to_address'     => getAddress($request->to_lat, $request->to_lng),
+            // 'to_address'     => getAddress($request->to_lat, $request->to_lng),
+            'from_address'   => $request->from_address,
+            'to_address'     => $request->to_address,
             'end_time'       => Carbon::now()->timezone('Asia/Dhaka'),
             'visit_type'     => $request->visit_type,
             'transport_type' => $request->transport_type,

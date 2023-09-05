@@ -124,7 +124,7 @@ class ClientsController extends Controller
 
     public function clientGps(ClientGpsRequest $request)
     {
-        $clients = Clients::where('added_by', $request->user_id)->whereDate('created_at',$request->date)->select('id', 'name', 'latitude', 'longitude', 'interest_status' )->get();
+        $clients = Clients::where('added_by', $request->user_id)->whereDate('created_at',$request->date)->select('id', 'name', 'latitude', 'longitude', 'interest_status' ,'confirmation_date' )->get();
 
         return response()->json([
             'status' => true,
