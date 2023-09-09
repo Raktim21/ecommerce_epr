@@ -12,10 +12,8 @@ use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Log;
 
-class AdminNotification extends Notification implements ShouldBroadcastNow
+class AdminNotification extends Notification
 {
-    use InteractsWithBroadcasting;
-
     protected $message, $model, $model_id;
 
     /**
@@ -35,19 +33,7 @@ class AdminNotification extends Notification implements ShouldBroadcastNow
      */
     public function via(object $notifiable): array
     {
-        return ['database','broadcast'];
-    }
-
-    /**
-     * Get the broadcastable representation of the notification.
-     */
-    public function toBroadcast(object $notifiable): BroadcastMessage
-    {
-        return new BroadcastMessage([
-            'message'   => $this->message,
-            'model'     => $this->model,
-            'model_id'  => $this->model_id,
-        ]);
+        return ['database'];
     }
 
     /**

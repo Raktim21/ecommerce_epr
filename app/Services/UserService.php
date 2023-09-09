@@ -113,40 +113,18 @@ class UserService
         return User::with('employee')->findOrFail($id);
     }
 
-    // public function delete($id): bool
-    // {
-    //     $user = User::findOrFail($id);
-
-    //     try {
-    //         if(!$user->hasRole(1))
-    //         {
-    //             $user->is_active = 0;
-    //             $user->save();
-
-    //             $this->sendNotification('A user has been inactiveted.', 'user', $user->id);
-
-    //             return true;
-    //         }
-    //         return false;
-    //     }
-    //     catch (\Exception $e)
-    //     {
-    //         return false;
-    //     }
-    // }
-
 
     public function activeStatus(Request $request, $id)
     {
         $user = User::findOrFail($id);
 
         try {
-            if(!$user->hasRole(1))
+            if(!$user->hasRole('Super Admin'))
             {
                 $user->is_active =  $request->is_active;
                 $user->save();
 
-                $this->sendNotification('A user has been'. ($request->is_active == 1 ? ' activated' : ' inactivated') , 'user', $user->id);
+                $this->sendNotification('A user has been'. ($request->is_active == 1 ? ' activated' : ' deactivated') , 'user', $user->id);
 
                 return true;
             }

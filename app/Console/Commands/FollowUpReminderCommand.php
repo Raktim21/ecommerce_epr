@@ -2,6 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Models\FollowUpReminder;
+use App\Models\User;
+use App\Notifications\AdminNotification;
 use Illuminate\Console\Command;
 
 class FollowUpReminderCommand extends Command
@@ -11,7 +14,7 @@ class FollowUpReminderCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'app:follow-up-reminder-command';
+    protected $signature = 'follow-up:reminder';
 
     /**
      * The console command description.
@@ -25,6 +28,13 @@ class FollowUpReminderCommand extends Command
      */
     public function handle()
     {
-        //
+        $follow_ups = FollowUpReminder::whereDate('followup_session', now()->toDateString())->get();
+
+        $message = 'You have a client follow up today.';
+
+        foreach ($follow_ups as $item)
+        {
+            User::find($item->added_by)->notify(new AdminNotification($message, 'client-follow-up-reminder', $item->id));
+        }
     }
 }
