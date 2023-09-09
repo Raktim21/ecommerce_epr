@@ -60,4 +60,18 @@ class FollowUpService
             'added_by'              => auth()->user()->id
         ]);
     }
+
+    public function getPendingFollowUps()
+    {
+        return FollowUpReminder::with(['client' => function($q) {
+            return $q->select('id','name','email','phone_no');
+        }])->when(auth()->user()->hasRole('Super Admin'), function ($q) {
+            return $q->with(['added_by_info' => function($q) {
+                return $q->select('id','name','email','phone','avatar');
+            }]);
+        })->when(!auth()->user()->hasRole('Super Admin'), function ($q) {
+            return $q->where('added_by', auth()->user()->id);
+        })->where('followup_session', '>', date('Y-m-d H:i:s'))
+            ->orderBy('id')->get();
+    }
 }

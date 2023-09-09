@@ -10,6 +10,7 @@ class FollowUpReminder extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
+    protected $hidden = ['updated_at'];
 
     public function client()
     {

@@ -22,7 +22,10 @@ class AuthService
 
     public function profile()
     {
-        return User::with('roles')->withSum('point_list','points')->find(auth()->user()->id);
+        return User::with('roles')
+            ->withSum('point_list','points')
+            ->withCount('follow_up_reminders')
+            ->find(auth()->user()->id);
     }
 
     public function storeAvatar(Request $request)
