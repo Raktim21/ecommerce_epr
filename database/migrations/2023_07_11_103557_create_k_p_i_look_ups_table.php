@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('kpi_look_ups', function (Blueprint $table) {
             $table->id();
-            $table->string('category');
-            $table->integer('client_count');
+            $table->string('category', 50)->unique();
+            $table->integer('client_count', false, true);
             $table->float('amount');
             $table->float('per_client_amount');
             $table->timestamps();

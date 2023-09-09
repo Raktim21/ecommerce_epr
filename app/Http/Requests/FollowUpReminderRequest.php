@@ -27,14 +27,14 @@ class FollowUpReminderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'follow_up_session'     => 'required|date_format:Y-m-d H:i|after:'.date('Y-m-d'),
+            'followup_session'      => 'required|date_format:Y-m-d H:i|after:'.date('Y-m-d'),
             'client_id'             => ['required', 'integer',
                                         function ($attr, $val, $fail) {
                                             if(FollowUpReminder::where('client_id', $val)
-                                                ->where('followup_session', Carbon::parse($this->input('follow_up_session'))->format('Y-m-d H:i:s'))
+                                                ->where('followup_session', Carbon::parse($this->input('followup_session'))->format('Y-m-d H:i:s'))
                                                 ->exists()
                                             ) {
-                                                $fail('The client already has a follow up session at the selected time');
+                                                $fail('The client already has a follow up session at the selected time.');
                                             }
                                         }],
             'notes'                 => 'nullable|string|max:500'

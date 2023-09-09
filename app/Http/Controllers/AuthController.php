@@ -8,8 +8,11 @@ use App\Http\Requests\ConfirmPasswordRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\PasswordRequest;
 use App\Http\Requests\ResetPasswordRequest;
+use App\Models\Notification;
 use App\Models\User;
 use App\Services\AuthService;
+use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AuthController extends Controller
 {
@@ -63,9 +66,64 @@ class AuthController extends Controller
 
     public function getNotifications()
     {
+        auth()->user()->notifications->whereNull('read_at')->update([
+            'send_status'   => 1
+        ]);
+
         return response()->json([
             'success'   => true,
             'data'      => auth()->user()->notifications->whereNull('read_at'),
+        ]);
+    }
+
+    public function getNewNotifications()
+    {
+        $start_time = time();
+
+        return new StreamedResponse(function () use ($start_time) {
+
+            echo ":" . str_repeat(" ", 2048) . "\n";
+            echo "retry: 2000\n";
+
+            $c = 0;
+            while ((time() - $start_time) < 30)
+            {
+                $notifications = Notification::
+                    select('id','data','read_at','created_at')
+                    ->where('notifiable_id', '=', auth()->user()->id)
+                    ->where('send_status', '=', 0)
+                    ->orderByDesc('created_at')
+                    ->get();
+
+                foreach ($notifications as $notification)
+                {
+                    $data = json_encode($notification);
+                    echo "id: {$notification->id}\n";
+                    echo "data: {$data}\n\n";
+
+                    $notification->update(['send_status' => 1]);
+
+                    if( ob_get_level() > 0 ) for( $i=0; $i < ob_get_level(); $i++ ) ob_flush();
+                    flush();
+
+                    $c++;
+                    if( $c % 1000 == 0 ){
+                        gc_collect_cycles();
+                        $c=1;
+                    }
+
+                }
+
+                if (connection_aborted()) {break;}
+                DB::disconnect();
+                sleep(3);
+            }
+
+        }, 200, [
+            'Content-Type'      => 'text/event-stream',
+            'Cache-Control'     => 'no-cache',
+            'Connection'        => 'keep-alive',
+            'X-Accel-Buffering' => 'no'
         ]);
     }
 

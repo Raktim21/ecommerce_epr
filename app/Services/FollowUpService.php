@@ -55,7 +55,7 @@ class FollowUpService
     {
         FollowUpReminder::create([
             'client_id'             => $request->client_id,
-            'followup_session'      => $request->follow_up_session,
+            'followup_session'      => $request->followup_session,
             'notes'                 => $request->notes,
             'added_by'              => auth()->user()->id
         ]);

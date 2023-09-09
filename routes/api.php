@@ -32,6 +32,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         Route::get('logout', 'logout');
         Route::get('refresh', 'refresh');
 
+        Route::get('new-notifications', 'getNewNotifications');
         Route::get('notifications', 'getNotifications');
         Route::get('notifications/read/{id}', 'readNotification');
 
