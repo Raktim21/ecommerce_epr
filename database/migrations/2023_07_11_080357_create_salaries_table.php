@@ -20,6 +20,7 @@ return new class extends Migration
             $table->float('paid_amount');
             $table->float('incentive_paid')->default(0);
             $table->tinyInteger('admin_status')->default(0)->comment('0:pending,1:approved,2:declined');
+            $table->tinyInteger('pay_status', false, true)->default(0);
             $table->timestamps();
         });
     }

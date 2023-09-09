@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('payment_categories', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
+            $table->text('description');
+            $table->float('price')->default(0.00);
             $table->timestamps();
         });
     }

@@ -14,15 +14,17 @@ return new class extends Migration
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
             $table->string('company');
-            $table->string('name');
-            $table->string('email')->default('N/A');
-            $table->string('phone_no');
+            $table->string('name', 150);
+            $table->string('email', 150)->default('N/A');
+            $table->string('phone_no', 20);
             $table->string('area');
-            $table->foreignId('status_id')->constrained('interest_statuses')->onDelete('restrict');
+            $table->string('latitude', 30)->nullable();
+            $table->string('longitude', 30)->nullable();
             $table->string('product_type', 255);
+            $table->tinyInteger('interest_status', false, true)->default(0);
             $table->string('client_opinion')->nullable();
             $table->string('officer_opinion')->nullable();
-            $table->string('document')->nullable();
+            $table->string('document', 100)->nullable();
             $table->foreignId('added_by')->constrained('users')->onDelete('restrict');
             $table->timestamp('confirmation_date')->nullable();
             $table->timestamps();

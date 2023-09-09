@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('follow_up_infos', function (Blueprint $table) {
             $table->id();
             $table->foreignId('client_id')->constrained('clients')->onDelete('cascade');
-            $table->text('detail');
+            $table->string('detail', 500);
+            $table->string('latitude', 30)->nullable();
+            $table->string('longitude', 30)->nullable();
             $table->timestamp('occurred_on');
             $table->timestamps();
         });

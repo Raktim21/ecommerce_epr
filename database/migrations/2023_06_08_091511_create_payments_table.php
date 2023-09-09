@@ -14,6 +14,10 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('client_id')->constrained('clients')->onDelete('restrict');
+            $table->foreignId('payment_type_id')->constrained('payment_types')->onDelete('restrict');
+            $table->foreignId('payment_category_id')->constrained('payment_categories')->onDelete('restrict');
+            $table->string('transaction_id', 50)->nullable();
+            $table->string('invoice_no', 50)->unique();
             $table->double('amount',8,2);
             $table->timestamps();
         });

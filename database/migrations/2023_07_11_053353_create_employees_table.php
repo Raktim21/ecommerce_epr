@@ -16,10 +16,9 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->onDelete('restrict');
             $table->float('salary');
             $table->integer('general_kpi');
-            $table->integer('incentive_kpi')->nullable();
-            $table->float('incentive_bonus')->default(0);
             $table->string('document')->nullable();
             $table->dateTime('joining_date');
+            $table->tinyInteger('is_active', false, true)->default(1);
             $table->timestamps();
         });
     }
