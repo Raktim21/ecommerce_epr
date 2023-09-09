@@ -20,6 +20,7 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('login', 'login');
     Route::post('reset-password', 'resetPassword');
     Route::post('confirm-password', 'confirmPassword');
+    Route::get('new-notifications', 'getNewNotifications');
 });
 
 Route::group(['middleware' => ['jwt.verify']], function () {
@@ -32,9 +33,9 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         Route::get('logout', 'logout');
         Route::get('refresh', 'refresh');
 
-        Route::get('new-notifications', 'getNewNotifications');
         Route::get('notifications', 'getNotifications');
         Route::get('notifications/read/{id}', 'readNotification');
+        Route::get('notifications/read-all', 'readNotifications');
 
         Route::get('profile', 'profile');
         Route::post('update-avatar', 'updateAvatar');

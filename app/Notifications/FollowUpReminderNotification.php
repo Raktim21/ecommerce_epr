@@ -2,23 +2,26 @@
 
 namespace App\Notifications;
 
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class ResetPasswordNotification extends Notification
+class FollowUpReminderNotification extends Notification
 {
     use Queueable;
 
-    protected string $name, $code;
+    public $client, $session, $name;
+
     /**
      * Create a new notification instance.
      */
-    public function __construct($name, $code)
+    public function __construct($client, $session, $name)
     {
+        $this->client = $client;
+        $this->session = $session;
         $this->name = $name;
-        $this->code = $code;
     }
 
     /**
@@ -37,8 +40,12 @@ class ResetPasswordNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('Reset Password')
+            ->subject('Client Follow Up')
             ->greeting('Dear ' . $this->name)
-            ->line('Your password reset code is ' . $this->code . '.');
+            ->line('You have a client follow up today at '. Carbon::parse($this->session)->format('H:i') .'.')
+            ->line('Client Information:')
+            ->line('Name: ' . $this->client->name)
+            ->line('Email: ' . $this->client->email)
+            ->line('Phone No: '.$this->client->phone_no);
     }
 }

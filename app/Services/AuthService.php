@@ -81,7 +81,7 @@ class AuthService
             'password_reset_code'  => $code,
         ]);
 
-//        $user->notify(new ResetPasswordNotification($user->name, $code));
+        $user->notify(new ResetPasswordNotification($user->name, $code));
 
         return $user->password_reset_token;
     }
