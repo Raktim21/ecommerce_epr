@@ -35,6 +35,11 @@ class Clients extends Model
         return $this->hasMany(FollowUpInfo::class, 'client_id');
     }
 
+    public function follow_up_reminders()
+    {
+        return $this->hasMany(FollowUpReminder::class, 'client_id');
+    }
+
     public function payment()
     {
         return $this->hasMany(Payment::class, 'client_id');

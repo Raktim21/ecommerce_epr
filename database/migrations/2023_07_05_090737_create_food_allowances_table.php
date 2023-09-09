@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('food_allowances', function (Blueprint $table) {
             $table->id();
-            $table->string('lat');
-            $table->string('lng');
-            $table->text('address')->nullable();
+            $table->string('lat', 30);
+            $table->string('lng', 30);
+            $table->string('address', 500)->nullable();
             $table->float('amount')->default(0.00);
-            $table->text('note')->nullable();
-            $table->string('document')->nullable();
+            $table->string('note', 500)->nullable();
+            $table->string('document', 100)->nullable();
             $table->dateTime('occurred_on');
             $table->foreignId('created_by')->index()->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('client_id')->index()->nullable()->constrained('clients')->onDelete('set null');

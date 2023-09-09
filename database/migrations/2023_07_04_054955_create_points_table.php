@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('points', function (Blueprint $table) {
             $table->id();
-            $table->string('type')->unique();
+            $table->string('type', 100)->unique();
             $table->integer('point');
             $table->timestamps();
         });

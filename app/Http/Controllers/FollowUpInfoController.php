@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FollowUpReminderRequest;
 use App\Http\Requests\FollowUpStoreRequest;
 use App\Http\Requests\FollowUpUpdateRequest;
 use App\Models\Clients;
@@ -24,6 +25,15 @@ class FollowUpInfoController extends Controller
         return response()->json([
             'success' => true,
         ],201);
+    }
+
+    public function addReminder(FollowUpReminderRequest $request)
+    {
+        $this->followUpService->storeReminder($request);
+
+        return response()->json([
+            'success' => true
+        ], 201);
     }
 
 

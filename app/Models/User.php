@@ -86,6 +86,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Clients::class, 'added_by');
     }
 
+    public function follow_up_reminders()
+    {
+        return $this->hasMany(FollowUpReminder::class, 'added_by');
+    }
+
     public function employee()
     {
         return $this->hasOne(Employee::class, 'user_id');

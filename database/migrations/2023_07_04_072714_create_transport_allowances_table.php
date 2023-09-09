@@ -13,19 +13,19 @@ return new class extends Migration
     {
         Schema::create('transport_allowances', function (Blueprint $table) {
             $table->id();
-            $table->longText('from_lat');
-            $table->longText('from_lng');
-            $table->longText('from_address')->nullable();
+            $table->string('from_lat', 30);
+            $table->string('from_lng', 30);
+            $table->string('from_address', 500)->nullable();
             $table->dateTime('start_time');
-            $table->longText('to_lat')->nullable();
-            $table->longText('to_lng')->nullable();
-            $table->longText('to_address')->nullable();
+            $table->string('to_lat', 30)->nullable();
+            $table->string('to_lng', 30)->nullable();
+            $table->string('to_address', 500)->nullable();
             $table->dateTime('end_time')->nullable();
-            $table->string('transport_type')->nullable();
+            $table->string('transport_type', 20)->nullable();
             $table->float('amount')->default(0.00);
-            $table->longText('document')->nullable();
-            $table->longText('note')->nullable();
-            $table->longText('visit_type')->nullable();
+            $table->string('document', 100)->nullable();
+            $table->string('note', 500)->nullable();
+            $table->string('visit_type', 20)->nullable();
             $table->foreignId('created_by')->index()->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('client_id')->index()->nullable()->constrained('clients')->onDelete('set null');
             $table->foreignId('follow_up_id')->index()->nullable()->constrained('follow_up_infos')->onDelete('set null');

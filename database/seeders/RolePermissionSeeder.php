@@ -38,6 +38,7 @@ class RolePermissionSeeder extends Seeder
             'delete-client',
             'get-client-follow-up',
             'create-client-follow-up',
+            'create-client-follow-up-reminder',
             'update-client-follow-up',
             'delete-client-follow-up',
             'get-client-payment',
@@ -80,12 +81,10 @@ class RolePermissionSeeder extends Seeder
             }
         }
 
-//        $role = Role::create([
-//            'name' => 'Super Admin',
-//            'guard_name' => 'api'
-//        ]);
-
-        $role = Role::find(1);
+        $role = Role::create([
+            'name' => 'Super Admin',
+            'guard_name' => 'api'
+        ]);
 
         $role->givePermissionTo(Permission::all());
 

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('name', 150);
             $table->string('email', 150)->default('N/A');
             $table->string('phone_no', 20);
-            $table->string('area');
+            $table->string('area', 255);
             $table->string('latitude', 30)->nullable();
             $table->string('longitude', 30)->nullable();
             $table->string('product_type', 255);

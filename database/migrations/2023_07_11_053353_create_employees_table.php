@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('employees', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('restrict');
-            $table->float('salary');
+            $table->float('salary', false, true);
             $table->integer('general_kpi');
-            $table->string('document')->nullable();
+            $table->string('document', 150)->nullable();
             $table->dateTime('joining_date');
             $table->tinyInteger('is_active', false, true)->default(1);
             $table->timestamps();

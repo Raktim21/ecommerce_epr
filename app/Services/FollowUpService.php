@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Clients;
 use App\Models\FollowUpInfo;
+use App\Models\FollowUpReminder;
 use Illuminate\Http\Request;
 
 class FollowUpService
@@ -48,5 +49,15 @@ class FollowUpService
     public function delete($id)
     {
         FollowUpInfo::findOrFail($id)->delete();
+    }
+
+    public function storeReminder(Request $request)
+    {
+        FollowUpReminder::create([
+            'client_id'             => $request->client_id,
+            'followup_session'      => $request->follow_up_session,
+            'notes'                 => $request->notes,
+            'added_by'              => auth()->user()->id
+        ]);
     }
 }
