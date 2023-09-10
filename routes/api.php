@@ -74,7 +74,6 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         Route::post('users-update/{id}', 'update')->middleware('permission:update-user');
         Route::post('users-status/{id}', 'changeStatus')->middleware('permission:update-user');
         Route::delete('users/{id}', 'destroy')->middleware('permission:delete-user');
-        Route::get('sales-person', 'UserSalesPerson')->middleware('permission:get-user-list');
     });
 
     Route::controller(EmployeeController::class)->group(function () {

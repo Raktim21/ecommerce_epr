@@ -2,11 +2,14 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Employee;
 use App\Models\Salary;
+use Carbon\Carbon;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Facades\Log;
 
 class StoreSalaryRequest extends FormRequest
 {
@@ -26,6 +29,15 @@ class StoreSalaryRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'year_name'         => 'required|date_format:Y|before:' . (date('Y') + 1),
+            'month_id'          => ['required','exists:months,id',
+                function($attr, $val, $fail) {
+                    if($this->input('year_name') == date('Y')) {
+                        if($val > date('n')) {
+                            $fail('Salary for future can not be given.');
+                        }
+                    }
+                }],
             'employees'         => 'required|array|min:1',
             'employees.*'       => ['required','exists:employees,id',
                                     function($attr, $val, $fail) {
@@ -34,28 +46,17 @@ class StoreSalaryRequest extends FormRequest
                                             ->where('month_id', $this->input('month_id'))
                                             ->first();
 
-                                        if($existing && $this->input('pay_status') == 1) {
-                                            $fail('Both allowance and salary can not be paid to '. $existing->employee->user->name . '.');
-                                        }
-                                        else if($existing && $existing->pay_status == $this->input('pay_status')) {
-                                            $fail('Salary has already been given to '. $existing->employee->user->name .' for the given type.');
-                                        }
-                                        else if($existing && $existing->pay_status == 1) {
-                                            $fail('Both allowance and salary have been paid to '. $existing->employee->user->name .' for the selected month.');
-                                        }
+                                        $employee = Employee::find($val);
 
+                                        $date = Carbon::create($this->input('year_name'), $this->input('month_id'), 1);
 
-                                    }],
-            'year_name'         => 'required|date_format:Y|before:' . (date('Y') + 1),
-            'month_id'          => ['required','exists:months,id',
-                                    function($attr, $val, $fail) {
-                                        if($this->input('year_name') == date('Y')) {
-                                            if($val > date('n')) {
-                                                $fail('Salary for future months can not be given.');
-                                            }
+                                        if($existing) {
+                                            $fail('Salary has already been given to '. $existing->employee->user->name .' for the given month.');
+                                        }
+                                        else if($employee && $employee->joining_date > $date) {
+                                            $fail($employee->user->name .' has joined after the selected time.');
                                         }
                                     }],
-            'pay_status'        => 'required|in:0,1' // 0 = unpaid, 1 = paid
         ];
     }
 

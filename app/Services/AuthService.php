@@ -48,7 +48,7 @@ class AuthService
 
     public function updateInfo(Request $request)
     {
-        User::findOrFail(auth()->user()->id)->update([
+        User::find(auth()->user()->id)->update([
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,

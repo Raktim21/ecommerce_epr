@@ -30,7 +30,7 @@ class AllowanceService
             'created_by'     => auth()->user()->id,
             'client_id'      => $request->client_id,
             'follow_up_id'   => $request->follow_up_id
-            
+
         ]);
 
         if ($request->hasFile('document')){
@@ -59,7 +59,6 @@ class AllowanceService
         $allowance->update([
             'to_lat'         => $request->to_lat,
             'to_lng'         => $request->to_lng,
-            // 'to_address'     => getAddress($request->to_lat, $request->to_lng),
             'from_address'   => $request->from_address,
             'to_address'     => $request->to_address,
             'end_time'       => Carbon::now()->timezone('Asia/Dhaka'),
@@ -96,34 +95,22 @@ class AllowanceService
     }
 
 
-
     public function transportAllowanceUpdatePaymentStatus(Request $request, $id): void
     {
 
-        $allowence = TransportAllowance::findOrFail($id);
+        $allowance = TransportAllowance::findOrFail($id);
 
-        if($allowence->allowance_status != 2)
+        if($allowance->allowance_status != 2)
         {
-            $allowence->is_paid = $request->payment_status;
+            $allowance->is_paid = $request->payment_status;
 
-            $allowence->allowance_status =  $request->payment_status == 0 ? 0 : 1;
+            $allowance->allowance_status =  $request->payment_status == 0 ? 0 : 1;
 
-            // if ($request->payment_status == 0) {
-            //     $allowence->allowance_status = 0;
-            // }else {
-            //     $allowence->allowance_status = 1;
-            // }
-            $allowence->update();
+            $allowance->update();
 
-            (new UserService)->sendNotification('Your transport allowance has been paid.', 'transport-allowance', $allowence->id);
-            
+            (new UserService)->sendNotification('Transport allowance has been paid to an employee.', 'transport-allowance', $allowance->id);
         }
-
     }
-
-
-
-
 
     public function updateFoodStatus(Request $request, $id): void
     {

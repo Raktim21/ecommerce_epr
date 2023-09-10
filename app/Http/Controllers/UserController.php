@@ -21,10 +21,12 @@ class UserController extends Controller
 
     public function index()
     {
+        $data = $this->service->getAll();
+
         return response()->json([
             'success' => true,
-            'data' => $this->service->getAll()
-        ]);
+            'data' => $data
+        ], $data->isEmpty() ? 204 : 200);
     }
 
     public function store(UserStoreRequest $request)
@@ -51,35 +53,27 @@ class UserController extends Controller
 
     public function update(UserUpdateRequest $request, $id)
     {
-        $this->service->updateUser($request, $id);
-
+        if($this->service->updateUser($request, $id)) {
+            return response()->json([
+                'success' => true,
+            ]);
+        }
         return response()->json([
-            'success' => true,
-        ]);
+            'success' => false,
+            'error' => 'Something went wrong.'
+        ], 500);
     }
 
     public function show($id)
     {
+        $data = $this->service->get($id);
+
         return response()->json([
             'success' => true,
-            'data' => $this->service->get($id),
+            'data' => $data,
             'role' => $this->service->getRole($id)[0] ?? null
-        ]);
+        ], is_null($data) ? 204 : 200);
     }
-
-    // public function destroy($id)
-    // {
-    //     if($this->service->delete($id))
-    //     {
-    //         return response()->json([
-    //             'success' => true,
-    //         ]);
-    //     }
-    //     return response()->json([
-    //         'success' => false,
-    //         'error' => 'This user can not be deleted.'
-    //     ], 422);
-    // }
 
     public function changeStatus(Request $request,$id)
     {
@@ -90,7 +84,7 @@ class UserController extends Controller
         if ($validate->fails()) {
             return response()->json([
                 'success' => false,
-                'errors' => $validate->errors()
+                'error' => $validate->errors()->first()
             ], 422);
         }
 
@@ -98,25 +92,12 @@ class UserController extends Controller
         {
             return response()->json([
                 'success' => true,
-                'message' => 'Employee has been updated.'
-            ],200);
+            ]);
         }
-
 
         return response()->json([
             'success' => false,
-            'error' => 'This user can not be updatees.'
-        ], 422);
-    }
-
-
-    public function UserSalesPerson()
-    {
-        $users = User::role('Frontline Warior')->select('id', 'name')->get();
-
-        return response()->json([
-           'success' => true,
-           'data' => $users
-        ]);
+            'error' => 'This user can not be deactivated.'
+        ], 400);
     }
 }

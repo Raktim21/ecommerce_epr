@@ -15,11 +15,10 @@ class UserService
     public function getAll()
     {
         return User::with('roles')
-            // ->whereDoesntHave('employee')
             ->withSum('point_list', 'points')->paginate(15);
     }
 
-    public function store(Request $request)
+    public function store(Request $request): bool
     {
         DB::beginTransaction();
 
@@ -38,7 +37,6 @@ class UserService
                 $employee = Employee::create([
                     'user_id'           => $user->id,
                     'salary'            => $request->salary,
-                    'general_kpi'       => $request->general_kpi,
                     'joining_date'      => $request->joining_date
                 ]);
 
@@ -56,61 +54,67 @@ class UserService
             }
 
             DB::commit();
-
-            $this->sendNotification('A new user has been created.', 'user', $user->id);
             return true;
         }
         catch (QueryException $ex)
         {
             DB::rollback();
-            return $ex->getMessage();
+            return false;
         }
     }
 
-    public function updateUser(Request $request, $id)
+    public function updateUser(Request $request, $id): bool
     {
-        $user = User::findOrFail($id);
+        DB::beginTransaction();
 
-        $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'address' => $request->address,
-            'details' => $request->details,
-        ]);
+        try {
+            $user = User::findOrFail($id);
 
-        $user->roles()->detach();
+            $user->update([
+                'name' => $request->name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'address' => $request->address,
+                'details' => $request->details,
+            ]);
 
-        $user->assignRole($request->role_id);
+            $user->roles()->detach();
 
-        if ($request->hasFile('avatar'))
+            $user->assignRole($request->role_id);
+
+            if ($request->hasFile('avatar')) {
+                if ($user->avatar) {
+                    deleteFile($user->avatar);
+                }
+                saveImage($request->file('avatar'), '/uploads/users/avatar/', $user, 'avatar');
+            }
+
+            $employee = Employee::where('user_id', $id)->update([
+                'salary' => $request->salary,
+                'joining_date' => $request->joining_date
+            ]);
+
+            if ($request->hasFile('document')) {
+                if ($employee->document) {
+                    deleteFile($employee->document);
+                }
+                saveImage($request->file('document'), '/uploads/users/document/', $employee, 'document');
+            }
+
+            $this->sendNotification('User profile of '. $user->name .' has been updated.', 'user', $user->id);
+
+            DB::commit();
+            return true;
+        } catch (QueryException $ex)
         {
-            if($user->avatar)
-            {
-                deleteFile($user->avatar);
-            }
-            saveImage($request->file('avatar'), '/uploads/users/avatar/', $user, 'avatar');
+            DB::rollback();
+            return false;
         }
-
-        $employee = Employee::where('user_id', $id)->update([
-            'salary'         => $request->salary,
-            'general_kpi'    => $request->general_kpi,
-            'joining_date'      => $request->joining_date
-        ]);
-
-        if($request->hasFile('document')) {
-            if($employee->document) {
-                deleteFile($employee->document);
-            }
-            saveImage($request->file('document'), '/uploads/users/document/', $employee, 'document');
-        }
-
-        $this->sendNotification("A user's information has been updated.", 'user', $user->id);
     }
 
     public function get($id)
     {
-        return User::with('employee')->findOrFail($id);
+        return User::with('employee')->find($id);
     }
 
 
@@ -118,22 +122,17 @@ class UserService
     {
         $user = User::findOrFail($id);
 
-        try {
-            if(!$user->hasRole('Super Admin'))
-            {
-                $user->is_active =  $request->is_active;
-                $user->save();
-
-                $this->sendNotification('A user has been'. ($request->is_active == 1 ? ' activated' : ' deactivated') , 'user', $user->id);
-
-                return true;
-            }
-            return false;
-        }
-        catch (\Exception $e)
+        if($user->hasRole('Super Admin') && $request->is_active == 0)
         {
             return false;
         }
+
+        $user->is_active =  $request->is_active;
+        $user->save();
+
+        $this->sendNotification('User account of '. $user->name .' has been'. ($request->is_active == 1 ? ' activated' : ' deactivated') , 'user', $user->id);
+
+        return true;
     }
 
 

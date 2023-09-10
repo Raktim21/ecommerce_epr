@@ -11,6 +11,7 @@ use App\Http\Requests\ResetPasswordRequest;
 use App\Models\Notification;
 use App\Models\User;
 use App\Services\AuthService;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -60,9 +61,12 @@ class AuthController extends Controller
 
     public function profile()
     {
+        $data = Cache::remember('auth_profile'.auth()->user()->id, 60*60*24, function () {
+            return $this->service->profile();
+        });
         return response()->json([
-            'success' => true,
-            'data' => $this->service->profile()
+            'success'   => true,
+            'data'      => $data
         ]);
     }
 

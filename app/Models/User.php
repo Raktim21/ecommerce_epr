@@ -3,7 +3,9 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Services\UserService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Cache;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -94,5 +96,21 @@ class User extends Authenticatable implements JWTSubject
     public function employee()
     {
         return $this->hasOne(Employee::class, 'user_id');
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($user) {
+            (new UserService())->sendNotification(
+                'A new user profile has been created for '. $user->name .'.',
+                'user',
+                $user->id);
+        });
+
+        static::updated(function ($user) {
+            Cache::forget('auth_profile'.$user->id);
+        });
     }
 }

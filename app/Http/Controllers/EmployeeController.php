@@ -45,34 +45,20 @@ class EmployeeController extends Controller
             ], 422);
         }
 
-        try {
-            $employee = Employee::find($id);
-            $employee->salary = $request->salary;
-            $employee->general_kpi = $request->general_kpi;
-            $employee->save();
+        $employee = Employee::find($id);
+        $employee->salary = $request->salary;
+        $employee->general_kpi = $request->general_kpi;
+        $employee->save();
 
-            if ($request->hasFile('document')) {
-                saveImage($request->file('document'), '/uploads/users/document/', $employee, 'document');
-            }
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Employee has been updated.'
-            ],200);
-            
-        } catch (\Throwable $th) {
-            
-            return response()->json([
-                'success' => false,
-                'message' => 'Employee not found.'
-            ], 304);
+        if ($request->hasFile('document')) {
+            saveImage($request->file('document'), '/uploads/users/document/', $employee, 'document');
         }
 
+        return response()->json([
+            'success' => true,
+        ]);
+
     }
-
-
-
-
 
 
     public function updateEmployeeActive(Request $request, $id)
@@ -97,9 +83,9 @@ class EmployeeController extends Controller
                 'success' => true,
                 'message' => 'Employee has been updated.'
             ],200);
-            
+
         } catch (\Throwable $th) {
-            
+
             return response()->json([
                 'success' => false,
                 'message' => 'Employee not found.'
@@ -107,12 +93,6 @@ class EmployeeController extends Controller
         }
 
     }
-
-
-
-
-
-
 
 
     public function storeSalary(StoreSalaryRequest $request)

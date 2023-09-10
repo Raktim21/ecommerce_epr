@@ -16,10 +16,8 @@ class DashboardService
 
     }
 
-    public function adminDashboard(){
-
-        $start_date = Carbon::parse(request()->start_date) ?? Carbon::now()->format('m');
-
+    public function adminDashboard()
+    {
         $leads   = $this->clients->whereNull('confirmation_date');
         $clients = $this->clients->whereNotNull('confirmation_date');
 
@@ -35,13 +33,11 @@ class DashboardService
         }
 
 
-        $data = [
+        return [
             'total_lead'          => $leads->clone()->count(),
             'total_client'        => $clients->clone()->count(),
             'leads_month_count'   => $leads_month_count,
             'clients_month_count' => $clients_month_count
         ];
-
-        return  $data;
     }
 }

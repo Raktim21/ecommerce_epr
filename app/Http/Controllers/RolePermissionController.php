@@ -7,6 +7,7 @@ use App\Http\Requests\AssignUsersRequest;
 use App\Http\Requests\CreateRoleRequest;
 use App\Http\Requests\UpdateRoleRequest;
 use App\Services\RolePermissionService;
+use Illuminate\Support\Facades\Cache;
 
 class RolePermissionController extends Controller
 {
@@ -67,6 +68,7 @@ class RolePermissionController extends Controller
     public function assignRole(AssignRoleRequest $request, $user_id)
     {
         $this->service->assignUser($request, $user_id);
+        Cache::forget('auth_profile'.$user_id);
 
         return response()->json([
             'success'  => true,
@@ -97,6 +99,6 @@ class RolePermissionController extends Controller
         return response()->json([
             'success' => false,
             'error'   => 'The selected role can not be deleted.'
-        ], 422);
+        ], 400);
     }
 }

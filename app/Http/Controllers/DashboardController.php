@@ -9,25 +9,23 @@ use Illuminate\Support\Facades\Log;
 class DashboardController extends Controller
 {
     private $dashboard;
-    
+
     public function __construct(DashboardService $dashboard)
     {
         $this->dashboard = $dashboard;
     }
 
 
-    public function index(){
-
-        if (auth()->user()->hasRole('Super Admin')) {
+    public function index()
+    {
+        if (auth()->user()->hasRole('Super Admin'))
+        {
             return response()->json([
                 'success' => true,
                 'data'    => $this->dashboard->adminDashboard(),
             ]);
-        }else {
-            return response()->json([
-                'success' => true,
-                'data'    => [],
-            ]);
+        } else {
+            return response()->json([], 204);
         }
     }
 }

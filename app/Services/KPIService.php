@@ -19,7 +19,7 @@ class KPIService
 
     public function getAll()
     {
-        return KPILookUp::all();
+        return KPILookUp::orderBy('id')->get();
     }
 
 }
