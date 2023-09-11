@@ -128,4 +128,14 @@ class ClientsController extends Controller
         ]);
     }
 
+    public function unpaidClients()
+    {
+        $data = $this->clientService->getPayableClients();
+
+        return response()->json([
+            'success' => true,
+            'data' => $data
+        ], count($data) == 0 ? 204 : 200);
+    }
+
 }

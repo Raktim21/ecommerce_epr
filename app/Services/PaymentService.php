@@ -6,6 +6,7 @@ use App\Models\Clients;
 use App\Models\Payment;
 use App\Models\PaymentCategory;
 use App\Models\PaymentType;
+use App\Models\Website;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -39,11 +40,12 @@ class PaymentService
                 'confirmation_date' => Carbon::now(),
             ]);
 
-            (new UserPointService())->savePoints(2);
+            Website::create([
+                'client_id'     => $request->client_id,
+                'domain'        => $request->website_domain
+            ]);
 
             DB::commit();
-
-            (new UserService)->sendNotification('New payment has been stored.', 'client-payment', $payment->client_id);
 
             return $payment->id;
         }
@@ -57,7 +59,7 @@ class PaymentService
 
     public function getAllTypes()
     {
-        return PaymentType::all();
+        return PaymentType::latest()->get();
     }
 
     public function read($id)
@@ -87,22 +89,11 @@ class PaymentService
 
     public function updateCategory(Request $request , $id)
     {
-        
-     
-        try {
-
-            $payment_category = PaymentCategory::find($id);
-            $payment_category->name = $request->name;
-            $payment_category->description = $request->description;
-            $payment_category->price = $request->price;
-            $payment_category->save();
-
-            return true;
-
-        } catch (\Throwable $th) {
-           return false;
-        }
-        
+        PaymentCategory::findOrFail($id)->update([
+            'name'          => $request->name,
+            'description'   => $request->description,
+            'price'         => $request->price
+        ]);
     }
 
     public function deleteCategory($id): bool

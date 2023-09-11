@@ -39,7 +39,7 @@ class StoreSalaryRequest extends FormRequest
                     }
                 }],
             'employees'         => 'required|array|min:1',
-            'employees.*.id'    => ['required','exists:employees,id',
+            'employees.*.id'    => ['required','exists:employee_profiles,id',
                                     function($attr, $val, $fail) {
                                         $existing = Salary::where('employee_id', $val)
                                             ->where('year_name', $this->input('year_name'))

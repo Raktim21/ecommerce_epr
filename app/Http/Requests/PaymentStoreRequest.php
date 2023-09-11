@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Models\Clients;
 use App\Models\Payment;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -22,48 +23,38 @@ class PaymentStoreRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
+     * @return array<string, ValidationRule|array|string>
      */
     public function rules(): array
     {
-        $transaction_id = $this->input('transaction_id');
-
-        $rules = [
+        return [
             'client_id'             => ['required','exists:clients,id',
                                             function ($attr, $val, $fail)
                                             {
                                                 $client = Clients::find($val);
 
-                                                if($client->company=='N/A' || $client->name=='N/A' || $client->email=='N/A' ||
+                                                if(is_null($client))
+                                                {
+                                                    $fail('Invalid client selected.');
+                                                }
+
+                                                else if($client->company=='N/A' || $client->name=='N/A' || $client->email=='N/A' ||
                                                     $client->phone_no=='N/A' || $client->area=='N/A' ||
                                                     $client->product_type=='N/A' || $client->document==null)
                                                 {
                                                     $fail("Insufficient client information.");
                                                 }
 
-                                                if(!$client || $client->interest_status != 100) {
+                                                else if($client->interest_status != 100) {
                                                     $fail("The selected client must have an interest rate of 100.");
                                                 }
                                             }],
             'payment_type_id'       => 'required|exists:payment_types,id',
             'payment_category_id'   => 'required|exists:payment_categories,id',
-            'transaction_id'        => 'nullable|string',
+            'transaction_id'        => 'required_if:payment_type_id,2|string|max:48',
             'amount'                => 'required|numeric',
+            'website_domain'        => 'required|url|unique:websites,domain|max:98'
         ];
-
-        if($this->input('payment_type_id') == 2)
-        {
-            $rules['transaction_id'] = 'required';
-        }
-
-        if(!is_null($transaction_id))
-        {
-            $rules['transaction_id'] = [
-                Rule::notIn(Payment::pluck('transaction_id')->toArray())
-            ];
-        }
-
-        return $rules;
     }
 
     public function messages()

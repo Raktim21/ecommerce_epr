@@ -6,6 +6,7 @@ use App\Http\Requests\KPILookUpRequest;
 use App\Models\KPILookUp;
 use App\Services\KPIService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class KPILookUpController extends Controller
 {
@@ -18,9 +19,13 @@ class KPILookUpController extends Controller
 
     public function index()
     {
+        $data = Cache::remember('kpi_look_up', 24*60*60*7, function () {
+            return $this->service->getAll();
+        });
+
         return response()->json([
             'success' => true,
-            'data'    => $this->service->getAll(),
+            'data'    => $data,
         ]);
     }
 

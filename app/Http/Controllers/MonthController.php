@@ -10,8 +10,8 @@ class MonthController extends Controller
 {
     public function getAll()
     {
-        $data = Cache::remember('months', 60*60*365, function () {
-            return Month::all();
+        $data = Cache::rememberForever('months', function () {
+            return Month::orderBy('id')->get();
         });
         return response()->json([
             'success' => true,

@@ -51,5 +51,9 @@ class FollowUpInfo extends Model
         static::updated(function ($follow) {
             Cache::forget('client_follow_up'.$follow->client_id);
         });
+
+        static::deleted(function ($follow) {
+            Cache::forget('client_follow_up'.$follow->client_id);
+        });
     }
 }

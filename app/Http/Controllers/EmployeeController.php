@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\EmployeeGetRequest;
 use App\Http\Requests\StoreSalaryRequest;
 use App\Models\EmployeeProfile;
 use App\Services\EmployeeService;
@@ -17,7 +18,7 @@ class EmployeeController extends Controller
         $this->service = $service;
     }
 
-    public function getEmployeeList()
+    public function getEmployeeList(EmployeeGetRequest $request)
     {
         $data = $this->service->getAll();
 

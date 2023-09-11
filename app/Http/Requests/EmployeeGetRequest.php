@@ -2,11 +2,12 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class KPILookUpRequest extends FormRequest
+class EmployeeGetRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -19,14 +20,15 @@ class KPILookUpRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
+     * @return array<string, ValidationRule|array|string>
      */
     public function rules(): array
     {
         return [
-            'client_count'      => 'required|integer|min:1|unique:kpi_look_ups'.$this->route('id'),
-            'amount'            => 'required|numeric',
-            'per_client_amount' => 'required|numeric'
+            'year_name' => 'sometimes|date_format:Y',
+            'month_id'  => 'sometimes|exists:months,id',
+            'is_active' => 'sometimes|in:1',
+            'salary'    => 'sometimes|in:1',
         ];
     }
 

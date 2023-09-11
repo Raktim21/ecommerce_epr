@@ -9,6 +9,7 @@ use App\Models\Payment;
 use App\Models\PaymentCategory;
 use App\Services\PaymentService;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Cache;
 
 class PaymentController extends Controller
 {
@@ -20,25 +21,35 @@ class PaymentController extends Controller
 
     public function index()
     {
+        $data = $this->paymentService->getAll();
+
         return response()->json([
             'success' => true,
-            'data' => $this->paymentService->getAll()
-        ]);
+            'data' => $data
+        ], $data->isEmpty() ? 204 : 200);
     }
 
     public function getTypes()
     {
+        $data = Cache::rememberForever('payment_type', function () {
+            return $this->paymentService->getAllTypes();
+        });
+
         return response()->json([
             'success' => true,
-            'data' => $this->paymentService->getAllTypes()
+            'data' => $data
         ]);
     }
 
     public function getCategories()
     {
+        $data = Cache::remember('payment_categories', 24*60*60*7, function () {
+            return $this->paymentService->getAllCategories();
+        });
+
         return response()->json([
             'success' => true,
-            'data' => $this->paymentService->getAllCategories()
+            'data' => $data
         ]);
     }
 
@@ -53,19 +64,23 @@ class PaymentController extends Controller
 
     public function updateCategories(PaymentCategoryStoreRequest $request, $id)
     {
+        $this->paymentService->updateCategory($request, $id);
 
-        if ($this->paymentService->updateCategory($request, $id)) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Category updated successfully.'
-            ],200);
-        }else {
-            return response()->json([
-                'success' => false,
-                'errors'   => 'Invalid payment category ID.'
-            ],422);
+        return response()->json([
+            'success' => true,
+        ]);
+    }
+
+    public function deleteCategories($id)
+    {
+        if($this->paymentService->deleteCategory($id))
+        {
+            return response()->json(['success' => true]);
         }
-
+        return response()->json([
+            'success' => false,
+            'error'  => 'This payment category can not be deleted.'
+        ], 400);
     }
 
     public function store(PaymentStoreRequest $request)
@@ -108,19 +123,5 @@ class PaymentController extends Controller
         return $pdf->stream('payslip_' . now() . '.pdf');
     }
 
-    public function deleteCategories($id)
-    {
 
-        if (Payment::where('payment_category_id', $id)->exists()) {
-            return response()->json([
-                'success' => false,
-                'errors'  => 'This payment category can not be deleted.'
-            ], 404);
-        }
-        if($this->paymentService->deleteCategory($id))
-        {
-            return response()->json(['success' => true]);
-        }
-        return response()->json(['success' => false], 500);
-    }
 }

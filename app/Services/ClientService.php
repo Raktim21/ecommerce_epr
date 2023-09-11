@@ -164,4 +164,14 @@ class ClientService
         Clients::whereIn('id', $request->ids)->delete();
     }
 
+    public function getPayableClients()
+    {
+        return Clients::whereNot('company', 'N/A')
+            ->whereNot('email', 'N/A')
+            ->whereNotNull('document')
+            ->whereNot('product_type', 'N/A')
+            ->where('interest_status', 100)
+            ->latest()->get();
+    }
+
 }

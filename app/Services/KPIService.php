@@ -10,7 +10,6 @@ class KPIService
     public function store(Request $request)
     {
         KPILookUp::create([
-            'category'          => $request->category,
             'client_count'      => $request->client_count,
             'amount'            => $request->amount,
             'per_client_amount' => $request->per_client_amount

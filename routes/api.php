@@ -84,6 +84,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::controller(ClientsController::class)->group(function () {
         Route::get('client-gps-data', 'clientGps')->middleware('permission:get-client-gps-data');
         Route::get('clients', 'index')->middleware('permission:get-client-list');
+        Route::get('get-unpaid-clients', 'unpaidClients')->middleware('permission:get-client-list');
         Route::get('clients/{id}', 'show')->middleware('permission:get-client-info');
         Route::post('clients', 'store')->middleware('permission:create-client');
         Route::post('import/clients', 'importClients')->middleware('permission:import-client');
