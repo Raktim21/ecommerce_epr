@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreSalaryRequest;
-use App\Models\Employee;
+use App\Models\EmployeeProfile;
 use App\Services\EmployeeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -34,18 +34,18 @@ class EmployeeController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'salary'      => 'required|numeric|min:0',
-            'general_kpi' => 'required|numeric|min:0',
+            'general_kpi' => 'required|integer|min:1|max:255',
             'document'    => 'nullable|file|max:2048',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'errors'  => $validator->errors()
+                'error'  => $validator->errors()->first()
             ], 422);
         }
 
-        $employee = Employee::find($id);
+        $employee = EmployeeProfile::find($id);
         $employee->salary = $request->salary;
         $employee->general_kpi = $request->general_kpi;
         $employee->save();
@@ -75,21 +75,21 @@ class EmployeeController extends Controller
         }
 
         try {
-            $employee = Employee::find($id);
+            $employee = EmployeeProfile::find($id);
             $employee->is_active = $request->is_active;
             $employee->save();
 
             return response()->json([
                 'success' => true,
-                'message' => 'Employee has been updated.'
+                'message' => 'EmployeeProfile has been updated.'
             ],200);
 
         } catch (\Throwable $th) {
 
             return response()->json([
                 'success' => false,
-                'message' => 'Employee not found.'
-            ], 304);
+                'message' => 'EmployeeProfile not found.'
+            ], 404);
         }
 
     }

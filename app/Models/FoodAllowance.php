@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\UserService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -30,5 +31,17 @@ class FoodAllowance extends Model
     public function follow_up()
     {
         return $this->belongsTo(FollowUpInfo::class, 'follow_up_id');
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($allowance) {
+            (new UserService)->sendNotification(
+                $allowance->created_by_info->name . ' has posted a new request for food allowance.',
+                'food-allowance',
+                $allowance->id);
+        });
     }
 }

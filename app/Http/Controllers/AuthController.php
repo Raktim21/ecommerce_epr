@@ -61,12 +61,9 @@ class AuthController extends Controller
 
     public function profile()
     {
-        $data = Cache::remember('auth_profile'.auth()->user()->id, 60*60*24, function () {
-            return $this->service->profile();
-        });
         return response()->json([
             'success'   => true,
-            'data'      => $data
+            'data'      => $this->service->profile()
         ]);
     }
 

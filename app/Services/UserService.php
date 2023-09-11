@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Employee;
+use App\Models\EmployeeProfile;
 use App\Models\User;
 use App\Notifications\AdminNotification;
 use Illuminate\Database\QueryException;
@@ -34,9 +34,10 @@ class UserService
 
             if($request->is_employee == 1)
             {
-                $employee = Employee::create([
+                $employee = EmployeeProfile::create([
                     'user_id'           => $user->id,
                     'salary'            => $request->salary,
+                    'general_kpi'       => $request->general_kpi,
                     'joining_date'      => $request->joining_date
                 ]);
 
@@ -89,16 +90,21 @@ class UserService
                 saveImage($request->file('avatar'), '/uploads/users/avatar/', $user, 'avatar');
             }
 
-            $employee = Employee::where('user_id', $id)->update([
-                'salary' => $request->salary,
-                'joining_date' => $request->joining_date
-            ]);
+            $employee = EmployeeProfile::where('user_id', $id)->first();
 
-            if ($request->hasFile('document')) {
-                if ($employee->document) {
-                    deleteFile($employee->document);
+            if($employee) {
+                $employee->update([
+                    'salary'        => $request->salary ?? $employee->salary,
+                    'general_kpi'   => $request->general_kpi ?? $employee->general_kpi,
+                    'joining_date'  => $request->joining_date ?? $employee->joining_date
+                ]);
+
+                if ($request->hasFile('document')) {
+                    if ($employee->document) {
+                        deleteFile($employee->document);
+                    }
+                    saveImage($request->file('document'), '/uploads/users/document/', $employee, 'document');
                 }
-                saveImage($request->file('document'), '/uploads/users/document/', $employee, 'document');
             }
 
             $this->sendNotification('User profile of '. $user->name .' has been updated.', 'user', $user->id);
@@ -153,8 +159,9 @@ class UserService
 
     public function storeProfile(Request $request): void
     {
-        $employee = Employee::create([
-            'user_id'       => $request->user_id,
+        $employee = EmployeeProfile::create([
+            'user_id'       => $request->user_id
+        ],[
             'salary'        => $request->salary,
             'general_kpi'   => $request->general_kpi,
             'joining_date'  => $request->joining_date
@@ -164,7 +171,7 @@ class UserService
             saveImage($request->file('document'), '/uploads/users/document/', $employee, 'document');
         }
 
-        $this->sendNotification('A new employee profile has been created.', 'user', $request->user_id);
+//        $this->sendNotification('A new employee profile has been created.', 'user', $request->user_id);
     }
 
 }

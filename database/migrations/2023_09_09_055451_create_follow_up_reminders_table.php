@@ -20,6 +20,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->unique(['client_id', 'followup_session']);
+            $table->unique(['added_by', 'followup_session']);
         });
     }
 

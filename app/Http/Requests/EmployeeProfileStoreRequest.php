@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -19,14 +20,14 @@ class EmployeeProfileStoreRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
+     * @return array<string, ValidationRule|array|string>
      */
     public function rules(): array
     {
         return [
-            'user_id'       => 'required|unique:employees,user_id|exists:users,id',
+            'user_id'       => 'required|unique:employee_profiles,user_id|exists:users,id',
             'salary'        => 'required|numeric',
-            'general_kpi'   => 'required|integer|min:1',
+            'general_kpi'   => 'required|integer|min:1|max:255',
             'document'      => 'sometimes|nullable|file|max:2048',
             'joining_date'  => 'required|date_format:Y-m-d'
         ];

@@ -37,8 +37,6 @@ class AllowanceService
             saveImage($request->file('document'), 'uploads/travel_allowance/documents/', $allowance, 'document');
         }
 
-        (new UserService)->sendNotification('A new transport allowance has been created.', 'transport-allowance', $allowance->id);
-
         return true;
     }
 
@@ -68,7 +66,8 @@ class AllowanceService
             'note'           => $request->note ?? null,
             'client_id'      => $request->client_id ?? null,
             'follow_up_id'   => $request->follow_up_id ?? null,
-            'travel_status'  => 1
+            'travel_status'  => 1,
+            'updated_at'     => Carbon::now()->timezone('Asia/Dhaka')
         ]);
 
         if ($request->hasFile('document'))
@@ -79,7 +78,6 @@ class AllowanceService
             }
             saveImage($request->file('document'), 'uploads/travel_allowance/documents/', $allowance, 'document');
         }
-        (new UserService)->sendNotification('A transport allowance has been completed.', 'transport-allowance', $allowance->id);
 
         return 0;
     }
@@ -147,7 +145,9 @@ class AllowanceService
 
     public function currentTransport()
     {
-        return TransportAllowance::with('client','follow_up')->where('created_by',auth()->user()->id)->where('travel_status',0)->first();
+        return TransportAllowance::with('client','follow_up')
+            ->where('created_by', auth()->user()->id)
+            ->where('travel_status','=',0)->first();
     }
 
     public function createFoodAllowance(Request $request): void
@@ -167,7 +167,6 @@ class AllowanceService
         if ($request->hasFile('document')){
             saveImage($request->file('document'), 'uploads/food_allowance/documents/', $allowance, 'document');
         }
-        (new UserService)->sendNotification('A new food transport allowance has been created.', 'food-allowance', $allowance->id);
     }
 
     public function deleteFoodAllowance($id): bool

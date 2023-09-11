@@ -40,6 +40,7 @@ class UserStoreRequest extends FormRequest
             'role_id'          => 'required|exists:roles,id',
             'is_employee'      => 'required|in:0,1',
             'salary'           => 'required_if:is_employee,1|numeric',
+            'general_kpi'      => 'required_if:is_employee,1|integer|min:0|max:255',
             'document'         => 'required_if:is_employee,1|file|max:2048',
             'joining_date'     => 'required_if:is_employee,1|date_format:Y-m-d'
         ];

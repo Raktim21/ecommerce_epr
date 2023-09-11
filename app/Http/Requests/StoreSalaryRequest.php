@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Employee;
+use App\Models\EmployeeProfile;
 use App\Models\Salary;
 use Carbon\Carbon;
 use Illuminate\Contracts\Validation\ValidationRule;
@@ -39,24 +39,26 @@ class StoreSalaryRequest extends FormRequest
                     }
                 }],
             'employees'         => 'required|array|min:1',
-            'employees.*'       => ['required','exists:employees,id',
+            'employees.*.id'    => ['required','exists:employees,id',
                                     function($attr, $val, $fail) {
                                         $existing = Salary::where('employee_id', $val)
                                             ->where('year_name', $this->input('year_name'))
                                             ->where('month_id', $this->input('month_id'))
                                             ->first();
 
-                                        $employee = Employee::find($val);
+                                        $employee = EmployeeProfile::find($val);
 
                                         $date = Carbon::create($this->input('year_name'), $this->input('month_id'), 1);
 
                                         if($existing) {
-                                            $fail('Salary has already been given to '. $existing->employee->user->name .' for the given month.');
+                                            $fail('Salary has already been given to '. $existing->employee->user->name .' for the selected month.');
                                         }
                                         else if($employee && $employee->joining_date > $date) {
                                             $fail($employee->user->name .' has joined after the selected time.');
                                         }
                                     }],
+            'employees.*.amount'=> 'required|numeric',
+            'admin_notes'       => 'nullable|string|max:498',
         ];
     }
 

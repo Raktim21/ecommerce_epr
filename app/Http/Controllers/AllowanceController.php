@@ -17,6 +17,7 @@ use App\Models\User;
 use App\Services\AllowanceService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -79,10 +80,14 @@ class AllowanceController extends Controller
 
     public function currentTransportAllowance()
     {
+        $data = Cache::remember('current_journey'.auth()->user()->id, 60*60, function () {
+            return $this->service->currentTransport();
+        });
+
         return response()->json([
             'success' => true,
-            'data'    => $this->service->currentTransport(),
-        ]);
+            'data'    => $data,
+        ], is_null($data) ? 204 : 200);
     }
 
     public function start(AllowanceStartRequest $request)
@@ -114,6 +119,7 @@ class AllowanceController extends Controller
                 'error' => 'You are not authorized to update the information.'
             ],401);
         }
+        Cache::forget('current_journey'.auth()->user()->id);
 
         return response()->json(['success' => true]);
     }
@@ -141,7 +147,6 @@ class AllowanceController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Status of a transport allowance has been changed.'
         ]);
 
     }

@@ -5,13 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Employee extends Model
+class EmployeeProfile extends Model
 {
     use HasFactory;
 
-    protected $table = 'employees';
+    protected $table = 'employee_profiles';
 
-    protected $fillable = ['user_id','salary','document','joining_date'];
+    protected $fillable = ['user_id','salary','general_kpi','document','joining_date'];
 
     protected $hidden = ['updated_at','created_at'];
 

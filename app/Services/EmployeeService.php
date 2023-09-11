@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Employee;
+use App\Models\EmployeeProfile;
 use App\Models\FoodAllowance;
 use App\Models\KPILookUp;
 use App\Models\Salary;
@@ -22,17 +22,19 @@ class EmployeeService
         {
             $date = Carbon::create(request()->input('year_name'), request()->input('month_id'), 1);
         }
-        $data = Employee::when(!auth()->user()->hasRole('Super Admin'), function($q) {
+        $data = EmployeeProfile::when(!auth()->user()->hasRole('Super Admin'), function($q) {
             return $q->where('user_id', auth()->user()->id);
         })
-        ->whereHas('user', function ($q) {
-            return $q->where('is_active', 1);
+        ->when(\request()->input('is_active') == 1, function ($q) use ($date) {
+            return $q->whereHas('user', function ($q) {
+                return $q->where('is_active', 1);
+            });
         })
         ->when(\request()->input('salary'), function ($q) use ($date) {
             return $q->where('joining_date', '<=',$date ?? Carbon::now()->subMonth());
         })
         ->with(['user' => function($q) {
-            return $q->select('id','name','email','avatar','address','details')
+            return $q->select('id','name','email','avatar','address','details','is_active')
                 ->withCount(['clients' => function($q) {
                     return $q->whereNotNull('confirmation_date')
                         ->whereMonth('confirmation_date', request()->input('month_id') ?? date('n'))
@@ -58,31 +60,31 @@ class EmployeeService
 
         try {
             foreach($request->employees as $employee) {
-                $emp = Employee::with(['user' => function($q) {
+                $emp = EmployeeProfile::with(['user' => function($q) {
                     return $q->select('id')
                         ->withCount(['clients' => function($q) {
                             return $q->whereNotNull('confirmation_date')
-                                ->whereMonth('confirmation_date', request()->input('month_id') ?? date('n'))
-                                ->whereYear('confirmation_date', request()->input('year_name') ?? date('Y'));
+                                ->whereMonth('confirmation_date', request()->input('month_id'))
+                                ->whereYear('confirmation_date', request()->input('year_name'));
                         }]);
-                    }])->find($employee);
+                    }])->find($employee['id']);
 
                 $extra = $this->calculateKPI($emp->user->clients_count);
 
                 Salary::create([
-                    'employee_id'       => $employee,
+                    'employee_id'       => $employee['id'],
                     'year_name'         => $request->year_name,
                     'month_id'          => $request->month_id,
                     'salary_payable'    => $emp->salary,
                     'kpi_payable'       => $extra,
-                    'paid_amount'       => $emp->salary + $extra
+                    'paid_amount'       => $employee['amount'],
+                    'remarks'           => $request->remarks
                 ]);
             }
             DB::commit();
             return true;
         } catch(QueryException $e) {
             DB::rollback();
-            Log::info($e->getMessage());
             return false;
         }
     }

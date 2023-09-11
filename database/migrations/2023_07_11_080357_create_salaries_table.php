@@ -16,11 +16,10 @@ return new class extends Migration
             $table->foreignId('employee_id')->constrained('employees')->onDelete('restrict');
             $table->year('year_name');
             $table->foreignId('month_id')->constrained('months')->onDelete('restrict');
-            $table->float('payable_amount');
-            $table->float('paid_amount');
-            $table->float('incentive_paid')->default(0);
-            $table->tinyInteger('admin_status')->default(0)->comment('0:pending,1:approved,2:declined');
-            $table->tinyInteger('pay_status', false, true)->default(0);
+            $table->float('salary_payable');
+            $table->float('kpi_payable')->default(0.00);
+            $table->float('paid_amount')->default(0.00);
+            $table->string('remarks', 500)->nullable();
             $table->timestamps();
         });
     }

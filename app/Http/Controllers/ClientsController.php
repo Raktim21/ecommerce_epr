@@ -92,7 +92,7 @@ class ClientsController extends Controller
         return response()->json([
             'success' => false,
             'error' => 'The selected client can not be updated.'
-        ], 422);
+        ], 400);
     }
 
     public function updateDoc(ClientUpdateDocRequest $request, $id)
@@ -124,12 +124,13 @@ class ClientsController extends Controller
 
     public function clientGps(ClientGpsRequest $request)
     {
-        $clients = Clients::where('added_by', $request->user_id)->whereDate('created_at',$request->date)->select('id', 'name', 'latitude', 'longitude', 'interest_status' ,'confirmation_date' )->get();
+        $clients = Clients::where('added_by', $request->user_id)->whereDate('created_at',$request->date)
+            ->select('id', 'name', 'latitude', 'longitude', 'interest_status' ,'confirmation_date' )->get();
 
         return response()->json([
-            'status' => true,
-            'data' => $clients
-        ], 200);
+            'success'   => true,
+            'data'      => $clients
+        ]);
     }
 
 }

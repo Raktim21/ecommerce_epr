@@ -24,7 +24,9 @@ class AuthService
     {
         return User::with('roles')
             ->withSum('point_list','points')
-            ->withCount('follow_up_reminders')
+            ->withCount(['follow_up_reminders' => function($q) {
+                return $q->where('followup_session', '>', date('Y-m-d H:i:s'));
+            }])
             ->find(auth()->user()->id);
     }
 
