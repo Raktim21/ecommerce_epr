@@ -12,7 +12,7 @@ class KPILookUp extends Model
 
     protected $table = 'kpi_look_ups';
 
-    protected $fillable = ['client_count','amount','per_client_count'];
+    protected $fillable = ['client_count','amount','per_client_amount'];
 
     protected $hidden = ['created_at','updated_at'];
 
@@ -25,6 +25,10 @@ class KPILookUp extends Model
         });
 
         static::updated(function ($kpi) {
+            Cache::forget('kpi_look_up');
+        });
+
+        static::deleted(function ($kpi) {
             Cache::forget('kpi_look_up');
         });
     }

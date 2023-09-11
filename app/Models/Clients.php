@@ -45,7 +45,7 @@ class Clients extends Model
 
     public function payment()
     {
-        return $this->hasMany(Payment::class, 'client_id');
+        return $this->hasOne(Payment::class, 'client_id');
     }
 
     public function added_by()

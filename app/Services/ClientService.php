@@ -21,7 +21,7 @@ class ClientService
     public function getAll(Request $request, $isSuperAdmin)
     {
         $search = $request->search ?? '';
-        $status = $request->confirmed ?? '';
+        $status = $request->confirmed ?? 0;
         $limit = $request->per_page;
 
         return $this->client->newQuery()
@@ -39,15 +39,16 @@ class ClientService
                     ->orWhere('clients.name','like',"%$search%")
                     ->orWhere('clients.email','like',"%$search%")
                     ->orWhere('clients.area','like',"%$search%");
-            })->whereNotNull('confirmation_date');
-        })->leftJoin('payments','clients.id','=','payments.client_id')
+            })->whereNotNull('confirmation_date')->with('website');
+        })
+            ->leftJoin('payments','clients.id','=','payments.client_id')
             ->leftJoin('users','clients.added_by','=','users.id')
             ->select('clients.*','payments.id as payment_id','users.name as added_by')
             ->withCount('follow_ups')
             ->when($isSuperAdmin==false, function($query) {
                 return $query->where('clients.added_by', auth()->user()->id);
             })
-            ->latest('clients.created_at')
+            ->orderByDesc('clients.id')
             ->paginate($limit)
             ->appends($request->except('page','per_page'));
     }
@@ -171,6 +172,7 @@ class ClientService
             ->whereNotNull('document')
             ->whereNot('product_type', 'N/A')
             ->where('interest_status', 100)
+            ->whereNull('confirmation_date')
             ->latest()->get();
     }
 

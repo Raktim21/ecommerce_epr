@@ -58,6 +58,8 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::controller(KPILookUpController::class)->group(function() {
         Route::get('kpi-lookups', 'index');
         Route::post('kpi-lookups', 'create');
+        Route::put('kpi-lookups/{id}', 'update');
+        Route::delete('kpi-lookups/{id}', 'delete');
     });
 
     Route::controller(UserPointController::class)->group(function () {

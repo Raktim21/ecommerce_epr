@@ -21,4 +21,18 @@ class KPIService
         return KPILookUp::orderBy('id')->get();
     }
 
+    public function updateLookUp(Request $request, $id)
+    {
+        KPILookUp::findOrFail($id)->update([
+            'client_count'      => $request->client_count,
+            'amount'            => $request->amount,
+            'per_client_amount' => $request->per_client_amount
+        ]);
+    }
+
+    public function deleteKpi($id)
+    {
+        KPILookUp::findOrFail($id)->delete();
+    }
+
 }

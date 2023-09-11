@@ -38,6 +38,21 @@ class KPILookUpController extends Controller
         ], 201);
     }
 
-    public function update()
-    {}
+    public function update(KPILookUpRequest $request, $id)
+    {
+        $this->service->updateLookUp($request, $id);
+
+        return response()->json([
+            'success' => true,
+        ]);
+    }
+
+    public function delete($id)
+    {
+        $this->service->deleteKpi($id);
+
+        return response()->json([
+            'success' => true
+        ]);
+    }
 }
