@@ -27,40 +27,6 @@ class EmployeeController extends Controller
         ], count($data)==0 ? 204 : 200);
     }
 
-
-
-
-    public function updateEmployeeInfo(Request $request, $id)
-    {
-        $validator = Validator::make($request->all(), [
-            'salary'      => 'required|numeric|min:0',
-            'general_kpi' => 'required|integer|min:1|max:255',
-            'document'    => 'nullable|file|max:2048',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'error'  => $validator->errors()->first()
-            ], 422);
-        }
-
-        $employee = EmployeeProfile::find($id);
-        $employee->salary = $request->salary;
-        $employee->general_kpi = $request->general_kpi;
-        $employee->save();
-
-        if ($request->hasFile('document')) {
-            saveImage($request->file('document'), '/uploads/users/document/', $employee, 'document');
-        }
-
-        return response()->json([
-            'success' => true,
-        ]);
-
-    }
-
-
     public function updateEmployeeActive(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [

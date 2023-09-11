@@ -63,7 +63,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::controller(UserPointController::class)->group(function () {
         Route::get('point-types', 'getList')->middleware(['permission:get-point-type-list']);
         Route::put('point-types/{id}', 'updatePoint')->middleware(['permission:update-point-type']);
-        Route::get('user/points/{user_id}', 'pointData');
+//        Route::get('user/points/{user_id}', 'pointData');
     });
 
     Route::controller(UserController::class)->group(function () {
@@ -78,15 +78,12 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     Route::controller(EmployeeController::class)->group(function () {
         Route::get('employees', 'getEmployeeList')->middleware('permission:employee-payable-salary-list');
-        Route::post('employees-update/{id}', 'updateEmployeeInfo')->middleware('permission:update-employee');
-        Route::post('employees-status-update/{id}', 'updateEmployeeActive')->middleware('permission:update-employee');
         Route::post('employees/salary', 'storeSalary')->middleware('permission:store-salary');
     });
 
     Route::controller(ClientsController::class)->group(function () {
         Route::get('client-gps-data', 'clientGps')->middleware('permission:get-client-gps-data');
         Route::get('clients', 'index')->middleware('permission:get-client-list');
-        Route::get('get-unpaid-clients', 'unpaidClients')->middleware('permission:get-unpaid-client-list');
         Route::get('clients/{id}', 'show')->middleware('permission:get-client-info');
         Route::post('clients', 'store')->middleware('permission:create-client');
         Route::post('import/clients', 'importClients')->middleware('permission:import-client');

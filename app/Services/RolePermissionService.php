@@ -18,7 +18,7 @@ class RolePermissionService
 
     public function permissions()
     {
-        return Permission::all();
+        return Permission::orderBy('id')->get();
     }
 
     public function assignUser(Request $request, $id)

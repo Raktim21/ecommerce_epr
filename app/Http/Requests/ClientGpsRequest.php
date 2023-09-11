@@ -20,13 +20,13 @@ class ClientGpsRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
+     * @return array<string, ValidationRule|array|string>
      */
     public function rules(): array
     {
         return [
-            'user_id' => 'required|integer',
-            'date'    => 'required|date'
+            'user_id' => 'required|exists:users,id',
+            'date'    => 'required|date_format:Y-m-d'
         ];
     }
 

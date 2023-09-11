@@ -36,10 +36,12 @@ class ClientsController extends Controller
 
     public function show($id)
     {
+        $data = $this->clientService->show($id);
+
         return response()->json([
             'success' => true,
-            'data' => $this->clientService->show($id)
-        ]);
+            'data' => $data
+        ], is_null($data) ? 204 : 200);
     }
 
     public function store(ClientStoreRequest $request)
@@ -51,7 +53,8 @@ class ClientsController extends Controller
             ], 201);
         }
         return response()->json([
-            'success' => false,
+            'success'   => false,
+            'error'     => 'Something went wrong.'
         ], 500);
     }
 
@@ -91,7 +94,7 @@ class ClientsController extends Controller
         }
         return response()->json([
             'success' => false,
-            'error' => 'The selected client can not be updated.'
+            'error' => 'Confirmed client can not be updated.'
         ], 400);
     }
 
@@ -110,14 +113,6 @@ class ClientsController extends Controller
 
         return response()->json([
             'success' => true,
-        ]);
-    }
-
-    public function unpaidClients()
-    {
-        return response()->json([
-            'success' => true,
-            'data' => $this->clientService->unpaidClients()
         ]);
     }
 

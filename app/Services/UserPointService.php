@@ -30,8 +30,8 @@ class UserPointService
         ]);
     }
 
-    public function getUserPoints($user_id)
-    {
-        return User::with('point_list.point_detail')->findOrFail($user_id)->point_list;
-    }
+//    public function getUserPoints($user_id)
+//    {
+//        return User::with('point_list.point_detail')->findOrFail($user_id)->point_list;
+//    }
 }

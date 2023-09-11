@@ -11,15 +11,13 @@ class FollowUpService
 {
     public function store(Request $request)
     {
-        $follow = FollowUpInfo::create([
+        FollowUpInfo::create([
             'client_id' => $request->client_id,
             'detail' => $request->detail,
             'occurred_on' => $request->occurred_on,
             'latitude' => $request->latitude,
             'longitude' => $request->longitude
         ]);
-
-        (new UserService)->sendNotification('New client follow-up has been created.', 'follow-up', $follow->id);
     }
 
     public function show($id)

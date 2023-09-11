@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
+use App\Services\UserPointService;
+use App\Services\UserService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class Clients extends Model
 {
@@ -63,5 +66,22 @@ class Clients extends Model
     public function food_allowance()
     {
         return $this->hasMany(FoodAllowance::class, 'client_id');
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($client) {
+            (new UserPointService())->savePoints(1);
+            (new UserService)->sendNotification('A new client has been created.', 'client', $client->id);
+        });
+
+        static::updated(function ($client) {
+            if(is_null($client->confirmation_date))
+            {
+                (new UserService)->sendNotification("A client's information have been updated.", 'client', $client->id);
+            }
+        });
     }
 }

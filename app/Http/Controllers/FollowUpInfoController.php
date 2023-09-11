@@ -5,9 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\FollowUpReminderRequest;
 use App\Http\Requests\FollowUpStoreRequest;
 use App\Http\Requests\FollowUpUpdateRequest;
-use App\Models\Clients;
 use App\Services\FollowUpService;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class FollowUpInfoController extends Controller
 {
@@ -38,10 +37,14 @@ class FollowUpInfoController extends Controller
 
     public function show($client_id)
     {
+        $data = Cache::remember('client_follow_up'.$client_id, 24*60*60*7, function () use ($client_id) {
+            return $this->followUpService->show($client_id);
+        });
+
         return response()->json([
             'success' => true,
-            'data' => $this->followUpService->show($client_id)
-        ]);
+            'data' => $data
+        ], count($data) == 0 ? 204 : 200);
     }
 
     public function getFollowUps()

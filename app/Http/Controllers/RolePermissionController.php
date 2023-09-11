@@ -28,9 +28,13 @@ class RolePermissionController extends Controller
 
     public function permissionList()
     {
+        $data = Cache::rememberForever('permissions', function () {
+            return $this->service->permissions();
+        });
+
         return response()->json([
             'success' => true,
-            'data' => $this->service->permissions(),
+            'data' => $data,
         ]);
     }
 

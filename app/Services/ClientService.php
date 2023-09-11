@@ -2,16 +2,11 @@
 
 namespace App\Services;
 
-use App\Events\SendNotification;
 use App\Imports\ClientsImport;
 use App\Models\Clients;
-use App\Models\User;
-use App\Notifications\AdminNotification;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ClientService
@@ -59,31 +54,9 @@ class ClientService
 
     public function show($id)
     {
-        broadcast(new AdminNotification('hello', 'user', 1));
         return $this->client->with(['added_by' => function($q) {
                 $q->select('id','name');
-            }])->findOrFail($id);
-    }
-
-    public function unpaidClients()
-    {
-        if(auth()->user()->hasRole('Super Admin'))
-        {
-            return $this->client->where('confirmation_date',null)->where('interest_status',100)
-                ->whereNotNull('document')->whereNot('company','N/A')->whereNot('name','N/A')
-                ->whereNot('phone_no','N/A')
-                ->whereNot('email','N/A')
-                ->get();
-        }
-        else {
-            return $this->client->where('added_by',auth()->user()->id)
-                ->where('confirmation_date',null)->where('interest_status',100)
-                ->whereNotNull('document')->whereNot('company','N/A')->whereNot('name','N/A')
-                ->whereNot('phone_no','N/A')
-                ->whereNot('email','N/A')
-                ->get();
-        }
-
+            }])->find($id);
     }
 
     public function create(Request $request)
@@ -111,10 +84,6 @@ class ClientService
                 $this->uploadDoc($request, $client);
             }
 
-            (new UserPointService())->savePoints(1);
-
-            (new UserService)->sendNotification('A new client has been created.', 'client', $client->id);
-
             DB::commit();
 
             return true;
@@ -127,7 +96,7 @@ class ClientService
 
     public function isConfirmed($id)
     {
-        if($this->client->newQuery()->findOrFail($id)->confirmation_date != null)
+        if($this->client->clone()->findOrFail($id)->confirmation_date != null)
         {
             return true;
         }
@@ -140,8 +109,6 @@ class ClientService
 
         try {
             Excel::import(new ClientsImport, $file);
-
-            (new UserService)->sendNotification('New clients have been imported.', 'client-import', 0);
 
             return true;
         }
@@ -168,8 +135,6 @@ class ClientService
             'latitude'        => $request->latitude,
             'longitude'       => $request->longitude,
         ]);
-
-        (new UserService)->sendNotification("A client's information have been updated.", 'client', $id);
     }
 
     public function updateDoc(Request $request, $id)
@@ -178,15 +143,10 @@ class ClientService
 
         if($client->document)
         {
-            if(File::exists(public_path($client->document)))
-            {
-                File::delete(public_path($client->document));
-            }
+            deleteFile($client->document);
         }
 
         $this->uploadDoc($request, $client);
-
-        (new UserService)->sendNotification("A client's document has been stored.", 'client', $id);
     }
 
     private function uploadDoc(Request $request, $client)
