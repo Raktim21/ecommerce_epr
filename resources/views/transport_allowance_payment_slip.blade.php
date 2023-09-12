@@ -109,7 +109,7 @@
                     </td>
 
                     <td style="border: 1px solid rgb(201, 201, 201); padding-left: 10px">
-                        {{ $transport_allowance->is_paid==0 ? 'Not Paid' : 'Paid' }}
+                        {{ $transport_allowance->allowance_status==1 ? 'Paid' : 'Not Paid' }}
                     </td>
 
                     <td style="border: 1px solid rgb(201, 201, 201); padding-left: 10px">
@@ -122,7 +122,7 @@
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td style="padding-left: 10px">{{ $data['transport_allowances']->where('is_paid',1)->sum('amount') }}/-</td>
+                    <td style="padding-left: 10px">{{ $data['transport_allowances']->where('allowance_status',1)->sum('amount') }}/-</td>
                 </tr>
 
                 <tr>
@@ -130,7 +130,7 @@
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td style="padding-left: 10px">{{ $data['transport_allowances']->where('is_paid',0)->sum('amount') }}/-</td>
+                    <td style="padding-left: 10px">{{ $data['transport_allowances']->where('allowance_status','!=',1)->sum('amount') }}/-</td>
                 </tr>
 
             <tr>

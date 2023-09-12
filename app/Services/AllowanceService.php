@@ -198,6 +198,8 @@ class AllowanceService
     {
         $data = TransportAllowance::with('created_by_info','client','follow_up')->find($id);
 
+        if(!$data)
+        {}
         return !auth()->user()->hasRole('Super Admin') && $data->created_by != auth()->user()->id ? null : $data;
     }
 

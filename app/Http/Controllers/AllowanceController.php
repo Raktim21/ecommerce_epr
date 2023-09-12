@@ -12,7 +12,6 @@ use App\Http\Requests\TransportAllowanceStatusRequest;
 use App\Http\Requests\AllowanceUpdateRequest;
 use App\Http\Requests\FileTypeRequest;
 use App\Http\Requests\FoodAllowanceStoreRequest;
-use App\Http\Requests\TransportAllowancPaymentStatusRequest;
 use App\Models\TransportAllowance;
 use App\Models\User;
 use App\Services\AllowanceService;
@@ -139,8 +138,8 @@ class AllowanceController extends Controller
     public function transportAllowancePaymentSlip(Request $request)
     {
         $validate = Validator::make($request->all(), [
-            'transport_allowance_id'   => 'required|array',
-            'transport_allowance_id.*' => 'required|exists:transport_allowances,id',
+            'allowances'   => 'required|array',
+            'allowances.*' => 'required|exists:transport_allowances,id',
         ]);
 
         if ($validate->fails()) {
@@ -150,8 +149,7 @@ class AllowanceController extends Controller
             ], 422);
         }
 
-
-        if (TransportAllowance::whereRaw('id IN (' . implode(',', $request->transport_allowance_id) . ')')->distinct('created_by')->count() > 1) {
+        if (TransportAllowance::whereRaw('id IN (' . implode(',', $request->allowances) . ')')->distinct('created_by')->count() > 1) {
 
             return response()->json([
                 'success' => false,
@@ -159,18 +157,15 @@ class AllowanceController extends Controller
             ],422);
         }
 
-
-        $user =  User::find(TransportAllowance::find($request->transport_allowance_id[0])->created_by);
+        $user =  User::find(TransportAllowance::find($request->allowances[0])->created_by);
 
         $data = [
-            'transport_allowances' => TransportAllowance::whereRaw('id IN (' . implode(',', $request->transport_allowance_id) . ')')->get(),
+            'transport_allowances' => TransportAllowance::whereRaw('id IN (' . implode(',', $request->allowances) . ')')->get(),
             'user' => $user,
         ];
 
-
         $pdf = PDF::loadView('transport_allowance_payment_slip', compact('data'));
-        return $pdf->stream('travel_allowance_payment_slip_'. $user->id . '-'. rand(1000, 9999) .'.pdf');
-
+        return $pdf->stream('travel_allowance_payment_slip_' . $user->id . '-' . rand(1000, 9999) . '.pdf');
     }
 
     public function foodAllowanceStore(FoodAllowanceStoreRequest $request)
