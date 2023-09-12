@@ -55,7 +55,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         Route::post('users-assign-role', 'assignUsers')->middleware('permission:assign-role-to-user');
     });
 
-    Route::controller(KPILookUpController::class)->group(function() {
+    Route::controller(KPILookUpController::class)->middleware(['permission:update-kpi-lookup'])->group(function() {
         Route::get('kpi-lookups', 'index');
         Route::post('kpi-lookups', 'create');
         Route::put('kpi-lookups/{id}', 'update');

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Services\UserPointService;
 use App\Services\UserService;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
@@ -45,8 +46,16 @@ class Payment extends Model
         parent::boot();
 
         static::created(function ($payment) {
-            (new UserService)->sendNotification('New payment has been stored for category: '. $payment->category->name .'.', 'client-payment', $payment->client_id);
-            (new UserPointService())->savePoints(2);
+            (new UserService)->sendNotification(
+                'New payment has been stored for category: '. $payment->category->name .'.',
+                'client-payment',
+                $payment->client_id);
+
+            (new UserPointService())->savePoints(2, $payment->client->added_by);
+
+            Clients::find($payment->client_id)->update([
+                'confirmation_date' => Carbon::now(),
+            ]);
         });
     }
 }

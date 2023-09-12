@@ -170,8 +170,6 @@ class UserService
         if($request->hasFile('document')) {
             saveImage($request->file('document'), '/uploads/users/document/', $employee, 'document');
         }
-
-//        $this->sendNotification('A new employee profile has been created.', 'user', $request->user_id);
     }
 
 }

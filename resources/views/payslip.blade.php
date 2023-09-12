@@ -59,6 +59,11 @@
     </table>
     <div style="background-color: #374151; height: 1px; width: 100%;"></div>
 </section>
+<section style="margin-top: 150px">
+    <div>
+        <p style="border-top: 1px solid #000; width: 300px"> Authorized by</p>
+    </div>
+</section>
 <section style="position: absolute; bottom: 0; width: 100%">
     <div style="background-color: darkred; height: 1px; width: 100%"></div>
     <p>Email: hello@selopia.com<span></span><br>Contact: (+880) 963-8884444</p>

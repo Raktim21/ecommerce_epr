@@ -24,7 +24,7 @@ class KPILookUpRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'client_count'      => 'required|integer|min:1|unique:kpi_look_ups'.$this->route('id'),
+            'client_count'      => 'required|integer|min:1|unique:kpi_look_ups,client_count,'.$this->route('id'),
             'amount'            => 'required|numeric',
             'per_client_amount' => 'required|numeric'
         ];

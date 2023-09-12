@@ -36,10 +36,6 @@ class PaymentService
                 'amount' => $request->amount
             ]);
 
-            Clients::find($request->client_id)->update([
-                'confirmation_date' => Carbon::now(),
-            ]);
-
             Website::create([
                 'client_id'     => $request->client_id,
                 'domain'        => $request->website_domain

@@ -21,10 +21,10 @@ class UserPointService
         ]);
     }
 
-    public function savePoints($point_id)
+    public function savePoints($point_id, $user_id)
     {
         UserPoint::create([
-            'user_id'   => auth()->user()->id,
+            'user_id'   => $user_id,
             'point_id'  => $point_id,
             'points'    => Point::find($point_id)->point
         ]);

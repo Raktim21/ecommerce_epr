@@ -29,8 +29,7 @@ class ClientService
             return $query->where(function ($query) use ($search) {
                 $query->where('company','like',"%$search%")
                     ->orWhere('clients.name','like',"%$search%")
-                    ->orWhere('clients.email','like',"%$search%")
-                    ->orWhere('clients.area','like',"%$search%");
+                    ->orWhere('clients.email','like',"%$search%");
             })->whereNull('confirmation_date');
         })
         ->when($status==1, function ($query) use($search) {
@@ -38,12 +37,14 @@ class ClientService
                 $query->where('company','like',"%$search%")
                     ->orWhere('clients.name','like',"%$search%")
                     ->orWhere('clients.email','like',"%$search%")
-                    ->orWhere('clients.area','like',"%$search%");
+                    ->orWhereHas('payment', function ($q) use ($search) {
+                        return $q->where('invoice_no','like',"%$search%");
+                    });
             })->whereNotNull('confirmation_date')->with('website');
         })
             ->leftJoin('payments','clients.id','=','payments.client_id')
             ->leftJoin('users','clients.added_by','=','users.id')
-            ->select('clients.*','payments.id as payment_id','users.name as added_by')
+            ->select('clients.*','payments.id as payment_id','payments.invoice_no as payment_invoice','users.name as added_by')
             ->withCount('follow_ups')
             ->when($isSuperAdmin==false, function($query) {
                 return $query->where('clients.added_by', auth()->user()->id);
@@ -57,7 +58,8 @@ class ClientService
     {
         return $this->client->with(['added_by' => function($q) {
                 $q->select('id','name');
-            }])->find($id);
+            }])->with('payment.type', 'payment.category', 'website')
+            ->find($id);
     }
 
     public function create(Request $request)
@@ -140,7 +142,7 @@ class ClientService
 
     public function updateDoc(Request $request, $id)
     {
-        $client = Clients::find($id);
+        $client = Clients::findOrFail($id);
 
         if($client->document)
         {

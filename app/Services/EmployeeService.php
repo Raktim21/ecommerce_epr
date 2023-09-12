@@ -48,7 +48,7 @@ class EmployeeService
         ->get();
 
         $data->map(function ($item) {
-            $item->kpi_payable = $item->user->clients_count == 0 ? 0 : $this->calculateKPI($item->user->clients_count);
+            $item->kpi_payable = $item->user->clients_count <= $item->general_kpi ? 0 : $this->calculateKPI($item->general_kpi, $item->user->clients_count);
         });
 
         return $data;
@@ -59,7 +59,8 @@ class EmployeeService
         DB::beginTransaction();
 
         try {
-            foreach($request->employees as $employee) {
+            foreach($request->employees as $employee)
+            {
                 $emp = EmployeeProfile::with(['user' => function($q) {
                     return $q->select('id')
                         ->withCount(['clients' => function($q) {
@@ -69,7 +70,7 @@ class EmployeeService
                         }]);
                     }])->find($employee['id']);
 
-                $extra = $this->calculateKPI($emp->user->clients_count);
+                $extra = $this->calculateKPI($emp->general_kpi, $emp->user->clients_count);
 
                 Salary::create([
                     'employee_id'       => $employee['id'],
@@ -89,20 +90,18 @@ class EmployeeService
         }
     }
 
-    private function calculateKPI($confirmed_clients_count)
+    private function calculateKPI($base_kpi, $confirmed_clients_count)
     {
-        $kpi = KPILookUp::where('client_count','<=', $confirmed_clients_count)->orderByDesc('client_count')->first();
+        $bonus_kpi = $confirmed_clients_count - $base_kpi;
+
+        $kpi = KPILookUp::where('client_count','<=', $bonus_kpi)->orderByDesc('client_count')->first();
 
         if(!$kpi)
         {
             return 0;
         }
 
-        if($kpi->client_count == $confirmed_clients_count)
-        {
-            return $kpi->amount;
-        }
-
-        return $kpi->amount + (($confirmed_clients_count - $kpi->client_count) * $kpi->per_client_amount);
+        return $kpi->client_count == $bonus_kpi ? $kpi->amount :
+            $kpi->amount + (($bonus_kpi - $kpi->client_count) * $kpi->per_client_amount);
     }
 }

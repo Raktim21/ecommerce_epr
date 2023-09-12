@@ -73,14 +73,20 @@ class Clients extends Model
         parent::boot();
 
         static::created(function ($client) {
-            (new UserPointService())->savePoints(1);
-            (new UserService)->sendNotification('A new client has been created.', 'client', $client->id);
+            (new UserPointService())->savePoints(1, auth()->user()->id);
+            (new UserService)->sendNotification(
+                $client->added_by->name . ' has created a client profile for '. $client->name .'.',
+                'client',
+                $client->id);
         });
 
         static::updated(function ($client) {
             if(is_null($client->confirmation_date))
             {
-                (new UserService)->sendNotification("A client's information have been updated.", 'client', $client->id);
+                (new UserService)->sendNotification(
+                    'Client profile of '. $client->name .' has been updated.',
+                    'client',
+                    $client->id);
             }
         });
     }
