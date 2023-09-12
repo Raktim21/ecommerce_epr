@@ -56,10 +56,21 @@ class ClientService
 
     public function show($id)
     {
-        return $this->client->with(['added_by' => function($q) {
-                $q->select('id','name');
-            }])->with('payment.type', 'payment.category', 'website')
+        $data = $this->client->clone()
+            ->when(auth()->user()->hasRole('Super Admin'), function ($q) {
+                return $q->with(['added_by' => function($q1) {
+                    $q1->select('id','name');
+                }]);
+            })
+            ->with('payment.type', 'payment.category', 'website')
             ->find($id);
+
+        if(auth()->user()->hasRole('Super Admin') || $data->added_by->id == auth()->user()->id)
+        {
+            return $data;
+        } else {
+            return null;
+        }
     }
 
     public function create(Request $request)

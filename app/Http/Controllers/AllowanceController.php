@@ -110,14 +110,14 @@ class AllowanceController extends Controller
             return response()->json([
                 'success' => false,
                 'error' => 'You have already entered the information.'
-            ],422);
+            ],400);
         }
         else if($status == 2)
         {
             return response()->json([
                 'success' => false,
                 'error' => 'You are not authorized to update the information.'
-            ],401);
+            ],403);
         }
         Cache::forget('current_journey'.auth()->user()->id);
 
@@ -130,25 +130,18 @@ class AllowanceController extends Controller
         {
             return response()->json(['success' => true]);
         }
-        return response()->json(['success' => false, 'error' => 'You cannot update this allowance.'],422);
+        return response()->json(['success' => false, 'error' => 'You are not  authorized to update this allowance.'],403);
     }
 
-    public function changeStatus(AllowanceStatusRequest $request, $id)
+    public function changeStatus(AllowanceStatusRequest $request)
     {
-        $this->service->updateStatus($request, $id);
-        return response()->json(['success' => true]);
-    }
-
-    public function transportAllowanceChangePaymentStatus(TransportAllowancPaymentStatusRequest $request){
-
-        foreach ($request->transport_allowance_id as $value) {
-            $this->service->transportAllowanceUpdatePaymentStatus($request, $value);
+        if($this->service->updateStatus($request)) {
+            return response()->json(['success' => true]);
         }
-
         return response()->json([
-            'success' => true,
-        ]);
-
+            'success'    => false,
+            'error'      => 'Something went wrong.'
+        ], 500);
     }
 
 

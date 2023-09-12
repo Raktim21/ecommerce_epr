@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\FoodAllowance;
 use App\Models\TransportAllowance;
 use Carbon\Carbon;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -13,7 +14,7 @@ class AllowanceService
 {
     public function startJourney(Request $request): bool
     {
-        if(TransportAllowance::where('created_by',auth()->user()->id)->where('travel_status',0)->exists())
+        if(TransportAllowance::where('created_by',auth()->user()->id)->whereNull('end_time')->exists())
         {
             return false;
         }
@@ -30,7 +31,6 @@ class AllowanceService
             'created_by'     => auth()->user()->id,
             'client_id'      => $request->client_id,
             'follow_up_id'   => $request->follow_up_id
-
         ]);
 
         if ($request->hasFile('document')){
@@ -44,7 +44,7 @@ class AllowanceService
     {
         $allowance = TransportAllowance::findOrFail($id);
 
-        if(!is_null($allowance->end_time) && $allowance->travel_status == 1)
+        if(!is_null($allowance->end_time))
         {
             return 1;
         }
@@ -66,7 +66,6 @@ class AllowanceService
             'note'           => $request->note ?? null,
             'client_id'      => $request->client_id ?? null,
             'follow_up_id'   => $request->follow_up_id ?? null,
-            'travel_status'  => 1,
             'updated_at'     => Carbon::now()->timezone('Asia/Dhaka')
         ]);
 
@@ -82,31 +81,27 @@ class AllowanceService
         return 0;
     }
 
-    public function updateStatus(Request $request, $id): void
+    public function updateStatus(Request $request): bool
     {
-        $allowance = TransportAllowance::findOrFail($id);
-        $allowance->update([
-            'allowance_status' => $request->allowance_status
-        ]);
+        DB::beginTransaction();
 
-        (new UserService)->sendNotification('Status of a transport allowance has been changed.', 'transport-allowance', $allowance->id);
-    }
+        try {
+            foreach ($request->allowances as $id) {
+                $allowance = TransportAllowance::find($id);
 
+                $allowance->update([
+                    'allowance_status' => $request->status
+                ]);
+            }
 
-    public function transportAllowanceUpdatePaymentStatus(Request $request, $id): void
-    {
+            DB::commit();
 
-        $allowance = TransportAllowance::findOrFail($id);
-
-        if($allowance->allowance_status != 2)
+            return true;
+        } catch (QueryException $ex)
         {
-            $allowance->is_paid = $request->payment_status;
-
-            $allowance->allowance_status =  $request->payment_status == 0 ? 0 : 1;
-
-            $allowance->update();
-
-            (new UserService)->sendNotification('Transport allowance has been paid to an employee.', 'transport-allowance', $allowance->id);
+            DB::rollback();
+            Log::info($ex);
+            return false;
         }
     }
 

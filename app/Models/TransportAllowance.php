@@ -15,8 +15,7 @@ class TransportAllowance extends Model
     protected $fillable = [
         'from_lat','from_lng','from_address','start_time','to_lat','to_lng',
         'to_address','end_time','transport_type','amount','document','note',
-        'visit_type','created_by','client_id','follow_up_id','allowance_status',
-        'travel_status'
+        'visit_type','created_by','client_id','follow_up_id','allowance_status'
     ];
 
     public function client()
@@ -43,6 +42,18 @@ class TransportAllowance extends Model
                 $allowance->created_by_info->name . ' has recently started journey for a client follow up.',
                 'transport-allowance',
                 $allowance->id);
+        });
+
+        static::updated(function ($allowance) {
+            if($allowance->allowance_status != 0)
+            {
+                $status = $allowance->allowance_status == 1 ? 'paid.' : 'rejected.';
+
+                (new UserService)->sendNotification(
+                    'Transport allowance of '. $allowance->created_by_info->name .' has been ' . $status,
+                    'transport-allowance',
+                    $allowance->id);
+            }
         });
     }
 }

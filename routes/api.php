@@ -131,7 +131,6 @@ Route::group(['middleware' => ['jwt.verify']], function () {
             Route::get('transport-allowances/current', 'currentTransportAllowance');
         });
         Route::get('transport-allowances/export/all', 'transportAllowanceExport')->middleware('permission:export-transport-allowance');
-        Route::post('transport-allowances/update-payment-status', 'transportAllowanceChangePaymentStatus')->middleware('permission:update-transport-payment-status');
         Route::post('transport-allowance-payment-slip', 'transportAllowancePaymentSlip')->middleware('permission:transport-allowance-payment-slip');
 
         Route::middleware('permission:create-update-transport-allowance')->group(function() {
@@ -141,7 +140,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
             Route::post('transport-allowances/update/{id}', 'update');
         });
 
-        Route::put('transport-allowances/change-status/{id}', 'changeStatus')->middleware('permission:change-transport-allowance-status');
+        Route::put('transport-allowances/change-status', 'changeStatus')->middleware('permission:change-transport-allowance-status');
 
         Route::middleware('permission:get-food-allowance')->group(function() {
 

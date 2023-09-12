@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Models\TransportAllowance;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -19,20 +21,37 @@ class AllowanceStatusRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
+     * @return array<string, ValidationRule|array|string>
      */
     public function rules(): array
     {
         return [
-            'allowance_status' => 'required|in:0,1,2,3'
+            'status'        => 'required|in:1,2',
+            'allowances'    => 'required|array|min:1',
+            'allowances.*'  => ['required', 'exists:transport_allowances,id',
+                                function ($attr, $val, $fail) {
+                                    $allowance = TransportAllowance::find($val);
+
+                                    if(!$allowance)
+                                    {
+                                        $fail('Invalid transport allowance selected.');
+                                    }
+                                    else {
+                                        if ($allowance->allowance_status != 0)
+                                        {
+                                            $status = $allowance->allowance_status == 1 ? 'paid.' : 'rejected.';
+                                            $fail('Transport allowance of '. $allowance->created_by_info->name .' has already been ' . $status);
+                                        }
+                                    }
+                                }]
         ];
     }
 
     public function messages()
     {
         return [
-            'allowance_status.required' => 'Please select a status.',
-            'allowance_status.in' => 'Invalid status selected.'
+            'status.required' => 'Please select a status.',
+            'status.in' => 'Invalid status selected.'
         ];
     }
 
