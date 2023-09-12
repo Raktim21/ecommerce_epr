@@ -12,6 +12,7 @@ use App\Http\Requests\TransportAllowanceStatusRequest;
 use App\Http\Requests\AllowanceUpdateRequest;
 use App\Http\Requests\FileTypeRequest;
 use App\Http\Requests\FoodAllowanceStoreRequest;
+use App\Models\FoodAllowance;
 use App\Models\TransportAllowance;
 use App\Models\User;
 use App\Services\AllowanceService;
@@ -226,6 +227,40 @@ class AllowanceController extends Controller
         $file_name = 'food_allowance' . date('dis') . '.' . $request->type;
 
         return Excel::download(new FoodAllowanceExport(), $file_name);
+    }
+
+
+    public function foodAllowancePaymentSlip(Request $request)
+    {
+        $validate = Validator::make($request->all(), [
+            'allowances'   => 'required|array',
+            'allowances.*' => 'required|exists:food_allowances,id',
+        ]);
+
+        if ($validate->fails()) {
+            return response()->json([
+                'success' => false,
+                'error'  => $validate->errors()->first()
+            ], 422);
+        }
+
+        if (FoodAllowance::whereRaw('id IN (' . implode(',', $request->allowances) . ')')->distinct('created_by')->count() > 1) {
+
+            return response()->json([
+                'success' => false,
+                'error'  => "Please select only one user's allowance data."
+            ],422);
+        }
+
+        $user =  User::find(FoodAllowance::find($request->allowances[0])->created_by);
+
+        $data = [
+            'food_allowances' => FoodAllowance::whereRaw('id IN (' . implode(',', $request->allowances) . ')')->get(),
+            'user' => $user,
+        ];
+
+        $pdf = PDF::loadView('food_allowance_payment_slip', compact('data'));
+        return $pdf->stream('food_allowance_payment_slip_' . $user->id . '-' . rand(1000, 9999) . '.pdf');
     }
 
 }

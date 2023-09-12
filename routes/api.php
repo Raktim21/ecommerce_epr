@@ -156,6 +156,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
         Route::get('food-allowances/export/all', 'foodAllowanceExport')->middleware('permission:export-food-allowance');
         Route::put('food-allowances/update-status', 'foodAllowanceUpdate')->middleware('permission:change-food-allowance-status');
+        Route::post('food-allowance-payment-slip', 'foodAllowancePaymentSlip')->middleware('permission:food-allowance-payment-slip');
     });
 
 });
