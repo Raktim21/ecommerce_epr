@@ -53,6 +53,11 @@ class TransportAllowance extends Model
                     'Transport allowance of '. $allowance->created_by_info->name .' has been ' . $status,
                     'transport-allowance',
                     $allowance->id);
+            } else{
+                (new UserService)->sendNotification(
+                    'Transport allowance information of '. $allowance->created_by_info->name .' has been updated.',
+                    'transport-allowance',
+                    $allowance->id);
             }
         });
     }

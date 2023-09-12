@@ -2,13 +2,13 @@
 
 namespace App\Http\Requests;
 
-use App\Models\TransportAllowance;
+use App\Models\FoodAllowance;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class AllowanceStatusRequest extends FormRequest
+class FoodAllowanceStatusRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,30 +28,19 @@ class AllowanceStatusRequest extends FormRequest
         return [
             'status'        => 'required|in:1,2',
             'allowances'    => 'required|array|min:1',
-            'allowances.*'  => ['required', 'exists:transport_allowances,id',
+            'allowances.*'  => ['required',
                                 function ($attr, $val, $fail) {
-                                    $allowance = TransportAllowance::find($val);
+                                    $allowance = FoodAllowance::find($val);
 
                                     if(!$allowance)
                                     {
-                                        $fail('Invalid transport allowance selected.');
+                                        $fail('Invalid food allowance selected.');
                                     }
-                                    else {
-                                        if ($allowance->allowance_status != 0)
-                                        {
-                                            $status = $allowance->allowance_status == 1 ? 'paid.' : 'rejected.';
-                                            $fail('Transport allowance of '. $allowance->created_by_info->name .' has already been ' . $status);
-                                        }
+                                    else if ($allowance->allowance_status != 0) {
+                                        $status = $allowance->allowance_status == 1 ? 'paid.' : 'rejected.';
+                                        $fail('Food allowance of '. $allowance->created_by_info->name .' has already been ' . $status);
                                     }
                                 }]
-        ];
-    }
-
-    public function messages()
-    {
-        return [
-            'status.required' => 'Please select a status.',
-            'status.in' => 'Invalid status selected.'
         ];
     }
 

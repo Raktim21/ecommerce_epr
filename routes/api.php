@@ -144,7 +144,6 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
         Route::middleware('permission:get-food-allowance')->group(function() {
 
-            Route::get('food-allowances', 'foodAllowanceList');
             Route::get('food-allowances/filter', 'foodAllowanceSearch');
             Route::get('food-allowances/get/{id}', 'foodAllowance');
         });
@@ -156,7 +155,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         });
 
         Route::get('food-allowances/export/all', 'foodAllowanceExport')->middleware('permission:export-food-allowance');
-        Route::put('food-allowances/update-status/{id}', 'foodAllowanceUpdate')->middleware('permission:change-food-allowance-status');
+        Route::put('food-allowances/update-status', 'foodAllowanceUpdate')->middleware('permission:change-food-allowance-status');
     });
 
 });

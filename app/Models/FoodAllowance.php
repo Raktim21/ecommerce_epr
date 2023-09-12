@@ -43,5 +43,17 @@ class FoodAllowance extends Model
                 'food-allowance',
                 $allowance->id);
         });
+
+        static::updated(function ($allowance) {
+            if ($allowance->allowance_status != 0)
+            {
+                $status = $allowance->allowance_status == 1 ? 'paid.' : 'rejected.';
+
+                (new UserService)->sendNotification(
+                    'Food allowance of '. $allowance->created_by_info->name .' has been ' . $status,
+                    'food-allowance',
+                    $allowance->id);
+            }
+        });
     }
 }

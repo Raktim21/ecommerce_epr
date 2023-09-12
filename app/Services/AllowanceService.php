@@ -7,6 +7,7 @@ use App\Models\TransportAllowance;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -100,25 +101,38 @@ class AllowanceService
         } catch (QueryException $ex)
         {
             DB::rollback();
-            Log::info($ex);
             return false;
         }
     }
 
-    public function updateFoodStatus(Request $request, $id): void
+    public function updateFoodStatus(Request $request): bool
     {
-        $allowance = FoodAllowance::findOrFail($id);
-        $allowance->update([
-            'allowance_status' => $request->allowance_status
-        ]);
-        (new UserService)->sendNotification('Status of a food allowance has been changed.', 'food-allowance', $allowance->id);
+        DB::beginTransaction();
+
+        try {
+            foreach($request->allowances as $id) {
+                $allowance = FoodAllowance::find($id);
+
+                $allowance->update([
+                    'allowance_status' => $request->status
+                ]);
+            }
+
+            DB::commit();
+            return true;
+        }
+        catch (QueryException $ex)
+        {
+            DB::rollback();
+            return false;
+        }
     }
 
     public function updateInfo(Request $request, $id): bool
     {
         $allowance = TransportAllowance::findOrFail($id);
 
-        if($allowance->created_by != auth()->user()->id)
+        if($allowance->created_by != auth()->user()->id || $allowance->end_time)
         {
             return false;
         }
@@ -134,7 +148,7 @@ class AllowanceService
             }
             saveImage($request->file('document'), 'uploads/travel_allowance/documents/', $allowance, 'document');
         }
-        (new UserService)->sendNotification('A transport allowance information has been updated.', 'transport-allowance', $allowance->id);
+
         return true;
     }
 
@@ -182,7 +196,9 @@ class AllowanceService
 
     public function getTransportAllowance($id)
     {
-        return TransportAllowance::with('created_by_info','client','follow_up')->findOrFail($id);
+        $data = TransportAllowance::with('created_by_info','client','follow_up')->find($id);
+
+        return !auth()->user()->hasRole('Super Admin') && $data->created_by != auth()->user()->id ? null : $data;
     }
 
     public function getFoodAllowance($id)

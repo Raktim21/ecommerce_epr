@@ -7,7 +7,8 @@ use App\Exports\TransportAllowanceExport;
 use App\Http\Requests\AllowanceEndRequest;
 use App\Http\Requests\AllowanceFilterRequest;
 use App\Http\Requests\AllowanceStartRequest;
-use App\Http\Requests\AllowanceStatusRequest;
+use App\Http\Requests\FoodAllowanceStatusRequest;
+use App\Http\Requests\TransportAllowanceStatusRequest;
 use App\Http\Requests\AllowanceUpdateRequest;
 use App\Http\Requests\FileTypeRequest;
 use App\Http\Requests\FoodAllowanceStoreRequest;
@@ -32,18 +33,12 @@ class AllowanceController extends Controller
 
     public function transportAllowance($id)
     {
-        return response()->json([
-            'success' => true,
-            'data'    => $this->service->getTransportAllowance($id),
-        ]);
-    }
+        $data = $this->service->getTransportAllowance($id);
 
-    public function foodAllowance($id)
-    {
         return response()->json([
             'success' => true,
-            'data'    => $this->service->getFoodAllowance($id)
-        ]);
+            'data'    => $data,
+        ], is_null($data) ? 204 : 200);
     }
 
     public function transportAllowanceSearch(AllowanceFilterRequest $request)
@@ -51,22 +46,6 @@ class AllowanceController extends Controller
         return response()->json([
             'success' => true,
             'data'    => $this->service->getTransportSearchResult($request),
-            'search'  => array(
-                'name'                  => $request->search,
-                'start_date'            => $request->start_date,
-                'end_date'              => $request->end_date,
-                'amount_start_range'    => $request->amount_start_range,
-                'amount_end_range'      => $request->amount_end_range,
-                'status'                => $request->status,
-            )
-        ]);
-    }
-
-    public function foodAllowanceSearch(AllowanceFilterRequest $request)
-    {
-        return response()->json([
-            'success' => true,
-            'data'    => $this->service->getFoodSearchResult($request),
             'search'  => array(
                 'name'                  => $request->search,
                 'start_date'            => $request->start_date,
@@ -94,8 +73,11 @@ class AllowanceController extends Controller
     {
         if($this->service->startJourney($request))
         {
+            Cache::forget('current_journey'.auth()->user()->id);
+
             return response()->json(['success' => true], 201);
         }
+
         return response()->json([
             'success' => false,
             'error'   => 'You cannot start a new journey without ending previous one.'
@@ -128,12 +110,13 @@ class AllowanceController extends Controller
     {
         if($this->service->updateInfo($request, $id))
         {
+            Cache::forget('current_journey'.auth()->user()->id);
             return response()->json(['success' => true]);
         }
-        return response()->json(['success' => false, 'error' => 'You are not  authorized to update this allowance.'],403);
+        return response()->json(['success' => false, 'error' => 'You cannot update this allowance.'],403);
     }
 
-    public function changeStatus(AllowanceStatusRequest $request)
+    public function changeStatus(TransportAllowanceStatusRequest $request)
     {
         if($this->service->updateStatus($request)) {
             return response()->json(['success' => true]);
@@ -142,6 +125,14 @@ class AllowanceController extends Controller
             'success'    => false,
             'error'      => 'Something went wrong.'
         ], 500);
+    }
+
+
+    public function transportAllowanceExport(FileTypeRequest $request)
+    {
+        $file_name = 'transport_allowance' . date('dis') . '.' . $request->type;
+
+        return Excel::download(new TransportAllowanceExport(), $file_name);
     }
 
 
@@ -155,7 +146,7 @@ class AllowanceController extends Controller
         if ($validate->fails()) {
             return response()->json([
                 'success' => false,
-                'errors'  => $validate->errors()->first()
+                'error'  => $validate->errors()->first()
             ], 422);
         }
 
@@ -164,8 +155,8 @@ class AllowanceController extends Controller
 
             return response()->json([
                 'success' => false,
-                'errors'  => "Please select only one user's allowance."
-            ],304);
+                'error'  => "Please select only one user's allowance data."
+            ],422);
         }
 
 
@@ -188,6 +179,17 @@ class AllowanceController extends Controller
         return response()->json(['success' => true],201);
     }
 
+    public function foodAllowanceUpdate(FoodAllowanceStatusRequest $request)
+    {
+        if ($this->service->updateFoodStatus($request)) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json([
+            'success' => false,
+            'error' => 'Something went wrong.'
+        ], 500);
+    }
+
     public function foodAllowanceDelete($id)
     {
         if($this->service->deleteFoodAllowance($id))
@@ -196,21 +198,32 @@ class AllowanceController extends Controller
         }
         return response()->json([
             'success' => false,
-            'error'   => 'You cannot delete this food allowance now.'
-        ],422);
+            'error'   => 'You cannot delete this food allowance.'
+        ],403);
     }
 
-    public function foodAllowanceUpdate(AllowanceStatusRequest $request, $id)
+    public function foodAllowanceSearch(AllowanceFilterRequest $request)
     {
-        $this->service->updateFoodStatus($request, $id);
-        return response()->json(['success' => true]);
+        return response()->json([
+            'success' => true,
+            'data'    => $this->service->getFoodSearchResult($request),
+            'search'  => array(
+                'name'                  => $request->search,
+                'start_date'            => $request->start_date,
+                'end_date'              => $request->end_date,
+                'amount_start_range'    => $request->amount_start_range,
+                'amount_end_range'      => $request->amount_end_range,
+                'status'                => $request->status,
+            )
+        ]);
     }
 
-    public function transportAllowanceExport(FileTypeRequest $request)
+    public function foodAllowance($id)
     {
-        $file_name = 'transport_allowance' . date('dis') . '.' . $request->type;
-
-        return Excel::download(new TransportAllowanceExport(), $file_name);
+        return response()->json([
+            'success' => true,
+            'data'    => $this->service->getFoodAllowance($id)
+        ]);
     }
 
     public function foodAllowanceExport(FileTypeRequest $request)
