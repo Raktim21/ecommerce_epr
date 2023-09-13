@@ -81,7 +81,7 @@ class AllowanceController extends Controller
         return response()->json([
             'success' => false,
             'error'   => 'You cannot start a new journey without ending previous one.'
-        ], 422);
+        ], 400);
     }
 
     public function end(AllowanceEndRequest $request, $id)

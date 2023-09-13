@@ -76,9 +76,6 @@
         <thead>
         <tr>
             <th style="border: 1px solid rgb(201, 201, 201); padding: 10px" align="left">
-                Address details
-            </th>
-            <th style="border: 1px solid rgb(201, 201, 201); padding: 10px" align="left">
                 Date
             </th>
             <th style="border: 1px solid rgb(201, 201, 201); padding: 10px" align="left">
@@ -93,10 +90,6 @@
 
         @foreach ($data['food_allowances'] as $food_allowance)
             <tr>
-                <td style="border: 1px solid rgb(201, 201, 201); padding-left: 10px">
-                    {!! $food_allowance->address ?? '<span style="color: red">Undefined</span>' !!}
-                </td>
-
                 <td style="border: 1px solid rgb(201, 201, 201); padding-left: 10px">
                     {{ \Carbon\Carbon::parse($food_allowance->occured_on)->format('d M, Y') }}
                 </td>
@@ -113,20 +106,17 @@
         <tr>
             <td style="padding-left: 10px">Total Paid Amount</td>
             <td></td>
-            <td></td>
             <td style="padding-left: 10px">{{ $data['food_allowances']->where('allowance_status',1)->sum('amount') }}/-</td>
         </tr>
 
         <tr>
             <td style="padding-left: 10px">Total Unpaid Amount</td>
             <td></td>
-            <td></td>
             <td style="padding-left: 10px">{{ $data['food_allowances']->where('allowance_status','!=',1)->sum('amount') }}/-</td>
         </tr>
 
         <tr>
             <td style="border-top: 1px solid rgb(201, 201, 201);padding-left: 10px">Total Amount</td>
-            <td style="border-top: 1px solid rgb(201, 201, 201)"></td>
             <td style="border-top: 1px solid rgb(201, 201, 201)"></td>
             <td style="border-top: 1px solid rgb(201, 201, 201);padding-left: 10px">{{ $data['food_allowances']->sum('amount') }}/-</td>
         </tr>

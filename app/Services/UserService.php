@@ -14,7 +14,7 @@ class UserService
 {
     public function getAll()
     {
-        return User::with('roles')
+        return User::with('roles','employee')
             ->withSum('point_list', 'points')->paginate(15);
     }
 

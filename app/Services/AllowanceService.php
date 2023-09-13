@@ -156,7 +156,7 @@ class AllowanceService
     {
         return TransportAllowance::with('client','follow_up')
             ->where('created_by', auth()->user()->id)
-            ->where('travel_status','=',0)->first();
+            ->whereNull('end_time')->first();
     }
 
     public function createFoodAllowance(Request $request): void

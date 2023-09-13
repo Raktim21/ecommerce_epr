@@ -18,6 +18,8 @@ class TransportAllowance extends Model
         'visit_type','created_by','client_id','follow_up_id','allowance_status'
     ];
 
+    protected $hidden = ['updated_at','created_at'];
+
     public function client()
     {
         return $this->belongsTo(Clients::class, 'client_id');

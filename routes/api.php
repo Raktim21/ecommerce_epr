@@ -65,7 +65,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::controller(UserPointController::class)->group(function () {
         Route::get('point-types', 'getList')->middleware(['permission:get-point-type-list']);
         Route::put('point-types/{id}', 'updatePoint')->middleware(['permission:update-point-type']);
-//        Route::get('user/points/{user_id}', 'pointData');
+        Route::get('user/points/{user_id}', 'pointData');
     });
 
     Route::controller(UserController::class)->group(function () {
