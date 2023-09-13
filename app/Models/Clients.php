@@ -6,7 +6,6 @@ use App\Services\UserPointService;
 use App\Services\UserService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Cache;
 
 class Clients extends Model
 {
@@ -75,7 +74,7 @@ class Clients extends Model
         static::created(function ($client) {
             (new UserPointService())->savePoints(1, auth()->user()->id);
             (new UserService)->sendNotification(
-                $client->added_by->name . ' has created a client profile for '. $client->name .'.',
+                auth()->user()->name . ' has created a client profile for '. $client->name .'.',
                 'client',
                 $client->id);
         });

@@ -41,7 +41,7 @@ class DashboardService
             'monthly_client_data'           => $monthly_client_data,
             'user_point_report'             => $this->userPointReport(),
             'employee_kpi'                  => $this->employeeKPI(),
-//            'star_employee'                 => $this->starEmployee()
+            'star_employee'                 => $this->starEmployee(),
         ];
     }
 
@@ -68,21 +68,20 @@ class DashboardService
 
     private function starEmployee()
     {
-        $startDate = Carbon::now()->subMonth(1);
+        $startDate = Carbon::now()->subMonth(3);
 
-//        return EmployeeProfile::select('id','user_id')
-//            ->with(['user' => function($q) use ($startDate) {
-//            return $q->select('id','name')
-//                ->withCount(['clients' => function($q) use ($startDate) {
-//                    return $q->whereNotNull('confirmation_date')
-//                        ->whereMonth('confirmation_date', Carbon::parse($startDate)->format('n'))
-//                        ->whereYear('confirmation_date', Carbon::parse($startDate)->format('Y'));
-//                }]);
-//        }])->get();
-
-//        return DB::table('employee_profiles')
-//            ->leftJoin('users','employee_profiles.user_id','=','users.id')
-//            ->join('clients','users.id','=','clients.added_by')
-//            ->whereNotNull('clients')
+        return array(
+            'month' => Carbon::now()->subMonth(3)->format('F, Y'),
+            'data' => DB::table('employee_profiles')
+            ->leftJoin('users','employee_profiles.user_id','=','users.id')
+            ->join('clients','users.id','=','clients.added_by')
+            ->whereNotNull('confirmation_date')
+            ->whereMonth('confirmation_date', Carbon::parse($startDate)->format('n'))
+            ->whereYear('confirmation_date', Carbon::parse($startDate)->format('Y'))
+            ->selectRaw('count(clients.id) as clients_count, users.name as username, users.id as user_id')
+            ->groupBy('users.id','users.name')
+            ->orderByDesc('clients_count')
+            ->first()
+        );
     }
 }
