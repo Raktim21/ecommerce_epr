@@ -14,16 +14,15 @@ use Illuminate\Support\Facades\Log;
 
 class AdminNotification extends Notification
 {
-    protected $message, $model, $model_id;
+    protected $message, $link;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct($message, $model, $model_id)
+    public function __construct($message, $link)
     {
         $this->message  = $message;
-        $this->model    = $model;
-        $this->model_id = $model_id;
+        $this->link     = $link;
     }
 
     /**
@@ -45,8 +44,7 @@ class AdminNotification extends Notification
     {
         return [
             'message'   => $this->message,
-            'model'     => $this->model,
-            'model_id'  => $this->model_id,
+            'link'      => $this->link,
             'auth_name' => auth()->check() ? auth()->user()->name : 'Selopia'
         ];
     }

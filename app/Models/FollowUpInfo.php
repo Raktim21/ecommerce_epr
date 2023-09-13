@@ -44,7 +44,9 @@ class FollowUpInfo extends Model
         parent::boot();
 
         static::created(function ($follow) {
-            (new UserService)->sendNotification(auth()->user()->name . 'has created a new client follow-up.', 'follow-up', $follow->id);
+            (new UserService)->sendNotification(
+                auth()->user()->name . 'has created a new client follow-up.',
+                '/follow_up/'.$follow->client_id);
             Cache::forget('client_follow_up'.$follow->client_id);
         });
 

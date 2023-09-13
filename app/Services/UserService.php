@@ -147,13 +147,13 @@ class UserService
         return User::findOrFail($id)->roles;
     }
 
-    public function sendNotification($message, $model, $id): void
+    public function sendNotification($message, $link): void
     {
         $users = User::role(1)->whereNot('id',auth()->user()->id)->get();
 
         foreach ($users as $user)
         {
-            $user->notify(new AdminNotification($message, $model, $id));
+            $user->notify(new AdminNotification($message, $link));
         }
     }
 

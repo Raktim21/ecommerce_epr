@@ -35,8 +35,7 @@ class EmployeeProfile extends Model
             {
                 (new UserService())->sendNotification(
                     'Employee profile has been created for '. $profile->user->name .'.',
-                    'user',
-                    $profile->user_id);
+                    '/user/'.$profile->user_id);
             }
         });
     }

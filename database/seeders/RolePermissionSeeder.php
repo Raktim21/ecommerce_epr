@@ -28,10 +28,29 @@ class RolePermissionSeeder extends Seeder
             'create-user',
             'update-user',
             'delete-user',
+            'create-user-employee-profile',
+            'employee-payable-salary-list',
+            'store-salary',
+            'get-point-type-list',
+            'update-point-type',
+            'get-user-point-data',
+            'get-transport-allowance',
+            'export-transport-allowance',
+            'create-update-transport-allowance',
+            'change-transport-allowance-status',
+            'transport-allowance-payment-slip',
+            'get-food-allowance',
+            'export-food-allowance',
+            'create-delete-food-allowance',
+            'change-food-allowance-status',
+            'get-service',
+            'create-service',
+            'update-service',
             'get-client-list',
             'export-client-list',
             'get-unpaid-client-list',
             'get-client-info',
+            'get-client-gps-data',
             'create-client',
             'import-client',
             'update-client',
@@ -41,44 +60,19 @@ class RolePermissionSeeder extends Seeder
             'create-client-follow-up-reminder',
             'update-client-follow-up',
             'delete-client-follow-up',
-            'get-client-payment',
-            'create-client-payment',
             'get-payment-type',
+            'create-client-payment',
             'get-payslip',
-            'get-website',
-            'create-website',
-            'get-payment-category',
-            'create-payment-category',
-            'delete-payment-category',
-            'get-point-type-list',
-            'update-point-type',
-            'get-user-point-data',
-            'get-transport-allowance',
-            'update-transport-payment-status',
-            'export-transport-allowance',
-            'create-update-transport-allowance',
-            'change-transport-allowance-status',
-            'trandport-allowance-payment-slip',
-            'get-food-allowance',
-            'export-food-allowance',
-            'create-delete-food-allowance',
-            'change-food-allowance-status',
-            'employee-payable-salary-list',
-            'store-salary',
-            'create-user-employee-profile',
-            'update-payment-category',
-            'update-employee',
-            'get-client-gps-data',
+            'get-bills',
+            'create-bill'
         ];
 
         foreach ($permissions as $value)
         {
-            if (!Permission::where('name', $value)->exists()) {
-                Permission::create([
-                    'name' => $value,
-                    'guard_name' => 'api'
-                ]);
-            }
+            Permission::create([
+                'name' => $value,
+                'guard_name' => 'api'
+            ]);
         }
 
         $role = Role::create([

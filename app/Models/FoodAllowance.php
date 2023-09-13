@@ -40,8 +40,7 @@ class FoodAllowance extends Model
         static::created(function ($allowance) {
             (new UserService)->sendNotification(
                 $allowance->created_by_info->name . ' has posted a new request for food allowance.',
-                'food-allowance',
-                $allowance->id);
+                '/fa');
         });
 
         static::updated(function ($allowance) {
@@ -51,8 +50,7 @@ class FoodAllowance extends Model
 
                 (new UserService)->sendNotification(
                     'Food allowance of '. $allowance->created_by_info->name .' has been ' . $status,
-                    'food-allowance',
-                    $allowance->id);
+                    '/fa');
             }
         });
     }

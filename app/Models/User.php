@@ -91,8 +91,7 @@ class User extends Authenticatable implements JWTSubject
         static::created(function ($user) {
             (new UserService())->sendNotification(
                 'A new user profile has been created for '. $user->name .'.',
-                'user',
-                $user->id);
+                '/user/'.$user->id);
         });
 
         static::updated(function ($user) {

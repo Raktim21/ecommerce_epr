@@ -35,7 +35,7 @@
                     <table>
                         <tr>
                             <td width="400" align="left">
-                                <h2 style="margin: 0; color: #e63c3c">Selopia</h2>
+                                <h2 style="margin: 0; color: #e63c3c">SELOPIA</h2>
                             </td>
                         </tr>
                     </table>

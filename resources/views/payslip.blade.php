@@ -27,7 +27,7 @@
         </p>
     </div>
     <div style="float: right">
-        <img style="height: 80px" src="{{ public_path('uploads/general/logo.jpg') }}">
+        <img style="height: 50px" src="{{ public_path('uploads/general/logo.jpg') }}">
         <hr>
         <p style="float: right">
             <b>Invoice No: {{ $data['invoice_no'] }}</b>

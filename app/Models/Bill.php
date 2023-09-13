@@ -31,8 +31,7 @@ class Bill extends Model
         static::created(function ($bill) {
             (new UserService)->sendNotification(
                 auth()->user()->name . ' has created new bill for '. $bill->client->name .'.',
-                'client-bill',
-                $bill->id);
+                '/bill');
         });
     }
 }

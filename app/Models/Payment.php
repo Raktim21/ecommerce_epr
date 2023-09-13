@@ -48,8 +48,7 @@ class Payment extends Model
         static::created(function ($payment) {
             (new UserService)->sendNotification(
                 'New payment has been stored for service: '. $payment->service->name .'.',
-                'client-payment',
-                $payment->client_id);
+                '/confirm-client/'.$payment->client_id);
 
             (new UserPointService())->savePoints(2, $payment->client->added_by);
 

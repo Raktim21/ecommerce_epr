@@ -75,8 +75,7 @@ class Clients extends Model
             (new UserPointService())->savePoints(1, auth()->user()->id);
             (new UserService)->sendNotification(
                 auth()->user()->name . ' has created a client profile for '. $client->name .'.',
-                'client',
-                $client->id);
+                '/client/'.$client->id);
         });
 
         static::updated(function ($client) {
@@ -84,8 +83,7 @@ class Clients extends Model
             {
                 (new UserService)->sendNotification(
                     'Client profile of '. $client->name .' has been updated.',
-                    'client',
-                    $client->id);
+                    '/client/'.$client->id);
             }
         });
     }

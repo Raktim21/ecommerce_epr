@@ -42,8 +42,7 @@ class TransportAllowance extends Model
         static::created(function ($allowance) {
             (new UserService)->sendNotification(
                 $allowance->created_by_info->name . ' has recently started journey for a client follow up.',
-                'transport-allowance',
-                $allowance->id);
+                '/ta');
         });
 
         static::updated(function ($allowance) {
@@ -53,13 +52,11 @@ class TransportAllowance extends Model
 
                 (new UserService)->sendNotification(
                     'Transport allowance of '. $allowance->created_by_info->name .' has been ' . $status,
-                    'transport-allowance',
-                    $allowance->id);
+                    '/ta');
             } else{
                 (new UserService)->sendNotification(
                     'Transport allowance information of '. $allowance->created_by_info->name .' has been updated.',
-                    'transport-allowance',
-                    $allowance->id);
+                    '/ta');
             }
         });
     }
