@@ -47,6 +47,7 @@ class AdminNotification extends Notification
             'message'   => $this->message,
             'model'     => $this->model,
             'model_id'  => $this->model_id,
+            'auth_name' => auth()->check() ? auth()->user()->name : 'Selopia'
         ];
     }
 }

@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('payment_categories', function (Blueprint $table) {
+        Schema::create('bills', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 150)->unique();
-            $table->text('description');
-            $table->float('price')->default(0.00);
+            $table->foreignId('client_id')->index()->constrained('clients')->onDelete('cascade');
+            $table->string('bill_no', 20)->unique();
+            $table->string('remarks', 500)->nullable();
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('payment_categories');
+        Schema::dropIfExists('bills');
     }
 };

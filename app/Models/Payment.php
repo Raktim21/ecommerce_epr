@@ -36,9 +36,9 @@ class Payment extends Model
         return $this->belongsTo(PaymentType::class, 'payment_type_id');
     }
 
-    public function category()
+    public function service()
     {
-        return $this->belongsTo(PaymentCategory::class, 'payment_category_id');
+        return $this->belongsTo(Service::class, 'service_id');
     }
 
     public static function boot()
@@ -47,7 +47,7 @@ class Payment extends Model
 
         static::created(function ($payment) {
             (new UserService)->sendNotification(
-                'New payment has been stored for category: '. $payment->category->name .'.',
+                'New payment has been stored for service: '. $payment->service->name .'.',
                 'client-payment',
                 $payment->client_id);
 

@@ -23,7 +23,7 @@ return new class extends Migration
             $table->foreignId('created_by')->index()->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('client_id')->index()->nullable()->constrained('clients')->onDelete('set null');
             $table->foreignId('follow_up_id')->index()->nullable()->constrained('follow_up_infos')->onDelete('set null');
-            $table->tinyInteger('allowance_status')->default(0)->comment('0 = pending, 1 = confirmed, 2 = rejected, 3 = warning');
+            $table->tinyInteger('allowance_status')->default(0)->comment('0 = pending, 1 = paid, 2 = rejected');
             $table->timestamps();
         });
     }

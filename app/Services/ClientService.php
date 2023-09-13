@@ -62,7 +62,7 @@ class ClientService
                     $q1->select('id','name');
                 }]);
             })
-            ->with('payment.type', 'payment.category', 'website')
+            ->with('payment.type', 'payment.service', 'website')
             ->find($id);
 
         if(auth()->user()->hasRole('Super Admin') || $data->added_by->id == auth()->user()->id)

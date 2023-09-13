@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('salaries', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('employee_id')->constrained('employees')->onDelete('restrict');
+            $table->foreignId('employee_id')->constrained('employee_profiles')->onDelete('restrict');
             $table->year('year_name');
             $table->foreignId('month_id')->constrained('months')->onDelete('restrict');
             $table->float('salary_payable');

@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>Client Payslip</title>
+    <title>Client Bill</title>
     <style>
         table {
             font-family: arial, sans-serif;
@@ -23,22 +23,14 @@
             Company: {{ $data['client']['company'] }} <br>
             Email: {{ $data['client']['email'] }} <br>
             Contact: {{ $data['client']['phone_no'] }} <br>
-            <b>Purchased On: </b>{{ $data['client']['confirmation_date'] }}
+            <b>Issued On: </b>{{ \Carbon\Carbon::parse($data['created_at'])->format('d/m/y H:i') }}
         </p>
     </div>
     <div style="float: right">
         <img style="height: 80px" src="{{ public_path('uploads/general/logo.jpg') }}">
         <hr>
         <p style="float: right">
-            <b>Invoice No: {{ $data['invoice_no'] }}</b>
-        </p>
-        <br><br>
-        <p style="float: right;font-size: 14px">
-            <span style="font-size: 16px;font-weight: 600">{{ $data['service']['name'] }}</span> <br>
-            Payment Method: {{ $data['type']['name'] }} <br>
-            @if($data['transaction_id'] != null)
-                Transaction No: {{ $data['transaction_id'] }}
-            @endif
+            <b>Bill No: {{ $data['bill_no'] }}</b>
         </p>
     </div>
 </section>
@@ -51,13 +43,23 @@
             <td>Service</td>
             <td>Amount(Tk)</td>
         </tr>
-
-        <tr class="table_body">
-            <td style="color: #000">{{ $data['service']['name'] }}</td>
-            <td>{{ $data['amount'] }}/=</td>
-        </tr>
+        @php $total = 0 @endphp
+        @foreach($data['services'] as $item)
+            <tr class="table_body">
+                <td style="color: #000">{{ $item['service']['name'] }}
+                    @if($item['service']['status'] == 0)
+                        <span style="color: #74787e"> (currently not available)</span>
+                    @endif
+                </td>
+                <td>{{ $item['service']['price'] }}/=</td>
+            </tr>
+            @php
+                $total += $item['service']['price']
+            @endphp
+        @endforeach
     </table>
     <div style="background-color: #374151; height: 1px; width: 100%;"></div>
+    <p>Total: {{ $total }}</p>
 </section>
 <section style="margin-top: 150px">
     <div>

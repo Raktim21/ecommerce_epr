@@ -2,11 +2,12 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class PaymentCategoryStoreRequest extends FormRequest
+class ServiceStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -19,14 +20,14 @@ class PaymentCategoryStoreRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
+     * @return array<string, ValidationRule|array|string>
      */
     public function rules(): array
     {
         return [
-            'name'        => 'required|string|unique:payment_categories,name,'.$this->id,
+            'name'        => 'required|string|max:148|unique:services,name,'.$this->route('id'),
             'description' => 'nullable|string',
-            'price'       => 'required|numeric|max:999999.99',
+            'price'       => 'required|numeric',
         ];
     }
 

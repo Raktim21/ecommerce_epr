@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\Clients;
 use App\Models\Payment;
-use App\Models\PaymentCategory;
+use App\Models\Service;
 use App\Models\PaymentType;
 use App\Models\Website;
 use Carbon\Carbon;
@@ -28,12 +28,12 @@ class PaymentService
 
         try {
             $payment = Payment::create([
-                'client_id' => $request->client_id,
-                'payment_type_id' => $request->payment_type_id,
-                'payment_category_id' => $request->payment_category_id,
-                'transaction_id' => $request->transaction_id ?? null,
-                'invoice_no' => 'PAY-'.rand(100,999).'-'.time(),
-                'amount' => $request->amount
+                'client_id'         => $request->client_id,
+                'payment_type_id'   => $request->payment_type_id,
+                'service_id'        => $request->service_id,
+                'transaction_id'    => $request->transaction_id ?? null,
+                'invoice_no'        => 'PAY-'.rand(100,999).'-'.time(),
+                'amount'            => Service::find($request->service_id)->price
             ]);
 
             Website::create([
@@ -60,22 +60,22 @@ class PaymentService
 
     public function read($id)
     {
-        return Payment::with('client','type','category')->findOrFail($id);
+        return Payment::with('client','type','service')->findOrFail($id);
     }
 
     public function getData($client)
     {
-        return Payment::with('client','type','category')->where('client_id',$client)->latest()->get();
+        return Payment::with('client','type','service')->where('client_id',$client)->latest()->get();
     }
 
     public function getAllCategories()
     {
-        return PaymentCategory::get();
+        return Service::get();
     }
 
     public function storeCategory(Request $request): void
     {
-        PaymentCategory::create([
+        Service::create([
             'name' => $request->name,
             'description' => $request->description,
             'price' => $request->price,
@@ -83,24 +83,21 @@ class PaymentService
     }
 
 
-    public function updateCategory(Request $request , $id)
+    public function updateCategory(Request $request , $id): void
     {
-        PaymentCategory::findOrFail($id)->update([
+        Service::findOrFail($id)->update([
             'name'          => $request->name,
             'description'   => $request->description,
             'price'         => $request->price
         ]);
     }
 
-    public function deleteCategory($id): bool
+    public function deleteCategory($id): void
     {
-        try {
-            PaymentCategory::findOrFail($id)->delete();
-            return true;
-        } catch (QueryException $ex)
-        {
-            return false;
-        }
+        $service = Service::findOrFail($id);
+
+        $service->status = !$service->status;
+        $service->save();
     }
 
 }

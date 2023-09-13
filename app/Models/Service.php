@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 
-class PaymentCategory extends Model
+class Service extends Model
 {
     use HasFactory;
 
-    protected $table = 'payment_categories';
+    protected $table = 'services';
 
     protected $fillable = ['name', 'description', 'price'];
 
@@ -18,7 +18,7 @@ class PaymentCategory extends Model
 
     public function payments()
     {
-        return $this->hasMany(Payment::class, 'payment_category_id');
+        return $this->hasMany(Payment::class, 'service_id');
     }
 
     public static function boot()
@@ -26,15 +26,11 @@ class PaymentCategory extends Model
         parent::boot();
 
         static::created(function ($cat) {
-            Cache::forget('payment_categories');
+            Cache::forget('services');
         });
 
         static::updated(function ($cat) {
-            Cache::forget('payment_categories');
-        });
-
-        static::deleted(function ($cat) {
-            Cache::forget('payment_categories');
+            Cache::forget('services');
         });
     }
 }

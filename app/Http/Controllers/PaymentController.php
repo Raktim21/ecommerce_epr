@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\PaymentCategoryStoreRequest;
+use App\Http\Requests\ServiceStoreRequest;
 use App\Http\Requests\PaymentDataRequest;
 use App\Http\Requests\PaymentStoreRequest;
 use App\Models\Payment;
-use App\Models\PaymentCategory;
+use App\Models\Service;
 use App\Services\PaymentService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Cache;
@@ -43,7 +43,7 @@ class PaymentController extends Controller
 
     public function getCategories()
     {
-        $data = Cache::remember('payment_categories', 24*60*60*7, function () {
+        $data = Cache::remember('services', 24*60*60*7, function () {
             return $this->paymentService->getAllCategories();
         });
 
@@ -53,7 +53,7 @@ class PaymentController extends Controller
         ]);
     }
 
-    public function storeCategories(PaymentCategoryStoreRequest $request)
+    public function storeCategories(ServiceStoreRequest $request)
     {
         $this->paymentService->storeCategory($request);
 
@@ -62,7 +62,7 @@ class PaymentController extends Controller
         ],201);
     }
 
-    public function updateCategories(PaymentCategoryStoreRequest $request, $id)
+    public function updateCategories(ServiceStoreRequest $request, $id)
     {
         $this->paymentService->updateCategory($request, $id);
 
@@ -71,16 +71,10 @@ class PaymentController extends Controller
         ]);
     }
 
-    public function deleteCategories($id)
+    public function statusCategories($id)
     {
-        if($this->paymentService->deleteCategory($id))
-        {
-            return response()->json(['success' => true]);
-        }
-        return response()->json([
-            'success' => false,
-            'error'  => 'This payment category can not be deleted.'
-        ], 400);
+        $this->paymentService->deleteCategory($id);
+        return response()->json(['success' => true]);
     }
 
     public function store(PaymentStoreRequest $request)

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BillController;
 use App\Http\Controllers\ClientsController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\FollowUpInfoController;
@@ -105,6 +106,12 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         Route::delete('follow-up/{id}', 'delete')->middleware('permission:delete-client-follow-up');
     });
 
+    Route::controller(BillController::class)->group(function () {
+        Route::get('bills', 'index')->middleware('permission:get-bills');
+        Route::get('bills/slip/{id}', 'billSlip')->middleware('permission:get-bills');
+        Route::post('bills', 'store')->middleware('permission:create-bill');
+    });
+
     Route::controller(PaymentController::class)->group(function () {
         Route::get('clients-payments', 'index')->middleware('permission:get-client-payment');
         Route::post('clients-payments', 'store')->middleware('permission:create-client-payment');
@@ -112,10 +119,10 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         Route::get('client-payment-data', 'getPayData')->middleware('permission:get-client-payment');
         Route::get('payslip/{id}', 'getPayslip')->middleware('permission:get-payslip');
 
-        Route::get('payment_categories', 'getCategories')->middleware('permission:get-payment-category');
-        Route::post('payment_categories', 'storeCategories')->middleware('permission:create-payment-category');
-        Route::post('payment_categories-update/{id}', 'updateCategories')->middleware('permission:update-payment-category');
-        Route::delete('payment_categories/{id}', 'deleteCategories')->middleware('permission:delete-payment-category');
+        Route::get('services', 'getCategories')->middleware('permission:get-service');
+        Route::post('services', 'storeCategories')->middleware('permission:create-service');
+        Route::put('services/{id}', 'updateCategories')->middleware('permission:update-service');
+        Route::get('services/{id}', 'statusCategories')->middleware('permission:update-service');
     });
 
     Route::controller(WebsiteController::class)->group(function () {

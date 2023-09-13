@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('websites', function (Blueprint $table) {
             $table->id();
             $table->foreignId('client_id')->constrained('clients')->onDelete('restrict');
-            $table->string('domain')->unique();
-            $table->string('auth_token');
+            $table->string('domain', 150)->unique();
             $table->timestamps();
         });
     }

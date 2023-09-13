@@ -50,9 +50,8 @@ class PaymentStoreRequest extends FormRequest
                                                 }
                                             }],
             'payment_type_id'       => 'required|exists:payment_types,id',
-            'payment_category_id'   => 'required|exists:payment_categories,id',
+            'service_id'            => 'required|exists:services,id',
             'transaction_id'        => 'required_if:payment_type_id,2|string|max:48',
-            'amount'                => 'required|numeric',
             'website_domain'        => 'required|url|unique:websites,domain|max:98'
         ];
     }
@@ -61,7 +60,7 @@ class PaymentStoreRequest extends FormRequest
     {
         return [
             'payment_type_id.required' => 'Please select a payment type.',
-            'payment_category_id.required' => 'Please select a payment category.',
+            'service_id.required' => 'Please select a service.',
         ];
     }
 
