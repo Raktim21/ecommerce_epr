@@ -11,6 +11,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\AllowanceController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ToDoController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserPointController;
 use App\Http\Controllers\WebsiteController;
@@ -166,4 +167,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         Route::post('food-allowance-payment-slip', 'foodAllowancePaymentSlip')->middleware('permission:food-allowance-payment-slip');
     });
 
+    Route::controller(ToDoController::class)->group(function () {
+        Route::post('assign-task', 'store')->middleware('permission:assign-tasks-to-users');
+    });
 });

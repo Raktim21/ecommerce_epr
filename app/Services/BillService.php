@@ -45,7 +45,8 @@ class BillService
         try {
             $new_bill = $this->bill->clone()->create([
                 'bill_no'   => 'BILL-'.rand(100,999).'-'.time(),
-                'client_id' => $request->client_id
+                'client_id' => $request->client_id,
+                'remarks'   => $request->remarks
             ]);
 
             foreach ($request->services as $service)

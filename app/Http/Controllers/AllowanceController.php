@@ -161,7 +161,8 @@ class AllowanceController extends Controller
         $user =  User::find(TransportAllowance::find($request->allowances[0])->created_by);
 
         $data = [
-            'transport_allowances' => TransportAllowance::whereRaw('id IN (' . implode(',', $request->allowances) . ')')->get(),
+            'transport_allowances' => TransportAllowance::whereRaw('id IN (' . implode(',', $request->allowances) . ')')
+                ->orderByDesc('id')->get(),
             'user' => $user,
         ];
 

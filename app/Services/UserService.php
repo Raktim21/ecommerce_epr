@@ -107,7 +107,7 @@ class UserService
                 }
             }
 
-            $this->sendNotification('User profile of '. $user->name .' has been updated.', 'user', $user->id);
+            $this->sendNotification('User profile of '. $user->name .' has been updated.', '/user/'.$user->id);
 
             DB::commit();
             return true;
@@ -149,7 +149,7 @@ class UserService
 
     public function sendNotification($message, $link): void
     {
-        $users = User::role(1)->whereNot('id',auth()->user()->id)->get();
+        $users = User::role(1)->whereNot('id', auth()->user()->id)->get();
 
         foreach ($users as $user)
         {

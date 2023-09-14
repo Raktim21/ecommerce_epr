@@ -70,7 +70,9 @@ class PaymentService
 
     public function getAllCategories()
     {
-        return Service::get();
+        return Service::when(request()->input('status') == 1, function ($q) {
+            return $q->where('status', 1);
+        })->get();
     }
 
     public function storeCategory(Request $request): void
