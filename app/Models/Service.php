@@ -27,10 +27,11 @@ class Service extends Model
 
         static::created(function ($cat) {
             Cache::forget('services');
+            Cache::forget('services1');
         });
 
         static::updated(function ($cat) {
-            Cache::forget('services');
+            Cache::forget('services1');
         });
     }
 }

@@ -85,10 +85,10 @@
                         Date
                     </th>
                     <th style="border: 1px solid rgb(201, 201, 201); padding: 10px" align="left">
-                        Amount
+                        Status
                     </th>
                     <th style="border: 1px solid rgb(201, 201, 201); padding: 10px" align="left">
-                        Status
+                        Amount
                     </th>
                 </tr>
             </thead>

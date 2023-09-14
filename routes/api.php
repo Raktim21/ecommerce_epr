@@ -168,6 +168,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     });
 
     Route::controller(ToDoController::class)->group(function () {
+        Route::get('todo-statuses', 'getStatuses')->middleware('permission:get-todo-statuses');
         Route::post('assign-task', 'store')->middleware('permission:assign-tasks-to-users');
     });
 });

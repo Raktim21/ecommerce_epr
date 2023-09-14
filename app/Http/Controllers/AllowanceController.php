@@ -140,7 +140,21 @@ class AllowanceController extends Controller
     {
         $validate = Validator::make($request->all(), [
             'allowances'   => 'required|array',
-            'allowances.*' => 'required|exists:transport_allowances,id',
+            'allowances.*' => ['required',
+                                function($attr, $val, $fail) use ($request) {
+                                    $allowance = TransportAllowance::find($val);
+
+                                    if(!$allowance)
+                                    {
+                                        $fail('Invalid travel allowance selected.');
+                                    }
+                                    else if($request->pay_status && $allowance->allowance_status != 0)
+                                    {
+                                        $status = $allowance->allowance_status == 1 ? 'paid.' : 'cancelled.';
+                                        $fail('Allowance of '. $allowance->created_by_info->name .' has already been '.$status);
+                                    }
+                                }],
+            'pay_status'   => 'sometimes|in:1'
         ]);
 
         if ($validate->fails()) {
@@ -150,15 +164,26 @@ class AllowanceController extends Controller
             ], 422);
         }
 
-        if (TransportAllowance::whereRaw('id IN (' . implode(',', $request->allowances) . ')')->distinct('created_by')->count() > 1) {
+        $allowances = TransportAllowance::whereIn('id', $request->allowances)->get();
 
+        $addedBy = $allowances->groupBy('created_by')->map->count();
+
+        if ($addedBy->count() != 1)
+        {
             return response()->json([
                 'success' => false,
                 'error'  => "Please select only one user's allowance data."
             ],422);
         }
 
-        $user =  User::find(TransportAllowance::find($request->allowances[0])->created_by);
+        foreach ($allowances as $allowance)
+        {
+            $allowance->update([
+                'allowance_status' => 1
+            ]);
+        }
+
+        $user =  User::find($allowances[0]->created_by);
 
         $data = [
             'transport_allowances' => TransportAllowance::whereRaw('id IN (' . implode(',', $request->allowances) . ')')
