@@ -170,5 +170,11 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::controller(ToDoController::class)->group(function () {
         Route::get('todo-statuses', 'getStatuses')->middleware('permission:get-todo-statuses');
         Route::post('assign-task', 'store')->middleware('permission:assign-tasks-to-users');
+        Route::get('todo-get-all', 'index')->middleware('permission:get-todo-list');
+        Route::middleware('permission:update-todo-list')->group(function () {
+            Route::post('assign-task/{id}', 'addUser');
+            Route::delete('task-user/{id}', 'removeUser');
+            Route::put('update-todo/{id}', 'updateInfo');
+        });
     });
 });

@@ -34,7 +34,7 @@ class EmployeeService
             return $q->where('joining_date', '<=',$date ?? Carbon::now()->subMonth());
         })
         ->with(['user' => function($q) {
-            return $q->select('id','name','email','avatar','address','details','is_active')
+            return $q->select('id','name','email','phone','avatar','address','details','is_active')
                 ->withCount(['clients' => function($q) {
                     return $q->whereNotNull('confirmation_date')
                         ->whereMonth('confirmation_date', request()->input('month_id') ?? date('n'))

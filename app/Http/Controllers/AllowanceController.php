@@ -144,7 +144,7 @@ class AllowanceController extends Controller
                                 function($attr, $val, $fail) use ($request) {
                                     $allowance = TransportAllowance::find($val);
 
-                                    if(!$allowance)
+                                    if(!$allowance || !$allowance->end_time)
                                     {
                                         $fail('Invalid travel allowance selected.');
                                     }
