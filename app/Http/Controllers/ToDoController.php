@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TodoStoreRequest;
 use App\Models\Todo;
+use App\Models\TodoDocument;
 use App\Models\TodoUser;
 use App\Services\TodoService;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -80,6 +82,49 @@ class ToDoController extends Controller
         return response()->json([
             'success'   => true
         ]);
+    }
+
+    public function addDocuments(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'document' => 'required|file|mimes:jpg,png,jpeg,xlsx,csv,pdf,doc,docx|max:2048',
+            'todo_id'  => ['required', 'integer',
+                            function($attr, $val, $fail) {
+                                if(!auth()->user()->hasRole('Super Admin') &&
+                                TodoUser::where('user_id', auth()->user()->id)->where('todo_id', $val)->doesntExist())
+                                {
+                                    $fail('You cannot add document to this task.');
+                                }
+                            }]
+        ]);
+
+        if($validator->fails())
+        {
+            return response()->json([
+                'success' => false,
+                'error'   => $validator->errors()->first()
+            ], 422);
+        }
+
+        try {
+            $doc = $request->file('document');
+            $doc_name = $doc->getClientOriginalName();
+            $doc->move(public_path('/uploads/todo/'), $doc_name);
+
+            TodoDocument::create([
+                'todo_id'   => $request->todo_id,
+                'document'  => '/uploads/todo/' . $doc_name
+            ]);
+
+            return response()->json(['success' => true], 201);
+        } catch (QueryException $ex)
+        {
+            return response()->json([
+                'success' => false,
+                'error'   => $ex->getCode() == 23000 ? 'Document with same name already exists.' : $ex->getMessage()
+            ], 422);
+        }
+
     }
 
     public function addUsers(Request $request, $id)

@@ -176,5 +176,6 @@ Route::group(['middleware' => ['jwt.verify']], function () {
             Route::delete('task-user/{id}', 'removeUser');
             Route::put('update-todo/{id}', 'updateInfo');
         });
+        Route::post('add-document', 'addDocuments')->middleware('permission:add-document-to-assigned-tasks');
     });
 });

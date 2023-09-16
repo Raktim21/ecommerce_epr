@@ -37,7 +37,7 @@ class TodoStoreRequest extends FormRequest
                                             $fail('You already have a task with same title.');
                                         }
                                     }],
-            'detail'            => 'nullable|string|max:498',
+            'detail'            => 'required|string|max:498',
             'priority_level'    => 'required|in:1,2,3',
             'users'             => 'required|array|min:1',
             'users.*'           => ['required',

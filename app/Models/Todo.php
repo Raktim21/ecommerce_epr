@@ -31,6 +31,11 @@ class Todo extends Model
         return $this->belongsToMany(User::class, 'todo_users', 'todo_id');
     }
 
+    public function documents()
+    {
+        return $this->hasMany(TodoDocument::class, 'todo_id');
+    }
+
     public static function boot()
     {
         parent::boot();
