@@ -8,6 +8,7 @@ use App\Models\TodoUser;
 use App\Services\TodoService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class ToDoController extends Controller
@@ -75,20 +76,25 @@ class ToDoController extends Controller
             'detail' => $request->detail,
             'priority_level' => $request->priority_level
         ]);
+
+        return response()->json([
+            'success'   => true
+        ]);
     }
 
-    public function addUser(Request $request, $id)
+    public function addUsers(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'user_id'   => ['required',
+            'user_id'    => ['required','integer',
                             function($attr, $val, $fail) use ($id) {
                                 $invalid_user = TodoUser::where('user_id', $val)->where('todo_id', $id)->first();
 
                                 if($invalid_user)
                                 {
-                                    $fail('The selected user has already assigned to this task.');
+                                    $fail($invalid_user->user->name . ' has already assigned to this task.');
                                 }
-                            }]
+                            }],
+
         ]);
 
         if($validator->fails())
@@ -99,8 +105,19 @@ class ToDoController extends Controller
             ], 422);
         }
 
-        TodoUser::create([
-            'todo_id'   => $id,
+        $todo = Todo::findOrFail($id);
+
+        if($todo->status_id == 4 || $todo->status_id == 5)
+        {
+            $status = $todo->status_id == 4 ? 'completed.' : 'cancelled.';
+
+            return response()->json([
+                'success'   => false,
+                'error'     => 'Cannot assign a task to user that has been ' . $status
+            ], 400);
+        }
+
+        $todo->assignees()->create([
             'user_id'   => $request->user_id
         ]);
 
@@ -109,7 +126,19 @@ class ToDoController extends Controller
 
     public function removeUser($id)
     {
-        TodoUser::findOrFail($id)->delete();
+        $todo = TodoUser::findOrFail($id);
+
+        $status = $todo->status_id == 4 ? 'completed.' : 'cancelled.';
+
+        if($todo->status_id == 4 || $todo->status_id == 5)
+        {
+            return response()->json([
+                'success'   => false,
+                'error'     => 'Cannot remove users from a task that has been ' . $status
+            ], 400);
+        }
+
+        $todo->delete();
 
         return response()->json(['success' => true]);
     }

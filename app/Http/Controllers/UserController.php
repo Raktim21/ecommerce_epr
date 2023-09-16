@@ -21,12 +21,12 @@ class UserController extends Controller
 
     public function index()
     {
-        $data = $this->service->getAll();
+        $data = $this->service->getAll(\request()->has('get_all'));
 
         return response()->json([
             'success' => true,
             'data' => $data
-        ], $data->isEmpty() ? 204 : 200);
+        ]);
     }
 
     public function store(UserStoreRequest $request)

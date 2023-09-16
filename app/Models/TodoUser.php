@@ -12,4 +12,14 @@ class TodoUser extends Model
     protected $table = 'todo_users';
 
     protected $fillable = ['todo_id', 'user_id'];
+
+    public function todo()
+    {
+        return $this->belongsTo(Todo::class, 'todo_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }
