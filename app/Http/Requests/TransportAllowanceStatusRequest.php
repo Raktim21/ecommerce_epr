@@ -39,7 +39,7 @@ class TransportAllowanceStatusRequest extends FormRequest
                                     else {
                                         if (!$allowance->end_time)
                                         {
-                                            $fail('Transport allowance of '. $allowance->created_by_info->name .' cannot be given.');
+                                            $fail('Status of transport allowance of '. $allowance->created_by_info->name .' cannot be changed.');
                                         }
                                         else if ($allowance->allowance_status != 0)
                                         {

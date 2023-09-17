@@ -21,7 +21,8 @@ class TodoService
                 'added_by'          => auth()->user()->id,
                 'title'             => $request->title,
                 'detail'            => $request->detail,
-                'priority_level'    => $request->priority_level
+                'priority_level'    => $request->priority_level,
+                'deadline'          => $request->deadline
             ]);
 
             foreach ($request->users as $user)
@@ -56,8 +57,22 @@ class TodoService
             })
             ->with('assignees')->with(['assigned_by' => function($q1) {
                 return $q1->select('id','name','email','avatar');
-            }])->orderByDesc('id');
+            }])->with('documents')
+                ->orderByDesc('id');
         }])->withCount('todos')
             ->get();
+    }
+
+    public function deleteTask($id)
+    {
+        $task = Todo::findOrFail($id);
+
+        if($task->status_id < 3)
+        {
+            $task->delete();
+
+            return 'done';
+        }
+        return $task->status_id == 4 ? 'completed' : 'cancelled';
     }
 }

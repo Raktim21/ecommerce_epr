@@ -61,7 +61,7 @@ class AuthService
 
     public function getPermissions()
     {
-        $role = User::findOrFail(auth()->user()->id)->roles;
+        $role = User::find(auth()->user()->id)->roles;
 
         if($role && $role[0])
         {

@@ -38,7 +38,7 @@ class FollowUpReminderCommand extends Command
 
             $user = User::find($item->added_by);
 
-            $user->notify(new AdminNotification($message, 'client-follow-up-reminder', $item->id));
+            $user->notify(new AdminNotification($message, 'client-follow-up-reminder'));
 
             $user->notify(new FollowUpReminderNotification($item->client, $item->followup_session, $user->name));
         }

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('detail', 500);
             $table->tinyInteger('priority_level', false, true)->comment('1:High Priority, 2:Important, 3:Neutral');
+            $table->dateTime('deadline');
             $table->foreignId('status_id')->default(1)->constrained('todo_statuses')->onDelete('restrict');
             $table->timestamps();
 

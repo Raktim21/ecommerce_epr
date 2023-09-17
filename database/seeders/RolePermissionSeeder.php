@@ -19,6 +19,7 @@ class RolePermissionSeeder extends Seeder
             'get-role-list',
             'get-role-info',
             'get-permission-list',
+            'update-kpi-lookup',
             'create-role',
             'update-role',
             'delete-role',
@@ -40,6 +41,7 @@ class RolePermissionSeeder extends Seeder
             'change-transport-allowance-status',
             'transport-allowance-payment-slip',
             'get-food-allowance',
+            'food-allowance-payment-slip',
             'export-food-allowance',
             'create-delete-food-allowance',
             'change-food-allowance-status',
@@ -64,7 +66,13 @@ class RolePermissionSeeder extends Seeder
             'create-client-payment',
             'get-payslip',
             'get-bills',
-            'create-bill'
+            'create-bill',
+            'assign-tasks-to-users',
+            'get-todo-statuses',
+            'get-todo-list',
+            'update-todo-list',
+            'update-task-documents',
+            'delete-tasks'
         ];
 
         foreach ($permissions as $value)

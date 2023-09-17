@@ -39,6 +39,7 @@ class TodoStoreRequest extends FormRequest
                                     }],
             'detail'            => 'required|string|max:498',
             'priority_level'    => 'required|in:1,2,3',
+            'deadline'          => ['required','date_format:Y-m-d H:i','after:'.date('Y-m-d H:i')],
             'users'             => 'required|array|min:1',
             'users.*'           => ['required',
                                     function ($attr, $val, $fail) {

@@ -7,6 +7,7 @@ use App\Models\Todo;
 use App\Models\TodoDocument;
 use App\Models\TodoUser;
 use App\Services\TodoService;
+use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -59,10 +60,21 @@ class ToDoController extends Controller
 
     public function updateInfo(Request $request, $id)
     {
+        $todo = Todo::findOrFail($id);
+
+        if($todo->status_id > 3)
+        {
+            return response()->json([
+                'success' => false,
+                'error'   => 'This task is not updatable.'
+            ], 400);
+        }
+
         $validator = Validator::make($request->all(), [
             'title'             => ['required'],
             'detail'            => 'nullable|string|max:498',
-            'priority_level'    => 'required|in:1,2,3'
+            'priority_level'    => 'required|in:1,2,3',
+            'deadline'          => ['required','date_format:Y-m-d H:i','after:'.date('Y-m-d H:i')],
         ]);
 
         if($validator->fails())
@@ -73,7 +85,7 @@ class ToDoController extends Controller
             ], 422);
         }
 
-        Todo::find($id)->update([
+        $todo->update([
             'title' => $request->title,
             'detail' => $request->detail,
             'priority_level' => $request->priority_level
@@ -124,7 +136,33 @@ class ToDoController extends Controller
                 'error'   => $ex->getCode() == 23000 ? 'Document with same name already exists.' : $ex->getMessage()
             ], 422);
         }
+    }
 
+    public function deleteDocument($id)
+    {
+        $doc = TodoDocument::findOrFail($id);
+
+        if(!auth()->user()->hasRole('Super Admin') &&
+            TodoUser::where('todo_id', $doc->todo_id)->where('user_id', auth()->user()->id)->doesntExist())
+        {
+            return response()->json([
+                'success' => false,
+                'error'   => 'You are not allowed to perform this action.'
+            ], 403);
+        }
+
+        if($doc->todo->status_id == 4 || $doc->todo->status_id == 5)
+        {
+            $status = $doc->todo->status_id == 4 ? 'completed.' : 'cancelled.';
+            return response()->json([
+                'success' => false,
+                'error'   => 'Document cannot be removed when task has been ' . $status
+            ], 400);
+        }
+
+        $doc->delete();
+
+        return response()->json(['success' => true]);
     }
 
     public function addUsers(Request $request, $id)
@@ -162,20 +200,29 @@ class ToDoController extends Controller
             ], 400);
         }
 
-        $todo->assignees()->create([
+        TodoUser::create([
+            'todo_id'   => $id,
             'user_id'   => $request->user_id
         ]);
 
         return response()->json(['success' => true], 201);
     }
 
-    public function removeUser($id)
+    public function removeUser($task_id, $user_id)
     {
-        $todo = TodoUser::findOrFail($id);
+        $todo = TodoUser::where('todo_id', $task_id)->where('user_id', $user_id)->first();
 
-        $status = $todo->status_id == 4 ? 'completed.' : 'cancelled.';
+        if(!$todo)
+        {
+            return response()->json([
+                'success'   => false,
+                'error'     => 'This user is not present in the assignee list.'
+            ], 400);
+        }
 
-        if($todo->status_id == 4 || $todo->status_id == 5)
+        $status = $todo->todo->status_id == 4 ? 'completed.' : 'cancelled.';
+
+        if($todo->todo->status_id > 3)
         {
             return response()->json([
                 'success'   => false,
@@ -186,5 +233,74 @@ class ToDoController extends Controller
         $todo->delete();
 
         return response()->json(['success' => true]);
+    }
+
+    public function changeStatus(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'status'    => 'required|in:right,left'
+        ]);
+
+        if($validator->fails())
+        {
+            return response()->json([
+                'success' => false,
+                'error'   => $validator->errors()->first()
+            ], 422);
+        }
+
+        $todo = Todo::findOrFail($id);
+
+        if($todo->status_id == 1 && $request->status == 'left')
+        {
+            return response()->json([
+                'success' => false,
+                'error'   => 'Invalid status.'
+            ], 400);
+        }
+
+        if($todo->status_id > 3)
+        {
+            return response()->json([
+                'success' => false,
+                'error'   => 'Status of this task cannot be changed now.'
+            ], 400);
+        }
+
+        $exist = $todo->assignees()->where('user_id', auth()->user()->id)->first();
+
+        if(auth()->user()->hasRole('Super Admin') || $exist)
+        {
+            if ($request->status == 'right') {
+                $todo->status_id += 1;
+            } else {
+                $todo->status_id -= 1;
+            }
+
+            $todo->save();
+
+            return response()->json(['success' => true]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'error'   => 'You are not allowed to update the information.'
+            ], 403);
+        }
+    }
+
+    public function deleteTodo($id)
+    {
+        $status = $this->service->deleteTask($id);
+
+        if ($status == 'done')
+        {
+            return response()->json(['success' => true]);
+        }
+        else {
+            return response()->json([
+                'success' => false,
+                'error'   => 'Task cannot be deleted when it is ' . $status . '.'
+            ], 400);
+        }
     }
 }

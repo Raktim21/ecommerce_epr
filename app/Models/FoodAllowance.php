@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Notifications\AdminNotification;
 use App\Services\UserService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -51,6 +52,10 @@ class FoodAllowance extends Model
                 (new UserService)->sendNotification(
                     'Food allowance of '. $allowance->created_by_info->name .' has been ' . $status,
                     '/fa');
+
+                $allowance->created_by_info->notify(new AdminNotification(
+                    auth()->user()->name . ' has marked your food allowance as ' . $status,
+                    '/fa'));
             }
         });
     }

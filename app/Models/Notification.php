@@ -11,6 +11,10 @@ class Notification extends Model
 
     protected $table = 'notifications';
 
+    protected $guarded = ['id'];
+
+    protected $fillable = ['send_status'];
+
     protected $casts = [
         'id' => 'string'
     ];

@@ -17,4 +17,13 @@ class TodoDocument extends Model
     {
         return $this->belongsTo(Todo::class, 'todo_id');
     }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::deleted(function ($doc) {
+            deleteFile($doc->document);
+        });
+    }
 }

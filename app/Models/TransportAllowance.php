@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Notifications\AdminNotification;
 use App\Services\UserService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -53,6 +54,10 @@ class TransportAllowance extends Model
                 (new UserService)->sendNotification(
                     'Transport allowance of '. $allowance->created_by_info->name .' has been ' . $status,
                     '/ta');
+
+                $allowance->created_by_info->notify(new AdminNotification(
+                    auth()->user()->name . ' has marked your transport allowance as ' . $status,
+                    '/ta'));
             } else{
                 (new UserService)->sendNotification(
                     'Transport allowance information of '. $allowance->created_by_info->name .' has been updated.',
