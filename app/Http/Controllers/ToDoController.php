@@ -100,8 +100,14 @@ class ToDoController extends Controller
             'document' => 'required|file|mimes:jpg,png,jpeg,xlsx,csv,pdf,doc,docx|max:2048',
             'todo_id'  => ['required', 'integer',
                             function($attr, $val, $fail) {
+                                $todo = Todo::find($val);
+
+                                if(!$todo || $todo->status_id > 3)
+                                {
+                                    $fail('You cannot add document to this task.');
+                                }
                                 if(!auth()->user()->hasRole('Super Admin') &&
-                                TodoUser::where('user_id', auth()->user()->id)->where('todo_id', $val)->doesntExist())
+                                    $todo->assignees()->where('user_id', auth()->user()->id)->doesntExist())
                                 {
                                     $fail('You cannot add document to this task.');
                                 }
@@ -121,12 +127,15 @@ class ToDoController extends Controller
             $doc_name = $doc->getClientOriginalName();
             $doc->move(public_path('/uploads/todo/'), $doc_name);
 
-            TodoDocument::create([
+            $todo_doc = TodoDocument::create([
                 'todo_id'   => $request->todo_id,
                 'document'  => '/uploads/todo/' . $doc_name
             ]);
 
-            return response()->json(['success' => true], 201);
+            return response()->json([
+                'success' => true,
+                'data'    => $todo_doc
+            ], 201);
         } catch (QueryException $ex)
         {
             return response()->json([

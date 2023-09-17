@@ -173,13 +173,12 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         Route::get('todo-get-all', 'index')->middleware('permission:get-todo-list');
         Route::middleware('permission:update-todo-list')->group(function () {
             Route::post('assign-task/{id}', 'addUsers');
-            Route::put('todo-change-status/{id}', 'changeStatus');
             Route::delete('task-user/{task_id}/{user_id}', 'removeUser');
             Route::put('update-todo/{id}', 'updateInfo');
         });
+        Route::put('todo-change-status/{id}', 'changeStatus')->middleware('permission:update-todo-status');
         Route::delete('todo/{id}', 'deleteTodo')->middleware('permission:delete-tasks');
-        Route::put('todo-change-admin-status/{id}', 'changeAdminStatus');
-//        ->middleware('permission:approve-or-cancel-tasks');
+        Route::put('todo-change-admin-status/{id}', 'changeAdminStatus')->middleware('permission:approve-or-cancel-tasks');
         Route::middleware('permission:update-task-documents')->group(function () {
             Route::post('add-document', 'addDocuments');
             Route::delete('remove-document/{id}', 'deleteDocument');
