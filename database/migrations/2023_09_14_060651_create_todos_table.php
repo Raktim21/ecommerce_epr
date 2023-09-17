@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('todos', function (Blueprint $table) {
             $table->id();
             $table->foreignId('added_by')->constrained('users')->onDelete('restrict');
-            $table->string('title');
+            $table->string('title', 100);
             $table->string('detail', 500);
             $table->tinyInteger('priority_level', false, true)->comment('1:High Priority, 2:Important, 3:Neutral');
             $table->dateTime('deadline');

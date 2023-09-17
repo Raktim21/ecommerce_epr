@@ -83,7 +83,9 @@ class AuthService
             'password_reset_code'  => $code,
         ]);
 
-        $user->notify(new ResetPasswordNotification($user->name, $code));
+        try {
+            $user->notify(new ResetPasswordNotification($user->name, $code));
+        } catch (\Throwable $th) {}
 
         return $user->password_reset_token;
     }

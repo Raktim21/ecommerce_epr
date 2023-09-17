@@ -7,11 +7,9 @@ use App\Models\Todo;
 use App\Models\TodoDocument;
 use App\Models\TodoUser;
 use App\Services\TodoService;
-use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class ToDoController extends Controller
@@ -286,6 +284,37 @@ class ToDoController extends Controller
                 'error'   => 'You are not allowed to update the information.'
             ], 403);
         }
+    }
+
+    public function changeAdminStatus(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'status'    => 'required|in:4,5'
+        ]);
+
+        if($validator->fails())
+        {
+            return response()->json([
+                'success' => false,
+                'error'   => $validator->errors()->first()
+            ], 422);
+        }
+
+        $todo = Todo::findOrFail($id);
+
+        if($todo->status_id != 3)
+        {
+            return response()->json([
+                'success' => false,
+                'error'   => 'Status of this task cannot be changed.'
+            ], 400);
+        }
+
+        $todo->update([
+            'status_id' => $request->status
+        ]);
+
+        return response()->json(['success' => true]);
     }
 
     public function deleteTodo($id)

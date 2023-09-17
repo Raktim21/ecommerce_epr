@@ -27,7 +27,7 @@ class TodoStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title'             => ['required','string','max:250',
+            'title'             => ['required','string','max:98',
                                     function($attr, $val, $fail) {
                                         $exists = Todo::where('title', $val)
                                             ->where('added_by', auth()->user()->id)->first();
@@ -41,7 +41,7 @@ class TodoStoreRequest extends FormRequest
             'priority_level'    => 'required|in:1,2,3',
             'deadline'          => ['required','date_format:Y-m-d H:i','after:'.date('Y-m-d H:i')],
             'users'             => 'required|array|min:1',
-            'users.*'           => ['required',
+            'users.*'           => ['required','distinct',
                                     function ($attr, $val, $fail) {
                                         $user = User::find($val);
 

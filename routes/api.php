@@ -178,6 +178,8 @@ Route::group(['middleware' => ['jwt.verify']], function () {
             Route::put('update-todo/{id}', 'updateInfo');
         });
         Route::delete('todo/{id}', 'deleteTodo')->middleware('permission:delete-tasks');
+        Route::put('todo-change-admin-status/{id}', 'changeAdminStatus');
+//        ->middleware('permission:approve-or-cancel-tasks');
         Route::middleware('permission:update-task-documents')->group(function () {
             Route::post('add-document', 'addDocuments');
             Route::delete('remove-document/{id}', 'deleteDocument');

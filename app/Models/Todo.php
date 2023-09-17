@@ -40,10 +40,22 @@ class Todo extends Model
     {
         parent::boot();
 
-        static::created(function ($user) {
+        static::created(function ($todo) {
             (new UserService())->sendNotification(
                 auth()->user()->name . ' has assigned a new task to users.',
                 '/todo');
+        });
+
+        static::updated(function ($todo) {
+            if ($todo->status_id > 3)
+            {
+                $status = $todo->status_id == 4 ? 'completed.' : 'cancelled.';
+
+                (new UserService())->sendNotification(
+                    auth()->user()->name . ' has marked a task as ' . $status,
+                    '/todo'
+                );
+            }
         });
     }
 }
