@@ -4,24 +4,29 @@ namespace App\Services;
 
 use App\Models\Clients;
 use App\Models\EmployeeProfile;
+use App\Models\Service;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class DashboardService
 {
-    private $clients ;
+    private $employee, $clients, $service;
 
-    public function __construct(Clients $clients)
+    public function __construct(EmployeeProfile $employee, Clients $clients, Service $service)
     {
-        $this->clients = $clients;
-
+        $this->employee = $employee;
+        $this->clients  = $clients;
+        $this->service  = $service;
     }
 
     public function adminDashboard()
     {
-        $clients            = $this->clients->whereNull('confirmation_date');
-        $confirmed_clients  = $this->clients->whereNotNull('confirmation_date');
+        $employees             = $this->employee;
+        $clients               = $this->clients->whereNull('confirmation_date');
+        $confirmed_clients     = $this->clients->whereNotNull('confirmation_date');
+        $services              = $this->service->where('status', 1);
 
         $monthly_client_data   = [];
 
@@ -30,18 +35,37 @@ class DashboardService
 
         for ($date = $startDate->copy(); $date->lte($endDate); $date->addMonth()) {
             $monthly_client_data[$date->copy()->format('F, Y')]   = array(
-                'clients' => $clients->clone()->whereBetween('created_at', [Carbon::parse($date->copy()->startOfMonth()), Carbon::parse($date->copy()->endOfMonth())])->count(),
-                'confirmed_clients' => $confirmed_clients->clone()->whereBetween('created_at', [Carbon::parse($date->copy()->startOfMonth()), Carbon::parse($date->copy()->endOfMonth())])->count()
+                'clients'           => $clients->clone()->when(!auth()->user()->hasRole('Super Admin'), function ($q) {
+                                            return $q->where('added_by', auth()->user()->id);
+                                        })->whereBetween('created_at', [Carbon::parse($date->copy()->startOfMonth()), Carbon::parse($date->copy()->endOfMonth())])
+                                        ->count(),
+
+                'confirmed_clients' => $confirmed_clients->clone()->when(!auth()->user()->hasRole('Super Admin'), function ($q) {
+                                            return $q->where('added_by', auth()->user()->id);
+                                        })->whereBetween('created_at', [Carbon::parse($date->copy()->startOfMonth()), Carbon::parse($date->copy()->endOfMonth())])
+                                        ->count()
             );
         }
 
         return [
-            'total_client'                  => $clients->clone()->count(),
-            'total_confirmed_client'        => $confirmed_clients->clone()->count(),
-            'monthly_client_data'           => $monthly_client_data,
-            'user_point_report'             => $this->userPointReport(),
-            'employee_kpi'                  => $this->employeeKPI(),
+            'total_employees'               => $employees->clone()->whereHas('user', function ($q) {
+                                                    return $q->where('is_active', 1);
+                                                })->count(),
+            'total_client'                  => $clients->clone()
+                                                ->when(!auth()->user()->hasRole('Super Admin'), function ($q) {
+                                                    return $q->where('added_by', auth()->user()->id);
+                                                })->count(),
+
+            'total_confirmed_client'        => $confirmed_clients->clone()
+                                                ->when(!auth()->user()->hasRole('Super Admin'), function ($q) {
+                                                    return $q->where('added_by', auth()->user()->id);
+                                                })->count(),
+
+            'services'                      => $services->count(),
             'star_employee'                 => $this->starEmployee(),
+            'monthly_client_data'           => $monthly_client_data,
+            'user_point_report'             => auth()->user()->hasRole('Super Admin') ? $this->userPointReport() : null,
+            'employee_kpi'                  => auth()->user()->hasRole('Super Admin') ? $this->employeeKPI() : null,
         ];
     }
 

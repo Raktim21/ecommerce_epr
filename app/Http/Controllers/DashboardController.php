@@ -19,19 +19,11 @@ class DashboardController extends Controller
 
     public function index()
     {
-        if (auth()->user()->hasRole('Super Admin'))
-        {
-//            $data = Cache::remember('dashboard', 60*60, function () {
-//                return $this->dashboard->adminDashboard();
-//            });
-            $data = $this->dashboard->adminDashboard();
+        $data = $this->dashboard->adminDashboard();
 
-            return response()->json([
-                'success' => true,
-                'data'    => $data,
-            ]);
-        } else {
-            return response()->json([], 204);
-        }
+        return response()->json([
+            'success' => true,
+            'data'    => $data,
+        ]);
     }
 }
