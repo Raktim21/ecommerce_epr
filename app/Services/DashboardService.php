@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Clients;
 use App\Models\EmployeeProfile;
+use App\Models\FollowUpReminder;
 use App\Models\Service;
 use App\Models\User;
 use Carbon\Carbon;
@@ -27,6 +28,7 @@ class DashboardService
         $clients               = $this->clients->whereNull('confirmation_date');
         $confirmed_clients     = $this->clients->whereNotNull('confirmation_date');
         $services              = $this->service->where('status', 1);
+        $pending_follow_up     = $this->getPendingFollowUps();
 
         $monthly_client_data   = [];
 
@@ -63,6 +65,7 @@ class DashboardService
 
             'services'                      => $services->count(),
             'star_employee'                 => $this->starEmployee(),
+            'pending_followups'             => $pending_follow_up,
             'monthly_client_data'           => $monthly_client_data,
             'user_point_report'             => auth()->user()->hasRole('Super Admin') ? $this->userPointReport() : null,
             'employee_kpi'                  => auth()->user()->hasRole('Super Admin') ? $this->employeeKPI() : null,
@@ -107,5 +110,13 @@ class DashboardService
             ->orderByDesc('clients_count')
             ->first()
         );
+    }
+
+    private function getPendingFollowUps()
+    {
+        return FollowUpReminder::when(!auth()->user()->hasRole('Super Admin'), function ($q) {
+            return $q->where('added_by', auth()->user()->id);
+        })->where('followup_session', '>', date('Y-m-d H:i:s'))
+            ->count();
     }
 }
