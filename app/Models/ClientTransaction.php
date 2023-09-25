@@ -18,7 +18,7 @@ class ClientTransaction extends Model
         return $this->belongsTo(Clients::class, 'client_id');
     }
 
-    public function payment_type()
+    public function paymentType()
     {
         return $this->belongsTo(PaymentType::class, 'payment_type_id');
     }

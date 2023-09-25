@@ -43,4 +43,21 @@ class ClientTransactionService
             return false;
         }
     }
+
+    public function getAll()
+    {
+        return $this->transaction->clone()
+            ->when(request()->input('client'), function ($q) {
+                return $q->whereHas('client', function ($q1) {
+                    return $q1->where('name', 'like', '%'.request()->input('client').'%');
+                });
+            })
+            ->with(['client' => function($q) {
+                return $q->select('id','name','email','phone_no','confirmation_date');
+            }])
+            ->with('paymentType')
+            ->orderBy('client_id')
+            ->latest()
+            ->paginate(15);
+    }
 }

@@ -20,7 +20,14 @@ class ClientTransactionController extends Controller
     }
 
     public function index()
-    {}
+    {
+        $data = $this->service->getAll();
+
+        return response()->json([
+            'success' => true,
+            'data'    => $data
+        ], $data->isEmpty() ? 204 : 200);
+    }
 
     public function exportData(FileTypeRequest $request)
     {

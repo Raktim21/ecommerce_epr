@@ -3,13 +3,14 @@
 namespace App\Exports;
 
 use App\Models\Clients;
+use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
 class ClientExport implements FromCollection, WithHeadings
 {
     /**
-    * @return \Illuminate\Support\Collection
+    * @return Collection
     */
     public function collection()
     {
@@ -23,9 +24,9 @@ class ClientExport implements FromCollection, WithHeadings
             ->when(request()->input('confirmed') == 0 , function ($query) {
                 return $query->where('clients.confirmation_date',null);
             })
-//            ->when(!auth()->user()->hasRole('Super Admin'), function ($query) {
-//                return $query->where('clients.added_by', auth()->user()->id);
-//            })
+            ->when(!auth()->user()->hasRole('Super Admin'), function ($query) {
+                return $query->where('clients.added_by', auth()->user()->id);
+            })
             ->latest('clients.created_at')->get();
 
         $result = [];
