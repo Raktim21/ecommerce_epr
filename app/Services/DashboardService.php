@@ -5,29 +5,29 @@ namespace App\Services;
 use App\Models\Clients;
 use App\Models\EmployeeProfile;
 use App\Models\FollowUpReminder;
+use App\Models\FoodAllowance;
 use App\Models\Service;
+use App\Models\TransportAllowance;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class DashboardService
 {
-    private $employee, $clients, $service;
+    private $employee, $clients;
 
-    public function __construct(EmployeeProfile $employee, Clients $clients, Service $service)
+    public function __construct(EmployeeProfile $employee, Clients $clients)
     {
         $this->employee = $employee;
         $this->clients  = $clients;
-        $this->service  = $service;
     }
 
     public function adminDashboard()
     {
-        $employees             = $this->employee;
         $clients               = $this->clients->whereNull('confirmation_date');
         $confirmed_clients     = $this->clients->whereNotNull('confirmation_date');
-        $services              = $this->service->where('status', 1);
         $pending_follow_up     = $this->getPendingFollowUps();
 
         $monthly_client_data   = [];
@@ -36,7 +36,7 @@ class DashboardService
         $endDate   = Carbon::now();
 
         for ($date = $startDate->copy(); $date->lte($endDate); $date->addMonth()) {
-            $monthly_client_data[$date->copy()->format('F, Y')]   = array(
+            $monthly_client_data[]   = array(
                 'clients'           => $clients->clone()->when(!auth()->user()->hasRole('Super Admin'), function ($q) {
                                             return $q->where('added_by', auth()->user()->id);
                                         })->whereBetween('created_at', [Carbon::parse($date->copy()->startOfMonth()), Carbon::parse($date->copy()->endOfMonth())])
@@ -45,12 +45,13 @@ class DashboardService
                 'confirmed_clients' => $confirmed_clients->clone()->when(!auth()->user()->hasRole('Super Admin'), function ($q) {
                                             return $q->where('added_by', auth()->user()->id);
                                         })->whereBetween('created_at', [Carbon::parse($date->copy()->startOfMonth()), Carbon::parse($date->copy()->endOfMonth())])
-                                        ->count()
+                                        ->count(),
+                'month'             => $date->copy()->format('F, Y')
             );
         }
 
         return [
-            'total_employees'               => $employees->clone()->whereHas('user', function ($q) {
+            'total_employees'               => $this->employee->clone()->whereHas('user', function ($q) {
                                                     return $q->where('is_active', 1);
                                                 })->count(),
             'total_client'                  => $clients->clone()
@@ -63,12 +64,13 @@ class DashboardService
                                                     return $q->where('added_by', auth()->user()->id);
                                                 })->count(),
 
-            'services'                      => $services->count(),
+            'services'                      => Service::where('status', 1)->count(),
             'star_employee'                 => $this->starEmployee(),
             'pending_followups'             => $pending_follow_up,
             'monthly_client_data'           => $monthly_client_data,
-            'user_point_report'             => auth()->user()->hasRole('Super Admin') ? $this->userPointReport() : null,
-            'employee_kpi'                  => auth()->user()->hasRole('Super Admin') ? $this->employeeKPI() : null,
+            'user_point_report'             => $this->userPointReport(),
+            'employee_kpi'                  => $this->employeeKPI(),
+            'allowances'                    => $this->getAllowanceData()
         ];
     }
 
@@ -118,5 +120,40 @@ class DashboardService
             return $q->where('added_by', auth()->user()->id);
         })->where('followup_session', '>', date('Y-m-d H:i:s'))
             ->count();
+    }
+
+    private function getAllowanceData()
+    {
+        $startDate = Carbon::now()->subMonth(12);
+        $endDate   = Carbon::now();
+
+        $data = [];
+
+        for ($date = $startDate->copy(); $date->lte($endDate); $date->addMonth()) {
+            $data[] = array(
+                'paid_allowance_total' => TransportAllowance::when(!auth()->user()->hasRole('Super Admin'), function ($q) {
+                        return $q->where('created_by', auth()->user()->id);
+                    })->whereBetween('created_at', [Carbon::parse($date->copy()->startOfMonth()), Carbon::parse($date->copy()->endOfMonth())])
+                        ->where('allowance_status', 1)
+                        ->sum('amount') + FoodAllowance::when(!auth()->user()->hasRole('Super Admin'), function ($q) {
+                        return $q->where('created_by', auth()->user()->id);
+                    })->whereBetween('created_at', [Carbon::parse($date->copy()->startOfMonth()), Carbon::parse($date->copy()->endOfMonth())])
+                        ->where('allowance_status', 1)
+                        ->sum('amount'),
+                'unpaid_allowance_total' => TransportAllowance::when(!auth()->user()->hasRole('Super Admin'), function ($q) {
+                        return $q->where('created_by', auth()->user()->id);
+                    })->whereBetween('created_at', [Carbon::parse($date->copy()->startOfMonth()), Carbon::parse($date->copy()->endOfMonth())])
+                        ->whereNot('allowance_status', 1)
+                        ->sum('amount') + FoodAllowance::when(!auth()->user()->hasRole('Super Admin'), function ($q) {
+                        return $q->where('created_by', auth()->user()->id);
+                    })->whereBetween('created_at', [Carbon::parse($date->copy()->startOfMonth()), Carbon::parse($date->copy()->endOfMonth())])
+                        ->whereNot('allowance_status', 1)
+                        ->sum('amount'),
+
+                'month' => $date->copy()->format('F, Y')
+            );
+        }
+
+        return $data;
     }
 }
