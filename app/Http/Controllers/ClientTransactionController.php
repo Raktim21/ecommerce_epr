@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\ClientTransactionsExport;
 use App\Http\Requests\ClientImportRequest;
 use App\Http\Requests\ClientTransactionRequest;
+use App\Http\Requests\ClientTransactionSearchRequest;
 use App\Http\Requests\FileTypeRequest;
 use App\Services\ClientTransactionService;
 use Illuminate\Http\Request;
@@ -19,9 +20,9 @@ class ClientTransactionController extends Controller
         $this->service = $service;
     }
 
-    public function index()
+    public function index(ClientTransactionSearchRequest $request)
     {
-        $data = $this->service->getAll();
+        $data = $this->service->getAll($request);
 
         return response()->json([
             'success' => true,
@@ -31,12 +32,8 @@ class ClientTransactionController extends Controller
 
     public function exportData(FileTypeRequest $request)
     {
-        if ($request->type != 'pdf')
-        {
-            $file_name = 'client-transactions-' . date('dis') . '.' . $request->type;
-            return Excel::download(new ClientTransactionsExport(), $file_name);
-        }
-        else {}
+        $file_name = 'client-transactions-' . date('dis') . '.' . $request->type;
+        return Excel::download(new ClientTransactionsExport(), $file_name);
     }
 
     public function store(ClientTransactionRequest $request)

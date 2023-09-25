@@ -3,7 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class ClientTransactionSearchRequest extends FormRequest
 {
@@ -25,6 +27,16 @@ class ClientTransactionSearchRequest extends FormRequest
         return [
             'client'    => 'sometimes|string',
             'trx_id'    => 'sometimes|string',
+            'end_date'  => 'sometimes|date_format:Y-m-d',
+            'start_date'=> 'required_with:end_date|date_format:Y-m-d|before:today'
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'success'  => false,
+            'error'  => $validator->errors()->first(),
+        ], 422));
     }
 }

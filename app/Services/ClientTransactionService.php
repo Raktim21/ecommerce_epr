@@ -44,17 +44,23 @@ class ClientTransactionService
         }
     }
 
-    public function getAll()
+    public function getAll(Request $request)
     {
         return $this->transaction->clone()
-            ->when(request()->input('client'), function ($q) {
-                return $q->whereHas('client', function ($q1) {
-                    return $q1->where('name', 'like', '%'.request()->input('client').'%');
-                });
-            })
             ->with(['client' => function($q) {
                 return $q->select('id','name','email','phone_no','confirmation_date');
             }])
+            ->when($request->client, function ($q) use ($request) {
+                return $q->whereHas('client', function ($q1) use ($request) {
+                    return $q1->where('name', 'like', '%'.$request->client.'%');
+                });
+            })
+            ->when($request->start_date, function ($q) use ($request) {
+                return $q->whereBetween('occurred_on', [$request->start_date, $request->end_date ?? date('Y-m-d')]);
+            })
+            ->when($request->trx_id, function ($q) use ($request) {
+                return $q->where('transaction_id', $request->trx_id);
+            })
             ->with('paymentType')
             ->orderBy('client_id')
             ->latest()
