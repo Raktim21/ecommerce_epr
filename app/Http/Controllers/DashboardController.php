@@ -19,7 +19,9 @@ class DashboardController extends Controller
 
     public function index()
     {
-        $data = $this->dashboard->adminDashboard();
+        $data = Cache::remember('dashboard', 24*60*60, function () {
+            return $this->dashboard->adminDashboard();
+        });
 
         return response()->json([
             'success' => true,
