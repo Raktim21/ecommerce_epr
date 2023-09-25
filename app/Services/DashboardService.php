@@ -70,7 +70,8 @@ class DashboardService
             'monthly_client_data'           => $monthly_client_data,
             'user_point_report'             => $this->userPointReport(),
             'employee_kpi'                  => $this->employeeKPI(),
-            'allowances'                    => $this->getAllowanceData()
+            'allowances'                    => $this->getAllowanceData(),
+//            'client_transactions'           => auth()->user()->hasRole('Super Admin') ? $this->transactionData() : null,
         ];
     }
 
@@ -155,5 +156,19 @@ class DashboardService
         }
 
         return $data;
+    }
+
+    private function transactionData()
+    {
+        $start = Carbon::now()->subMonth(12);
+        $end = Carbon::now();
+
+        $data = [];
+
+        for ($date = $start->copy(); $date->lte($end); $date->addMonth()) {
+            $data[] = array(
+                ''
+            );
+        }
     }
 }
