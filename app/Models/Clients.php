@@ -67,6 +67,11 @@ class Clients extends Model
         return $this->hasMany(FoodAllowance::class, 'client_id');
     }
 
+    public function transactions()
+    {
+        return $this->hasMany(ClientTransaction::class, 'client_id');
+    }
+
     public static function boot()
     {
         parent::boot();

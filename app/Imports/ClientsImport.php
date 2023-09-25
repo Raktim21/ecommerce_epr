@@ -5,11 +5,9 @@ namespace App\Imports;
 use App\Models\Clients;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
-use Maatwebsite\Excel\Facades\Excel;
 
 class ClientsImport implements ToModel, WithHeadingRow, WithValidation
 {
@@ -47,18 +45,6 @@ class ClientsImport implements ToModel, WithHeadingRow, WithValidation
 //            '*.product_type'     => 'sometimes|nullable|string|max:255',
 //            '*.client_opinion'   => 'sometimes|nullable|string',
 //            '*.officer_opinion'  => 'sometimes|nullable|string',
-        ];
-    }
-
-    public function customValidationMessages(): array
-    {
-        return [
-//            '*.company.required'      => 'The company field is required.',
-//            '*.name.required'         => 'The name field is required.',
-//            '*.email.email'           => 'The email field must have a valid email address.',
-//            '*.phone_no.required'     => 'The phone no field is required.',
-//            '*.phone_no.regex'        => 'The phone no field must have a valid number.',
-//            '*.phone_no.unique'       => 'The selected phone no already exists.',
         ];
     }
 

@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BillController;
 use App\Http\Controllers\ClientsController;
+use App\Http\Controllers\ClientTransactionController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\FollowUpInfoController;
 use App\Http\Controllers\KPILookUpController;
@@ -124,6 +125,13 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         Route::post('services', 'storeCategories')->middleware('permission:create-service');
         Route::put('services/{id}', 'updateCategories')->middleware('permission:update-service');
         Route::get('services/{id}', 'statusCategories')->middleware('permission:update-service');
+    });
+
+    Route::controller(ClientTransactionController::class)->group(function () {
+        Route::get('client-transactions', 'index');
+        Route::get('client-transactions/export', 'exportData');
+        Route::post('client-transactions', 'store');
+        Route::post('client-transactions/import', 'importData');
     });
 
     Route::controller(WebsiteController::class)->group(function () {

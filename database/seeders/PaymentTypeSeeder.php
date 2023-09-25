@@ -15,7 +15,9 @@ class PaymentTypeSeeder extends Seeder
     {
         DB::table('payment_types')->insert([
             ['name' => 'Cash','created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Bkash','created_at' => now(), 'updated_at' => now()]
+            ['name' => 'Bank','created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Bkash','created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Nagad','created_at' => now(), 'updated_at' => now()]
         ]);
     }
 }
