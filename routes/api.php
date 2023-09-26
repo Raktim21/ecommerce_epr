@@ -134,11 +134,6 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         Route::post('client-transactions/import', 'importData');
     });
 
-    Route::controller(WebsiteController::class)->group(function () {
-        Route::get('websites', 'index')->middleware('permission:get-website');
-        Route::post('websites', 'store')->middleware('permission:create-website');
-    });
-
     Route::controller(AllowanceController::class)->group(function () {
         Route::middleware('permission:get-transport-allowance')->group(function() {
 
