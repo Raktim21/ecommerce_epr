@@ -131,6 +131,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         Route::middleware('permission:get-client-transactions')->group(function () {
             Route::get('client-transactions', 'index');
             Route::get('client-transactions/export', 'exportData');
+            Route::get('client-transactions/export/pdf', 'exportPdf');
         });
 
         Route::middleware('permission:create-client-transactions')->group(function () {

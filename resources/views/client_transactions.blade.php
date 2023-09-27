@@ -23,7 +23,7 @@
             Company: {{ $data[0]['company'] }} <br>
             Email: {{ $data[0]['email'] }} <br>
             Contact: {{ $data[0]['phone_no'] }} <br>
-            <b>Purchased On: </b>{{ \Carbon\Carbon::parse($data[0]['confirmation_date'])->format('d M, Y') }}
+            <b>Purchased On: </b>{{ \Carbon\Carbon::parse($data[0]['confirmation_date'])->format('d F, Y') }}
         </p>
     </div>
     <div style="float: right">
@@ -53,7 +53,7 @@
                     @endif
                 </td>
                 <td>{{ $item['amount'] }}/-</td>
-                <td>{{ \Carbon\Carbon::parse($item['occurred_on'])->format('d M, Y') }}</td>
+                <td>{{ \Carbon\Carbon::parse($item['occurred_on'])->format('d F, Y') }}</td>
             </tr>
         @endforeach
 

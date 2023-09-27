@@ -75,7 +75,7 @@ class ClientTransactionService
         return $this->transaction->clone()
             ->leftJoin('payment_types','client_transactions.payment_type_id','=','payment_types.id')
             ->leftJoin('clients','client_transactions.client_id','=','clients.id')
-            ->select('client_transactions.*','clients.name','clients.email','clients.phone_no','clients.confirmation_date',
+            ->select('client_transactions.*','clients.name','clients.email','clients.phone_no','clients.company','clients.confirmation_date',
                 'payment_types.name as payment_type')
             ->where('client_transactions.client_id', $client_id)
             ->latest('client_transactions.created_at')->get();
