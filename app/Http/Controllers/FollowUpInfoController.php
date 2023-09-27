@@ -73,10 +73,15 @@ class FollowUpInfoController extends Controller
 
     public function delete($id)
     {
-        $this->followUpService->delete($id);
+        if ($this->followUpService->delete($id)) {
+            return response()->json([
+                'success' => true,
+            ]);
+        }
 
         return response()->json([
-            'success' => true,
-        ]);
+            'success' => false,
+            'error'   => 'Cannot delete follow ups of confirmed clients'
+        ], 400);
     }
 }

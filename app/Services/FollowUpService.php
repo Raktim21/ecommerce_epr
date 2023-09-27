@@ -49,9 +49,15 @@ class FollowUpService
         return false;
     }
 
-    public function delete($id)
+    public function delete($id): bool
     {
-        FollowUpInfo::findOrFail($id)->delete();
+        $follow = FollowUpInfo::findOrFail($id);
+
+        if (!$follow->client->confirmation_date){
+            $follow->delete();
+            return true;
+        }
+        return false;
     }
 
     public function storeReminder(Request $request)

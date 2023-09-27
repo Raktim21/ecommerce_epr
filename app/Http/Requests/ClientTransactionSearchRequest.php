@@ -27,6 +27,7 @@ class ClientTransactionSearchRequest extends FormRequest
         return [
             'client'    => 'sometimes|string',
             'trx_id'    => 'sometimes|string',
+            'invoice_no'=> 'sometimes|string|starts_with:TRX',
             'end_date'  => 'sometimes|date_format:Y-m-d',
             'start_date'=> 'required_with:end_date|date_format:Y-m-d|before:today'
         ];
