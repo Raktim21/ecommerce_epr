@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Clients;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -19,12 +21,22 @@ class FollowUpStoreRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
+     * @return array<string, ValidationRule|array|string>
      */
     public function rules(): array
     {
         return [
-            'client_id' => 'required|exists:clients,id',
+            'client_id' => ['required',
+                            function($attr, $val, $fail) {
+                                $client = Clients::where('id', $val)
+                                    ->whereNull('confirmation_date')
+                                    ->first();
+
+                                if(!$client)
+                                {
+                                    $fail('Invalid client.');
+                                }
+                            }],
             'detail' => 'required|string',
             'occurred_on' => 'required|date_format:Y-m-d H:i:s',
             'latitude' => 'nullable',

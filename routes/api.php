@@ -128,15 +128,19 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     });
 
     Route::controller(ClientTransactionController::class)->group(function () {
-        Route::get('client-transactions', 'index');
-        Route::get('client-transactions/export', 'exportData');
-        Route::post('client-transactions', 'store');
-        Route::post('client-transactions/import', 'importData');
+        Route::middleware('permission:get-client-transactions')->group(function () {
+            Route::get('client-transactions', 'index');
+            Route::get('client-transactions/export', 'exportData');
+        });
+
+        Route::middleware('permission:create-client-transactions')->group(function () {
+            Route::post('client-transactions', 'store');
+            Route::post('client-transactions/import', 'importData');
+        });
     });
 
     Route::controller(AllowanceController::class)->group(function () {
         Route::middleware('permission:get-transport-allowance')->group(function() {
-
             Route::get('transport-allowances/filter', 'transportAllowanceSearch');
             Route::get('transport-allowances/get/{id}', 'transportAllowance');
             Route::get('transport-allowances/current', 'currentTransportAllowance');
