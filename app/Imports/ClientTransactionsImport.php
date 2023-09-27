@@ -39,7 +39,7 @@ class ClientTransactionsImport implements ToModel, WithHeadingRow, WithValidatio
                     }
                 }],
             '*.payment_type_id'   => 'required|exists:payment_types,id',
-            '*.transaction_id'    => 'required|unique:client_transactions,transaction_id',
+            '*.transaction_id'    => 'sometimes|nullable|unique:client_transactions,transaction_id',
             '*.amount'            => 'required|numeric|gt:0',
             '*.occurred_on'       => 'required|date_format:Y-m-d H:i|before_or_equal:'.date('Y-m-d H:i'),
             '*.remarks'           => 'nullable|string|max:498'

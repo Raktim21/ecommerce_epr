@@ -51,6 +51,9 @@ class FollowUpInfo extends Model
         });
 
         static::updated(function ($follow) {
+            (new UserService())->sendNotification(
+                auth()->user()->name . ' has changed a follow-up information.',
+                '/follow_up/'.$follow->client_id);
             Cache::forget('client_follow_up'.$follow->client_id);
         });
 

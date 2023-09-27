@@ -34,14 +34,19 @@ class FollowUpService
                 END AS status")->get();
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id): bool
     {
-        $follow = FollowUpInfo::findOrFail($id)->update([
-            'detail' => $request->detail,
-            'occurred_on' => $request->occurred_on
-        ]);
+        $follow = FollowUpInfo::findOrFail($id);
 
-        (new UserService)->sendNotification("A client's follow-up information has been updated.", 'client', $follow->client_id);
+        if (!$follow->client->confirmation_date){
+            $follow->update([
+                'detail' => $request->detail,
+                'occurred_on' => $request->occurred_on
+            ]);
+
+            return true;
+        }
+        return false;
     }
 
     public function delete($id)

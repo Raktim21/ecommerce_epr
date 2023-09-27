@@ -59,11 +59,16 @@ class FollowUpInfoController extends Controller
 
     public function update(FollowUpUpdateRequest $request, $id)
     {
-        $this->followUpService->update($request, $id);
-
-        return response()->json([
-            'success' => true,
-        ]);
+        if ($this->followUpService->update($request, $id)) {
+            return response()->json([
+                'success' => true,
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'error'   => 'Cannot add follow up for a confirmed client.'
+            ], 400);
+        }
     }
 
     public function delete($id)

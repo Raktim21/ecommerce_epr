@@ -55,6 +55,9 @@ class ClientTransactionService
                     return $q1->where('name', 'like', '%'.$request->client.'%');
                 });
             })
+            ->when($request->invoice_no, function ($q) use ($request) {
+                return $q->where('invoice_no', $request->invoice_no);
+            })
             ->when($request->start_date, function ($q) use ($request) {
                 return $q->whereBetween('occurred_on', [$request->start_date, $request->end_date ?? date('Y-m-d')]);
             })
@@ -65,5 +68,16 @@ class ClientTransactionService
             ->orderBy('client_id')
             ->latest()
             ->paginate(15);
+    }
+
+    public function getClientTransactions($client_id)
+    {
+        return $this->transaction->clone()
+            ->leftJoin('payment_types','client_transactions.payment_type_id','=','payment_types.id')
+            ->leftJoin('clients','client_transactions.client_id','=','clients.id')
+            ->select('client_transactions.*','clients.name','clients.email','clients.phone_no','clients.confirmation_date',
+                'payment_types.name as payment_type')
+            ->where('client_transactions.client_id', $client_id)
+            ->latest('client_transactions.created_at')->get();
     }
 }
