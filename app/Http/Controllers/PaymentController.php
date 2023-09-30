@@ -13,15 +13,15 @@ use Illuminate\Support\Facades\Cache;
 
 class PaymentController extends Controller
 {
-    protected $paymentService;
-    public function __construct(PaymentService $paymentService)
+    protected $service;
+    public function __construct(PaymentService $service)
     {
-        $this->paymentService = $paymentService;
+        $this->service = $service;
     }
 
     public function index()
     {
-        $data = $this->paymentService->getAll();
+        $data = $this->service->getAll();
 
         return response()->json([
             'success' => true,
@@ -32,7 +32,7 @@ class PaymentController extends Controller
     public function getTypes()
     {
         $data = Cache::rememberForever('payment_type', function () {
-            return $this->paymentService->getAllTypes();
+            return $this->service->getAllTypes();
         });
 
         return response()->json([
@@ -44,7 +44,7 @@ class PaymentController extends Controller
     public function getCategories()
     {
         $data = Cache::remember('services'.request()->input('status'), 24*60*60*7, function () {
-            return $this->paymentService->getAllCategories();
+            return $this->service->getAllCategories();
         });
 
         return response()->json([
@@ -55,7 +55,7 @@ class PaymentController extends Controller
 
     public function storeCategories(ServiceStoreRequest $request)
     {
-        $this->paymentService->storeCategory($request);
+        $this->service->storeCategory($request);
 
         return response()->json([
             'success' => true
@@ -64,7 +64,7 @@ class PaymentController extends Controller
 
     public function updateCategories(ServiceStoreRequest $request, $id)
     {
-        $this->paymentService->updateCategory($request, $id);
+        $this->service->updateCategory($request, $id);
 
         return response()->json([
             'success' => true,
@@ -73,13 +73,13 @@ class PaymentController extends Controller
 
     public function statusCategories($id)
     {
-        $this->paymentService->deleteCategory($id);
+        $this->service->deleteCategory($id);
         return response()->json(['success' => true]);
     }
 
     public function store(PaymentStoreRequest $request)
     {
-        $status = $this->paymentService->store($request);
+        $status = $this->service->store($request);
 
         if($status != 0)
         {
@@ -100,13 +100,13 @@ class PaymentController extends Controller
     {
         return response()->json([
             'success' => 'true',
-            'data' => $this->paymentService->getData($request->input('client_id'))
+            'data' => $this->service->getData($request->input('client_id'))
         ]);
     }
 
     public function getPayslip($id)
     {
-        $data = $this->paymentService->read($id);
+        $data = $this->service->read($id);
 
         $info = array(
             'data' => $data

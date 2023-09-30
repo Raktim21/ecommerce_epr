@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Clients;
+use App\Models\ClientTransaction;
 use App\Models\EmployeeProfile;
 use App\Models\FollowUpReminder;
 use App\Models\FoodAllowance;
@@ -71,7 +72,7 @@ class DashboardService
             'user_point_report'             => $this->userPointReport(),
             'employee_kpi'                  => $this->employeeKPI(),
             'allowances'                    => $this->getAllowanceData(),
-//            'client_transactions'           => auth()->user()->hasRole('Super Admin') ? $this->transactionData() : null,
+            'client_transactions'           => auth()->user()->hasRole('Super Admin') ? $this->transactionData() : null,
         ];
     }
 
@@ -87,8 +88,11 @@ class DashboardService
 
     private function employeeKPI()
     {
-        return EmployeeProfile::select('id','user_id')
-            ->with(['user' => function($q) {
+        return EmployeeProfile::whereHas('user', function ($q) {
+            return $q->where('is_active', 1);
+        })
+        ->select('id','user_id')
+        ->with(['user' => function($q) {
             return $q->select('id','name')
                 ->withCount(['clients' => function($q) {
                     return $q->whereNotNull('confirmation_date');
@@ -167,8 +171,12 @@ class DashboardService
 
         for ($date = $start->copy(); $date->lte($end); $date->addMonth()) {
             $data[] = array(
-                ''
+                'transactions' => ClientTransaction::whereBetween('occurred_on', [Carbon::parse($date->copy()->startOfMonth()), Carbon::parse($date->copy()->endOfMonth())])
+                    ->sum('amount'),
+                'month'        => $date->copy()->format('F, Y')
             );
         }
+
+        return $data;
     }
 }

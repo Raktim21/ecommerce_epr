@@ -45,6 +45,7 @@ class ClientService
             ->leftJoin('payments','clients.id','=','payments.client_id')
             ->leftJoin('users','clients.added_by','=','users.id')
             ->select('clients.*','payments.id as payment_id','payments.invoice_no as payment_invoice','users.name as added_by')
+            ->withCount('transactions')
             ->withCount('follow_ups')
             ->when($isSuperAdmin==false, function($query) {
                 return $query->where('clients.added_by', auth()->user()->id);
