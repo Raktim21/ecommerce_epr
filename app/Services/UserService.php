@@ -162,7 +162,7 @@ class UserService
 
     public function storeProfile(Request $request): void
     {
-        $employee = EmployeeProfile::create([
+        $employee = EmployeeProfile::createOrUpdate([
             'user_id'       => $request->user_id
         ],[
             'salary'        => $request->salary,
