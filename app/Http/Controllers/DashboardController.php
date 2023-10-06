@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\DashboardService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
@@ -27,5 +28,10 @@ class DashboardController extends Controller
             'success' => true,
             'data'    => $data,
         ]);
+    }
+
+    public function seed()
+    {
+        Artisan::call('db:seed --class=ClientInterestSeeder');
     }
 }

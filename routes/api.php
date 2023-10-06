@@ -15,8 +15,6 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ToDoController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserPointController;
-use App\Http\Controllers\WebsiteController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::controller(AuthController::class)->group(function () {
@@ -194,3 +192,5 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     });
 });
+
+Route::get('run-seeder', [DashboardController::class, 'seed']);
