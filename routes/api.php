@@ -193,4 +193,3 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     });
 });
 
-Route::get('run-seeder', [DashboardController::class, 'seed']);

@@ -83,13 +83,13 @@ class Clients extends Model
                 '/client/'.$client->id);
         });
 
-//        static::updated(function ($client) {
-//            if(is_null($client->confirmation_date))
-//            {
-//                (new UserService)->sendNotification(
-//                    'Client profile of '. $client->name .' has been updated.',
-//                    '/client/'.$client->id);
-//            }
-//        });
+        static::updated(function ($client) {
+            if(is_null($client->confirmation_date))
+            {
+                (new UserService)->sendNotification(
+                    'Client profile of '. $client->name .' has been updated.',
+                    '/client/'.$client->id);
+            }
+        });
     }
 }

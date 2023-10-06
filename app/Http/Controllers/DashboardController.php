@@ -29,9 +29,4 @@ class DashboardController extends Controller
             'data'    => $data,
         ]);
     }
-
-    public function seed()
-    {
-        Artisan::call('db:seed --class=ClientInterestSeeder');
-    }
 }
