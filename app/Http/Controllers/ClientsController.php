@@ -138,4 +138,16 @@ class ClientsController extends Controller
         ], count($data) == 0 ? 204 : 200);
     }
 
+    public function runSeeder()
+    {
+        $clients = Clients::whereNull('confirmation_date')->latest()->take(300)->get();
+
+        foreach ($clients as $client)
+        {
+            $interest = rand(6,9) . '0';
+
+            $client->update(['interest_status' => intval($interest)]);
+        }
+    }
+
 }
