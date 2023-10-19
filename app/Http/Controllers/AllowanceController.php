@@ -176,11 +176,12 @@ class AllowanceController extends Controller
             ],422);
         }
 
-        foreach ($allowances as $allowance)
-        {
-            $allowance->update([
-                'allowance_status' => 1
-            ]);
+        if ($request->pay_status && $request->pay_status == 1) {
+            foreach ($allowances as $allowance) {
+                $allowance->update([
+                    'allowance_status' => 1
+                ]);
+            }
         }
 
         $user =  User::find($allowances[0]->created_by);
