@@ -24,7 +24,7 @@ Route::controller(AuthController::class)->group(function () {
     Route::get('new-notifications', 'getNewNotifications');
 });
 
-Route::get('increase-percentage', [ClientsController::class, 'runSeeder']);
+//Route::get('increase-percentage', [ClientsController::class, 'runSeeder']);
 
 Route::group(['middleware' => ['jwt.verify']], function () {
 
