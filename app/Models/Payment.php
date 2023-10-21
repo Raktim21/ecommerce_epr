@@ -13,14 +13,7 @@ class Payment extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'client_id',
-        'payment_type_id',
-        'payment_category_id',
-        'transaction_id',
-        'invoice_no',
-        'amount'
-    ];
+    protected $guarded = ['id'];
 
     protected $hidden = [
         'updated_at'
