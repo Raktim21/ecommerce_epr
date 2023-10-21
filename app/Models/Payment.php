@@ -19,6 +19,7 @@ class Payment extends Model
         'updated_at'
     ];
 
+    
     public function client()
     {
         return $this->belongsTo(Clients::class, 'client_id');
