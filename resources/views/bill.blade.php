@@ -64,7 +64,7 @@
     </table>
 
 </section>
-<section style="margin-top: 150px">
+<section style="margin-top: 100px">
     <div>
         <p style="border-top: 1px solid #000; width: 300px"> Authorized by</p>
     </div>
