@@ -18,13 +18,13 @@ class ClientService
         $this->client = $client;
     }
 
-    public function getAll(Request $request, $isSuperAdmin)
+    public function getFilteredClient(Request $request, $isSuperAdmin)
     {
         $search = $request->search ?? '';
         $status = $request->confirmed ?? 0;
         $limit = $request->per_page;
 
-        return $this->client->newQuery()
+        return $this->client->clone()
         ->when($status==0, function ($query) use($search) {
             return $query->where(function ($query) use ($search) {
                 $query->where('company','like',"%$search%")
@@ -188,6 +188,17 @@ class ClientService
             ->where('interest_status', 100)
             ->whereNull('confirmation_date')
             ->latest()->get();
+    }
+
+    public function fetchAllClient(Request $request)
+    {
+        return $this->client->clone()
+            ->when($request->search, function ($q) use ($request) {
+                return $q->where('name','like','%'.$request->search.'%');
+            })
+            ->orderByDesc('id')
+            ->paginate($request->per_page)
+            ->appends($request->except('page','per_page'));
     }
 
 }

@@ -27,9 +27,12 @@ class ClientsController extends Controller
 
     public function index(ClientGetRequest $request)
     {
+        $data = $request->has('get_all') ? $this->clientService->fetchAllClient($request) :
+            $this->clientService->getFilteredClient($request, auth()->user()->hasRole('Super Admin') ?? false);
+
         return response()->json([
             'success' => true,
-            'data' => $this->clientService->getAll($request, auth()->user()->hasRole('Super Admin') ?? false),
+            'data' => $data,
             'search' => $request->search ?? ''
         ]);
     }
