@@ -57,9 +57,12 @@
                 $total += $item['service']['price']
             @endphp
         @endforeach
+        <tr style="font-size: 19px;font-weight:100;border-top: 1px solid #000">
+            <td>Total:</td>
+            <td>{{ $total }}/-</td>
+        </tr>
     </table>
-    <div style="background-color: #374151; height: 1px; width: 100%;"></div>
-    <p style="font-size: 19px; margin-left: 300px; font-weight:100">Total: <span style="margin-left: 97px">{{ $total }}/-</span></p>
+
 </section>
 <section style="margin-top: 150px">
     <div>
