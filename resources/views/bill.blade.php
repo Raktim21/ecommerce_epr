@@ -51,7 +51,7 @@
                         <span style="color: #74787e"> (currently not available)</span>
                     @endif
                 </td>
-                <td>{{ $item['service']['price'] }}/=</td>
+                <td>{{ $item['service']['price'] }}/-</td>
             </tr>
             @php
                 $total += $item['service']['price']
@@ -59,7 +59,7 @@
         @endforeach
     </table>
     <div style="background-color: #374151; height: 1px; width: 100%;"></div>
-    <p>Total: {{ $total }}</p>
+    <p style="font-size: 19px; margin-left: 300px; font-weight:100">Total: <span style="margin-left: 97px">{{ $total }}/-</span></p>
 </section>
 <section style="margin-top: 150px">
     <div>
