@@ -43,9 +43,7 @@ class PaymentController extends Controller
 
     public function getCategories()
     {
-        $data = Cache::remember('services'.request()->input('status'), 24*60*60*7, function () {
-            return $this->service->getAllCategories();
-        });
+        $data = $this->service->getAllCategories();
 
         return response()->json([
             'success' => true,
