@@ -102,7 +102,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::controller(FollowUpInfoController::class)->group(function () {
         Route::get('clients-follow-up/{client_id}', 'show')->middleware('permission:get-client-follow-up');
         Route::get('pending-follow-ups', 'getFollowUps')->middleware('permission:get-pending-client-follow-up');
-        Route::get('clients-follow-up/by-user/{user_id}', 'getFollowUpsByUser')->middleware();
+        Route::get('clients-follow-up/by-user/{user_id}', 'getFollowUpsByUser')->middleware('permission:get-client-follow-up');
         Route::post('clients-follow-up-reminder', 'addReminder')->middleware('permission:create-client-follow-up-reminder');
         Route::post('follow-up', 'store')->middleware('permission:create-client-follow-up');
         Route::put('follow-up/{id}', 'update')->middleware('permission:update-client-follow-up');
