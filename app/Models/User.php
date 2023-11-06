@@ -94,6 +94,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasOne(EmployeeProfile::class, 'user_id');
     }
 
+    public function follow_ups()
+    {
+        return $this->hasMany(FollowUpInfo::class, 'added_by');
+    }
+
     public static function boot()
     {
         parent::boot();

@@ -6,7 +6,9 @@ use App\Http\Requests\FollowUpReminderRequest;
 use App\Http\Requests\FollowUpStoreRequest;
 use App\Http\Requests\FollowUpUpdateRequest;
 use App\Services\FollowUpService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Validator;
 
 class FollowUpInfoController extends Controller
 {
@@ -55,6 +57,28 @@ class FollowUpInfoController extends Controller
             'success'   => true,
             'data'      => $data
         ], count($data) == 0 ? 204 : 200);
+    }
+
+    public function getFollowUpsByUser(Request $request, $user_id)
+    {
+        $validate = Validator::make($request->all(), [
+            'date' => 'sometimes|date_format:Y-m-d|before_or_equal:today'
+        ]);
+
+        if ($validate->fails())
+        {
+            return response()->json([
+                'success' => false,
+                'error'   => $validate->errors()->first()
+            ], 422);
+        }
+
+        $data = $this->followUpService->getFollowUpByUser($request, $user_id);
+
+        return response()->json([
+            'success' => true,
+            'data'    => $data
+        ]);
     }
 
     public function update(FollowUpUpdateRequest $request, $id)

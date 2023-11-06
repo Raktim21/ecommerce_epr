@@ -12,11 +12,12 @@ class FollowUpService
     public function store(Request $request)
     {
         FollowUpInfo::create([
-            'client_id' => $request->client_id,
-            'detail' => $request->detail,
-            'occurred_on' => $request->occurred_on,
-            'latitude' => $request->latitude,
-            'longitude' => $request->longitude
+            'client_id'     => $request->client_id,
+            'detail'        => $request->detail,
+            'occurred_on'   => $request->occurred_on,
+            'latitude'      => $request->latitude,
+            'longitude'     => $request->longitude,
+            'added_by'      => auth()->user()->id
         ]);
     }
 
@@ -82,5 +83,15 @@ class FollowUpService
             return $q->where('added_by', auth()->user()->id);
         })->where('followup_session', '>', date('Y-m-d H:i:s'))
             ->orderBy('id')->get();
+    }
+
+    public function getFollowUpByUser(Request $request, $user_id)
+    {
+        return FollowUpInfo::with(['client' => function($q) {
+            return $q->select('id','name','email','phone');
+        }])->where('added_by', $user_id)
+            ->when($request->date, function ($q) use ($request) {
+                return $q->whereDate($request->date);
+            })->get();
     }
 }

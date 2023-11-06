@@ -11,18 +11,9 @@ class FollowUpInfo extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'client_id',
-        'detail',
-        'occurred_on',
-        'latitude',
-        'longitude'
-    ];
+    protected $fillable = ['client_id', 'detail', 'occurred_on', 'latitude', 'longitude', 'added_by'];
 
-    protected $hidden = [
-        'created_at',
-        'updated_at'
-    ];
+    protected $hidden = ['created_at', 'updated_at'];
 
     public function client()
     {
