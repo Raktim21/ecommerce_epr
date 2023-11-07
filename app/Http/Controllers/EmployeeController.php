@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ClientExport;
+use App\Exports\EmployeeSalaryExport;
 use App\Http\Requests\EmployeeGetRequest;
+use App\Http\Requests\FileTypeRequest;
 use App\Http\Requests\StoreSalaryRequest;
 use App\Models\EmployeeProfile;
 use App\Services\EmployeeService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
 
 class EmployeeController extends Controller
 {
@@ -29,13 +33,18 @@ class EmployeeController extends Controller
         ], count($data)==0 ? 204 : 200);
     }
 
-    public function salaryPdf(EmployeeGetRequest $request)
+    public function salaryExport(FileTypeRequest $request)
     {
-        $data = $this->service->getAll();
+        if ($request->type == 'pdf') {
+            $data = $this->service->getAll();
 
-        $pdf = Pdf::loadView('salary', compact('data'));
+            $pdf = Pdf::loadView('salary', compact('data'));
+            return $pdf->stream('salary-data_' . now() . '.pdf');
+        } else {
+            $file_name = 'employee-salary-list-' . date('dis') . '.' . $request->type;
 
-        return $pdf->stream('salary-data_' . now() . '.pdf');
+            return Excel::download(new EmployeeSalaryExport(), $file_name);
+        }
     }
 
     public function updateEmployeeActive(Request $request, $id)

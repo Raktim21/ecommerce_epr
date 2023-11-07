@@ -86,7 +86,7 @@
         @foreach ($data as $item)
             <tr>
                 <td style="border: 1px solid rgb(201, 201, 201); padding-left: 10px">
-                    {{ $item->user->name }}
+                    {{ $item->user->name }} {!! $item->user->is_active == 1 ? '' : '<sup style="color: red">Inactive</sup>' !!}
                 </td>
 
                 <td style="border: 1px solid rgb(201, 201, 201); padding-left: 10px">
