@@ -77,7 +77,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         Route::post('users', 'store')->middleware('permission:create-user');
         Route::post('create-employee-profile', 'createProfile')->middleware('permission:create-user-employee-profile');
         Route::post('users-update/{id}', 'update')->middleware('permission:update-user');
-        Route::post('users-status/{id}', 'changeStatus')->middleware('permission:update-user');
+        Route::get('users-status/{id}', 'changeStatus')->middleware('permission:update-user');
         Route::delete('users/{id}', 'destroy')->middleware('permission:delete-user');
     });
 
@@ -150,6 +150,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         });
         Route::get('transport-allowances/export/all', 'transportAllowanceExport')->middleware('permission:export-transport-allowance');
         Route::post('transport-allowance-payment-slip', 'transportAllowancePaymentSlip')->middleware('permission:transport-allowance-payment-slip');
+        Route::get('allowance-invoices', 'getInvoices')->middleware('permission:transport-allowance-payment-slip');
 
         Route::middleware('permission:create-update-transport-allowance')->group(function() {
 

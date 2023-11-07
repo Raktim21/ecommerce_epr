@@ -75,20 +75,9 @@ class UserController extends Controller
         ], is_null($data) ? 204 : 200);
     }
 
-    public function changeStatus(Request $request,$id)
+    public function changeStatus($id)
     {
-        $validate = Validator::make($request->all(), [
-            'is_active' => 'required|in:0,1',
-        ]);
-
-        if ($validate->fails()) {
-            return response()->json([
-                'success' => false,
-                'error' => $validate->errors()->first()
-            ], 422);
-        }
-
-        if($this->service->activeStatus($request, $id))
+        if($this->service->activeStatus($id))
         {
             return response()->json([
                 'success' => true,

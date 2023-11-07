@@ -127,19 +127,19 @@ class UserService
     }
 
 
-    public function activeStatus(Request $request, $id)
+    public function activeStatus($id)
     {
         $user = User::findOrFail($id);
 
-        if($user->hasRole('Super Admin') && $request->is_active == 0)
+        if($user->hasRole('Super Admin') && $user->is_active == 1)
         {
             return false;
         }
 
-        $user->is_active =  $request->is_active;
+        $user->is_active = !$user->is_active;
         $user->save();
 
-        $this->sendNotification('User account of '. $user->name .' has been'. ($request->is_active == 1 ? ' activated' : ' deactivated') , 'user', $user->id);
+        $this->sendNotification('User account of '. $user->name .' has been'. ($user->is_active == 1 ? ' activated' : ' deactivated') , 'user');
 
         return true;
     }

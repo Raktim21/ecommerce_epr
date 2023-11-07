@@ -12,6 +12,7 @@ use App\Http\Requests\TransportAllowanceStatusRequest;
 use App\Http\Requests\AllowanceUpdateRequest;
 use App\Http\Requests\FileTypeRequest;
 use App\Http\Requests\FoodAllowanceStoreRequest;
+use App\Models\AllowancePayslip;
 use App\Models\FoodAllowance;
 use App\Models\TransportAllowance;
 use App\Models\User;
@@ -176,23 +177,32 @@ class AllowanceController extends Controller
             ],422);
         }
 
-        if ($request->pay_status && $request->pay_status == 1) {
-            foreach ($allowances as $allowance) {
-                $allowance->update([
-                    'allowance_status' => 1
-                ]);
-            }
-        }
-
         $user =  User::find($allowances[0]->created_by);
 
         $data = [
             'transport_allowances' => TransportAllowance::whereRaw('id IN (' . implode(',', $request->allowances) . ')')
                 ->orderByDesc('id')->get(),
             'user' => $user,
+            'payslip_no' => $user->id . '-' . rand(10000, 99999)
         ];
 
         $pdf = PDF::loadView('transport_allowance_payment_slip', compact('data'));
+
+        if ($request->pay_status && $request->pay_status == 1) {
+            foreach ($allowances as $allowance) {
+                $allowance->update([
+                    'allowance_status' => 1
+                ]);
+            }
+
+            $pdf->save(public_path('invoices') . '/' . $data['payslip_no'].'.pdf');
+
+            AllowancePayslip::create([
+                'payslip_uuid' => $data['payslip_no'],
+                'url'          => '/invoices/' . $data['payslip_no'].'.pdf'
+            ]);
+        }
+
         return $pdf->stream('travel_allowance_payment_slip_' . $user->id . '-' . rand(1000, 9999) . '.pdf');
     }
 
@@ -288,6 +298,16 @@ class AllowanceController extends Controller
 
         $pdf = PDF::loadView('food_allowance_payment_slip', compact('data'));
         return $pdf->stream('food_allowance_payment_slip_' . $user->id . '-' . rand(1000, 9999) . '.pdf');
+    }
+
+    public function getInvoices()
+    {
+        $data = $this->service->invoices();
+
+        return response()->json([
+            'status' => true,
+            'data'   => $data
+        ]);
     }
 
 }

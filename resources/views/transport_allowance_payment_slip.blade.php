@@ -51,7 +51,7 @@
         <table width="100%" align="center" style="margin-bottom: 50px;">
             <tr>
                 <td width="300">
-                    Voucher No : {{ $data['user']->id }}-{{ rand(10000, 99999) }}
+                    Payslip No : {{ $data['payslip_no'] }}
                 </td>
                 <td width="44"></td>
                 <td width="150">Date : {{ \Carbon\Carbon::now()->format('d M, Y') }}

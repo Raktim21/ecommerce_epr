@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\AllowancePayslip;
 use App\Models\FoodAllowance;
 use App\Models\TransportAllowance;
 use Carbon\Carbon;
@@ -291,5 +292,12 @@ class AllowanceService
             ->select('food_allowances.*','users.name')
             ->orderBy('food_allowances.id', 'desc')
             ->paginate(request()->input('per_page') ?? 10);
+    }
+
+    public function invoices()
+    {
+        return AllowancePayslip::when(\request()->input('payslip_no'), function ($q) {
+            return $q->where('payslip_no', \request()->input('payslip_no'));
+        })->latest()->paginate(10);
     }
 }
