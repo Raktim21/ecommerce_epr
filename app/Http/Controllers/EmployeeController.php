@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\ClientExport;
 use App\Exports\EmployeeSalaryExport;
 use App\Http\Requests\EmployeeGetRequest;
 use App\Http\Requests\FileTypeRequest;

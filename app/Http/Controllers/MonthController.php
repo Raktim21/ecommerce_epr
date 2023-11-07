@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Month;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
 class MonthController extends Controller

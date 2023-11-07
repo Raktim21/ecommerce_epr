@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ServiceStoreRequest;
 use App\Http\Requests\PaymentDataRequest;
 use App\Http\Requests\PaymentStoreRequest;
-use App\Models\Payment;
-use App\Models\Service;
 use App\Services\PaymentService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Cache;

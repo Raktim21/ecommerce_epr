@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\KPILookUpRequest;
-use App\Models\KPILookUp;
 use App\Services\KPIService;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
 class KPILookUpController extends Controller

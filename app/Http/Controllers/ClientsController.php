@@ -13,7 +13,6 @@ use App\Http\Requests\ClientUpdateInfoRequest;
 use App\Http\Requests\FileTypeRequest;
 use App\Models\Clients;
 use App\Services\ClientService;
-use Illuminate\Support\Facades\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ClientsController extends Controller

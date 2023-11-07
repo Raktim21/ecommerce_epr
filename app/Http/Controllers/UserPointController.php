@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PointRequest;
 use App\Services\UserPointService;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
 class UserPointController extends Controller
