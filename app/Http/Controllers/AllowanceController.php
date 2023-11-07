@@ -164,7 +164,6 @@ class AllowanceController extends Controller
                 'error'  => $validate->errors()->first()
             ], 422);
         }
-
         $allowances = TransportAllowance::whereIn('id', $request->allowances)->get();
 
         $addedBy = $allowances->groupBy('created_by')->map->count();
@@ -179,6 +178,22 @@ class AllowanceController extends Controller
 
         $user =  User::find($allowances[0]->created_by);
 
+        $payslip = $user->id . '-' . rand(10000, 99999);
+
+        if ($request->pay_status && $request->pay_status == 1) {
+
+            foreach ($allowances as $allowance){
+                $allowance->update([
+                    'allowance_status' => 1
+                ]);
+            }
+
+            AllowancePayslip::create([
+                'payslip_uuid' => $payslip,
+                'url'          => '/invoices/' . $payslip.'.pdf'
+            ]);
+        }
+
         $data = [
             'transport_allowances' => TransportAllowance::whereRaw('id IN (' . implode(',', $request->allowances) . ')')
                 ->orderByDesc('id')->get(),
@@ -188,22 +203,9 @@ class AllowanceController extends Controller
 
         $pdf = PDF::loadView('transport_allowance_payment_slip', compact('data'));
 
-        if ($request->pay_status && $request->pay_status == 1) {
-            foreach ($allowances as $allowance) {
-                $allowance->update([
-                    'allowance_status' => 1
-                ]);
-            }
+        $pdf->save(public_path('invoices') . '/' . $payslip.'.pdf');
 
-            $pdf->save(public_path('invoices') . '/' . $data['payslip_no'].'.pdf');
-
-            AllowancePayslip::create([
-                'payslip_uuid' => $data['payslip_no'],
-                'url'          => '/invoices/' . $data['payslip_no'].'.pdf'
-            ]);
-        }
-
-        return $pdf->stream('travel_allowance_payment_slip_' . $user->id . '-' . rand(1000, 9999) . '.pdf');
+        return $pdf->stream('travel_allowance_payment_slip_' . $payslip . '.pdf');
     }
 
     public function foodAllowanceStore(FoodAllowanceStoreRequest $request)
