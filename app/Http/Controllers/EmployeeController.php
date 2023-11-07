@@ -6,6 +6,7 @@ use App\Http\Requests\EmployeeGetRequest;
 use App\Http\Requests\StoreSalaryRequest;
 use App\Models\EmployeeProfile;
 use App\Services\EmployeeService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -26,6 +27,15 @@ class EmployeeController extends Controller
             'success' => true,
             'data'    => $data
         ], count($data)==0 ? 204 : 200);
+    }
+
+    public function salaryPdf(EmployeeGetRequest $request)
+    {
+        $data = $this->service->getAll();
+
+        $pdf = Pdf::loadView('salary', compact('data'));
+
+        return $pdf->stream('salary-data_' . now() . '.pdf');
     }
 
     public function updateEmployeeActive(Request $request, $id)

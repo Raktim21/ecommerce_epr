@@ -84,6 +84,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::controller(EmployeeController::class)->group(function () {
         Route::get('employees', 'getEmployeeList')->middleware('permission:employee-payable-salary-list');
         Route::post('employees/salary', 'storeSalary')->middleware('permission:store-salary');
+        Route::get('employees/salary/pdf', 'salaryPdf')->middleware('permission:employee-payable-salary-list');
     });
 
     Route::controller(ClientsController::class)->group(function () {
