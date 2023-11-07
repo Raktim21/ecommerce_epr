@@ -11,7 +11,6 @@ use App\Http\Requests\ResetPasswordRequest;
 use App\Models\Notification;
 use App\Models\User;
 use App\Services\AuthService;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\StreamedResponse;
