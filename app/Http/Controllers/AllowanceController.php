@@ -18,6 +18,7 @@ use App\Models\TransportAllowance;
 use App\Models\User;
 use App\Services\AllowanceService;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
@@ -164,48 +165,52 @@ class AllowanceController extends Controller
                 'error'  => $validate->errors()->first()
             ], 422);
         }
-        $allowances = TransportAllowance::whereIn('id', $request->allowances)->get();
+        try {
+            $allowances = TransportAllowance::whereIn('id', $request->allowances)->get();
 
-        $addedBy = $allowances->groupBy('created_by')->map->count();
+            $addedBy = $allowances->groupBy('created_by')->map->count();
 
-        if ($addedBy->count() != 1)
-        {
-            return response()->json([
-                'success' => false,
-                'error'  => "Please select only one user's allowance data."
-            ],422);
-        }
+            if ($addedBy->count() != 1) {
+                return response()->json([
+                    'success' => false,
+                    'error' => "Please select only one user's allowance data."
+                ], 422);
+            }
 
-        $user =  User::find($allowances[0]->created_by);
+            $user = User::find($allowances[0]->created_by);
 
-        $payslip = $user->id . '-' . rand(10000, 99999);
+            $payslip = $user->id . '-' . rand(10000, 99999);
 
-        if ($request->pay_status && $request->pay_status == 1) {
+            if ($request->pay_status && $request->pay_status == 1) {
 
-            foreach ($allowances as $allowance){
-                $allowance->update([
-                    'allowance_status' => 1
+                foreach ($allowances as $allowance) {
+                    $allowance->update([
+                        'allowance_status' => 1
+                    ]);
+                }
+
+                AllowancePayslip::create([
+                    'payslip_uuid' => $payslip,
+                    'url' => '/invoices/' . $payslip . '.pdf'
                 ]);
             }
 
-            AllowancePayslip::create([
-                'payslip_uuid' => $payslip,
-                'url'          => '/invoices/' . $payslip.'.pdf'
-            ]);
+            $data = [
+                'transport_allowances' => TransportAllowance::whereRaw('id IN (' . implode(',', $request->allowances) . ')')
+                    ->orderByDesc('id')->get(),
+                'user' => $user,
+                'payslip_no' => $user->id . '-' . rand(10000, 99999)
+            ];
+
+            $pdf = PDF::loadView('transport_allowance_payment_slip', compact('data'));
+
+            $pdf->save(public_path('invoices') . '/' . $payslip . '.pdf');
+
+            return $pdf->stream('travel_allowance_payment_slip_' . $payslip . '.pdf');
+        } catch (QueryException $ex)
+        {
+            return response()->json($ex->getMessage());
         }
-
-        $data = [
-            'transport_allowances' => TransportAllowance::whereRaw('id IN (' . implode(',', $request->allowances) . ')')
-                ->orderByDesc('id')->get(),
-            'user' => $user,
-            'payslip_no' => $user->id . '-' . rand(10000, 99999)
-        ];
-
-        $pdf = PDF::loadView('transport_allowance_payment_slip', compact('data'));
-
-        $pdf->save(public_path('invoices') . '/' . $payslip.'.pdf');
-
-        return $pdf->stream('travel_allowance_payment_slip_' . $payslip . '.pdf');
     }
 
     public function foodAllowanceStore(FoodAllowanceStoreRequest $request)
