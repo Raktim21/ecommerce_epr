@@ -33,6 +33,27 @@ class ClientTransactionController extends Controller
         ], $data->isEmpty() ? 204 : 200);
     }
 
+    public function monthlyTransactions(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'date'  => 'sometimes|date_format:Y-m-d|before:today',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'error' => $validator->errors()->first()
+            ], 422);
+        }
+
+        $data = $this->service->monthlyTransactionData($request);
+
+        return response()->json([
+            'success' => true,
+            'data' => $data
+        ]);
+    }
+
     public function exportData(FileTypeRequest $request)
     {
         if ($request->type != 'pdf') {

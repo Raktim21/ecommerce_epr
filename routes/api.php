@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BillController;
 use App\Http\Controllers\ClientsController;
 use App\Http\Controllers\ClientTransactionController;
+use App\Http\Controllers\CustomBillController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\FollowUpInfoController;
 use App\Http\Controllers\KPILookUpController;
@@ -116,6 +117,12 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         Route::post('bills', 'store')->middleware('permission:create-bill');
     });
 
+    Route::controller(CustomBillController::class)->group(function () {
+        Route::post('custom-bills', 'create');
+        Route::get('custom-bills/{id}', 'get');
+        Route::get('custom-bills/slip/{id}', 'getPDF');
+    });
+
     Route::controller(PaymentController::class)->group(function () {
         Route::get('clients-payments', 'index')->middleware('permission:get-client-payment');
         Route::post('clients-payments', 'store')->middleware('permission:create-client-payment');
@@ -131,6 +138,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     Route::controller(ClientTransactionController::class)->group(function () {
         Route::middleware('permission:get-client-transactions')->group(function () {
+            Route::get('monthly-client-transactions', 'monthlyTransactions');
             Route::get('client-transactions', 'index');
             Route::get('client-transactions/export', 'exportData');
             Route::put('client-transactions/export/pdf', 'exportPdf');

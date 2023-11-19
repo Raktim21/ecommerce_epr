@@ -3,7 +3,9 @@
 namespace App\Services;
 
 use App\Imports\ClientTransactionsImport;
+use App\Models\Clients;
 use App\Models\ClientTransaction;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -79,5 +81,35 @@ class ClientTransactionService
                 'payment_types.name as payment_type')
             ->where('client_transactions.client_id', $client_id)
             ->latest('client_transactions.created_at')->get();
+    }
+
+    public function monthlyTransactionData(Request $request)
+    {
+        $from_date = $request->date ?? date('Y-m-d');
+
+        $month = Carbon::parse($from_date)->format('n');
+
+        $clients = Clients::whereNotNull('confirmation_date')->paginate(10);
+
+        $data = [];
+
+        foreach ($clients as $key => $client)
+        {
+            $data[$key] = $client;
+            $data[$key]['transaction_status'] = Carbon::parse($from_date)->diffInMonths($client->confirmation_date) < 3 ? 'In Trial' :
+                ($client->transactions()->whereMonth('occurred_on', $month)->exists() ? 'Paid' : 'Not Paid');
+
+            $data[$key]['transaction_detail'] = $client->transactions()->whereMonth('occurred_on', $month)->first() ?? null;
+        }
+
+        return [
+            'data' => $data,
+            'pagination' => [
+                'current_page' => $clients->currentPage(),
+                'last_page' => $clients->lastPage(),
+                'per_page' => $clients->perPage(),
+                'total' => $clients->total(),
+            ]
+        ];
     }
 }
