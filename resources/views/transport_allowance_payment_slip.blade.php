@@ -124,7 +124,8 @@
                 </tr>
             @endforeach
                 <tr>
-                    <td style="padding-left: 10px">Total Paid Amount</td>
+                    <td style="padding-left: 10px">Paid</td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -132,7 +133,8 @@
                 </tr>
 
                 <tr>
-                    <td style="padding-left: 10px">Total Unpaid Amount</td>
+                    <td style="padding-left: 10px">Unpaid</td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -140,7 +142,8 @@
                 </tr>
 
             <tr>
-                <td style="border-top: 1px solid rgb(201, 201, 201);padding-left: 10px">Total Amount</td>
+                <td style="border-top: 1px solid rgb(201, 201, 201);padding-left: 10px">Total</td>
+                <td style="border-top: 1px solid rgb(201, 201, 201)"></td>
                 <td style="border-top: 1px solid rgb(201, 201, 201)"></td>
                 <td style="border-top: 1px solid rgb(201, 201, 201)"></td>
                 <td style="border-top: 1px solid rgb(201, 201, 201)"></td>
