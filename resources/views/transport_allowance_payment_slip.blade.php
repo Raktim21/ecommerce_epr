@@ -76,6 +76,9 @@
             <thead>
                 <tr>
                     <th style="border: 1px solid rgb(201, 201, 201); padding: 10px" align="left">
+                        ID
+                    </th>
+                    <th style="border: 1px solid rgb(201, 201, 201); padding: 10px" align="left">
                         Journey details
                     </th>
                     <th style="border: 1px solid rgb(201, 201, 201); padding: 10px" align="left">
@@ -96,6 +99,9 @@
 
             @foreach ($data['transport_allowances'] as $transport_allowance)
                 <tr>
+                    <td style="border: 1px solid rgb(201, 201, 201); padding-left: 10px">
+                        {{ $transport_allowance->id }}
+                    </td>
                     <td style="border: 1px solid rgb(201, 201, 201); padding-left: 10px">
                         {!! $transport_allowance->from_address ?? '<span style="color: red">Undefined</span>' !!}  to {!! $transport_allowance->to_address ?? '<span style="color: red">Undefined</span>' !!}
                     </td>
