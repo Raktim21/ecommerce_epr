@@ -17,6 +17,16 @@ class CustomBillController extends Controller
         $this->service = $service;
     }
 
+    public function index(Request $request)
+    {
+        $data = $this->service->getAll($request);
+
+        return response()->json([
+            'success' => true,
+            'data'    => $data
+        ]);
+    }
+
     public function create(CustomBillCreateRequest $request)
     {
         if ($data = $this->service->store($request))

@@ -52,4 +52,21 @@ class CustomBillService
     {
         return $this->bill->with('client','items')->find($id);
     }
+
+    public function getAll(Request $request)
+    {
+        return $this->bill
+            ->when($request->bill_no, function ($q) use ($request) {
+                return $q->where('bill_no', $request->bill_no);
+            })
+            ->when($request->client, function ($q) use ($request) {
+                return $q->whereHas('client', function ($q1) use ($request) {
+                    return $q1->where('name', 'like', $request->client.'%')
+                        ->orWhere('email', 'like', $request->client.'%');
+                });
+            })
+            ->with('client','items')
+            ->latest()->paginate(15)
+            ->appends($request->except('page','per_page'));
+    }
 }
