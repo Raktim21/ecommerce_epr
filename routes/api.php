@@ -118,10 +118,10 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     });
 
     Route::controller(CustomBillController::class)->group(function () {
-        Route::get('custom-bills', 'index');
-        Route::post('custom-bills', 'create');
-        Route::get('custom-bills/{id}', 'get');
-        Route::get('custom-bills/slip/{id}', 'getPDF');
+        Route::get('custom-bills', 'index')->middleware('permission:get-bills');
+        Route::post('custom-bills', 'create')->middleware('permission:create-bill');
+        Route::get('custom-bills/{id}', 'get')->middleware('permission:get-bills');
+        Route::get('custom-bills/slip/{id}', 'getPDF')->middleware('permission:get-bills');
     });
 
     Route::controller(PaymentController::class)->group(function () {
