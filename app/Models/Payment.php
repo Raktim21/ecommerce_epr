@@ -19,7 +19,7 @@ class Payment extends Model
         'updated_at'
     ];
 
-    
+
     public function client()
     {
         return $this->belongsTo(Clients::class, 'client_id');
@@ -46,8 +46,8 @@ class Payment extends Model
 
             (new UserPointService())->savePoints(2, $payment->client->added_by);
 
-            Clients::find($payment->client_id)->update([
-                'confirmation_date' => Carbon::now(),
+            $payment->client->update([
+                'confirmation_date' => Carbon::now('Asia/Dhaka')
             ]);
         });
     }

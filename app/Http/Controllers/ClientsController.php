@@ -86,18 +86,19 @@ class ClientsController extends Controller
 
     public function updateInfo(ClientUpdateInfoRequest $request, $id)
     {
-        if(!$this->clientService->isConfirmed($id))
+        if ($request->payment_type_id && in_array($request->payment_type_id, [2, 3, 4]) && !$request->transaction_id)
         {
-            $this->clientService->updateInfo($request, $id);
-
             return response()->json([
-                'success' => true,
-            ]);
+                'success' => false,
+                'error'   => 'Payment transaction number is required.'
+            ], 422);
         }
+
+        $this->clientService->updateInfo($request, $id);
+
         return response()->json([
-            'success' => false,
-            'error' => 'Confirmed client can not be updated.'
-        ], 400);
+            'success' => true,
+        ]);
     }
 
     public function updateDoc(ClientUpdateDocRequest $request, $id)

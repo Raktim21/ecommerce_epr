@@ -109,15 +109,6 @@ class ClientService
         }
     }
 
-    public function isConfirmed($id)
-    {
-        if($this->client->clone()->findOrFail($id)->confirmation_date != null)
-        {
-            return true;
-        }
-        return false;
-    }
-
     public function import(Request $request)
     {
         $file = $request->file('file');
@@ -135,11 +126,11 @@ class ClientService
 
     public function updateInfo(Request $request, $id)
     {
-        $client = Clients::find($id);
+        $client = Clients::findOrFail($id);
 
         $client->update([
-            'company' => $request->company,
-            'name' => $request->name,
+            'company'         => $request->company,
+            'name'            => $request->name,
             'email'           => $request->email,
             'phone_no'        => $request->phone_no,
             'area'            => $request->area,
@@ -150,6 +141,30 @@ class ClientService
             'latitude'        => $request->latitude,
             'longitude'       => $request->longitude,
         ]);
+
+        if ($client->confirmation_date)
+        {
+            if ($request->domain) {
+                $client->website->domain = $request->domain;
+                $client->website->save();
+            }
+
+            if ($request->amount) {
+                $client->payment->amount = $request->amount;
+
+                if ($request->payment_type_id)
+                {
+                    $client->payment->payment_type_id = $request->payment_type_id;
+
+                    if (in_array($request->payment_type_id, [2, 3, 4]))
+                    {
+                        $client->payment->transaction_id = $request->transaction_id;
+                    }
+                }
+
+                $client->payment->save();
+            }
+        }
     }
 
     public function updateDoc(Request $request, $id)
