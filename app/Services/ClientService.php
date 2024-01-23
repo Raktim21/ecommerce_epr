@@ -145,7 +145,7 @@ class ClientService
         if ($client->confirmation_date)
         {
             if ($request->domain) {
-                $client->website()->UpdateOrCreate([
+                $client->website()->updateOrCreate([
                     'domain' => $request->domain
                 ]);
             }
