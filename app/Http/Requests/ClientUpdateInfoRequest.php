@@ -38,7 +38,7 @@ class ClientUpdateInfoRequest extends FormRequest
             'client_opinion'   => 'nullable|string',
             'officer_opinion'  => 'nullable|string',
             'domain'           => 'sometimes|string|url',
-            'amount'           => 'sometimes|numeric|gt:0',
+            'amount'           => 'required_with:payment_type_id|numeric|gt:0',
             'payment_type_id'  => 'required_with:amount|exists:payment_types,id',
             'transaction_id'   => 'sometimes|string|max:50'
         ];

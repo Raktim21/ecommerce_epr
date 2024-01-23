@@ -145,24 +145,27 @@ class ClientService
         if ($client->confirmation_date)
         {
             if ($request->domain) {
-                $client->website->domain = $request->domain;
-                $client->website->save();
+                $client->website()->UpdateOrCreate([
+                    'domain' => $request->domain
+                ]);
             }
 
             if ($request->amount) {
-                $client->payment->amount = $request->amount;
+                $payment = $client->payment;
 
-                if ($request->payment_type_id)
-                {
-                    $client->payment->payment_type_id = $request->payment_type_id;
+                if ($payment) {
+                    $payment->amount = $request->amount;
 
-                    if (in_array($request->payment_type_id, [2, 3, 4]))
-                    {
-                        $client->payment->transaction_id = $request->transaction_id;
+                    if ($request->payment_type_id) {
+                        $payment->payment_type_id = $request->payment_type_id;
+
+                        if (in_array($request->payment_type_id, [2, 3, 4])) {
+                            $payment->transaction_id = $request->transaction_id;
+                        }
                     }
-                }
 
-                $client->payment->save();
+                    $payment->save();
+                }
             }
         }
     }
