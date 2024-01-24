@@ -28,7 +28,7 @@ class ClientUpdateInfoRequest extends FormRequest
         return [
             'company'          => 'required|string|max:255',
             'name'             => 'required|string|max:255',
-            'email'            => 'required|string|email|max:255|unique:clients,email,'.$this->route('id'),
+            'email'            => 'required|string|email|max:255',
             'phone_no'         =>   [
                 'required',
                 'regex:/^(?:\+?88|0088)?01[3-9]\d{8}$/',
