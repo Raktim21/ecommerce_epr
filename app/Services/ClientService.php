@@ -145,9 +145,12 @@ class ClientService
         if ($client->confirmation_date)
         {
             if ($request->domain) {
-                $client->website()->updateOrCreate([
-                    'domain' => $request->domain
-                ]);
+                $website = $client->website;
+
+                if ($website) {
+                    $website->domain = $request->domain;
+                    $website->save();
+                }
             }
 
             if ($request->amount) {
