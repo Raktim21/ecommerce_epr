@@ -33,7 +33,6 @@ class PaymentService
                 'payment_type_id'   => $request->payment_type_id,
                 'service_id'        => $request->service_id,
                 'transaction_id'    => $request->transaction_id ?? null,
-                'invoice_no'        => 'PAY-'.rand(100,999).'-'.time(),
                 'amount'            => Service::find($request->service_id)->price
             ]);
 

@@ -39,6 +39,10 @@ class Payment extends Model
     {
         parent::boot();
 
+        static::creating(function ($payment) {
+            $payment->invoice_no = 'PAY-' . rand(100,999) . '-' . time();
+        });
+
         static::created(function ($payment) {
             (new UserService)->sendNotification(
                 'New payment has been stored for service: '. $payment->service->name .'.',

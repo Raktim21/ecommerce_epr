@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Payment;
+use App\Models\Website;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -37,10 +39,26 @@ class ClientUpdateInfoRequest extends FormRequest
             'area'             => 'required|string',
             'client_opinion'   => 'nullable|string',
             'officer_opinion'  => 'nullable|string',
-            'domain'           => 'sometimes|string|url',
+            'domain'           => ['sometimes','string','url',
+                                    function($attr, $val, $fail) {
+                                        $domain = Website::where('domain', $val)->first();
+
+                                        if ($domain && $domain->client_id != $this->route('id'))
+                                        {
+                                            $fail('The domain is already taken.');
+                                        }
+                                    }],
             'amount'           => 'required_with:payment_type_id|numeric|gt:0',
             'payment_type_id'  => 'required_with:amount|exists:payment_types,id',
-            'transaction_id'   => 'sometimes|string|max:50'
+            'transaction_id'   => ['sometimes','string','max:50',
+                                    function($attr, $val, $fail) {
+                                        $payment = Payment::where('transaction_id', $val)->first();
+
+                                        if ($payment && $payment->client_id != $this->route('id'))
+                                        {
+                                            $fail('Transaction ID is already taken.');
+                                        }
+                                    }]
         ];
     }
 

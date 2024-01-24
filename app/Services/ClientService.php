@@ -161,6 +161,8 @@ class ClientService
 
                         if (in_array($request->payment_type_id, [2, 3, 4])) {
                             $payment->transaction_id = $request->transaction_id;
+                        } else {
+                            $payment->transaction_id = null;
                         }
                     }
 

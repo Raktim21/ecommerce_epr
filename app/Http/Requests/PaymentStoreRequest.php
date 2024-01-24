@@ -49,9 +49,15 @@ class PaymentStoreRequest extends FormRequest
                                                     $fail("The selected client must have an interest rate of 100.");
                                                 }
                                             }],
-            'payment_type_id'       => 'required|exists:payment_types,id',
+            'payment_type_id'       => ['required','exists:payment_types,id',
+                                        function($attr, $val, $fail) {
+                                            if (in_array($val, [2,3,4]) && !$this->input('transaction_id'))
+                                            {
+                                                $fail('Transaction ID is required.');
+                                            }
+                                        }],
             'service_id'            => 'required|exists:services,id',
-            'transaction_id'        => 'required_if:payment_type_id,2|string|max:48',
+            'transaction_id'        => 'sometimes|string|max:48|unique:payments,transaction_id',
             'website_domain'        => 'required|url|unique:websites,domain|max:98'
         ];
     }
