@@ -150,6 +150,10 @@ class ClientService
                 if ($website) {
                     $website->domain = $request->domain;
                     $website->save();
+                } else {
+                    $client->website()->create([
+                        'domain' => $request->domain
+                    ]);
                 }
             }
 
