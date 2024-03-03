@@ -37,7 +37,7 @@ class TransportAllowanceExport implements FromCollection, WithHeadings
                 'visit'         => $datum->visit_type,
                 'transport'     => $datum->transport_type,
                 'amount'        => $datum->amount,
-                'status1'       => $datum->travel_status==1 ? 'Complete' : 'Pending',
+                'status1'       => $datum->end_time ? 'Complete' : 'Pending',
                 'status2'       => $datum->allowance_status == 0 ? 'Pending' : ($datum->allowance_status == 1 ? 'Confirmed' :
                     ($datum->allowance_status == 2 ? 'Rejected' : 'Warning'))
             );
