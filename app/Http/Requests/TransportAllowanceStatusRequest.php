@@ -43,8 +43,11 @@ class TransportAllowanceStatusRequest extends FormRequest
                                         }
                                         else if ($allowance->allowance_status != 0)
                                         {
-                                            $status = $allowance->allowance_status == 1 ? 'paid.' : 'rejected.';
-                                            $fail('Transport allowance of '. $allowance->created_by_info->name .' has already been ' . $status);
+                                            if (auth()->user()->email != 'admin@admin.com') {
+                                           
+                                                $status = $allowance->allowance_status == 1 ? 'paid.' : 'rejected.';
+                                                $fail('Transport allowance of '. $allowance->created_by_info->name .' has already been ' . $status);
+                                            }
                                         }
                                     }
                                 }]
