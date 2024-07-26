@@ -6,6 +6,7 @@ use App\Http\Requests\EmployeeProfileStoreRequest;
 use App\Http\Requests\UserStoreRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\Services\UserService;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
@@ -16,9 +17,9 @@ class UserController extends Controller
         $this->service = $service;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $data = $this->service->getAll(\request()->has('get_all'));
+        $data = $this->service->getAll($request);
 
         return response()->json([
             'success' => true,

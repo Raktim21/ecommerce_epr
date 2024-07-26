@@ -12,11 +12,11 @@ use Illuminate\Support\Facades\Hash;
 
 class UserService
 {
-    public function getAll($all)
+    public function getAll($request)
     {
-        if ($all != 1){
+        if ($request->get_all != 1){
             return User::with('roles', 'employee')
-                ->withSum('point_list', 'points')->paginate(15);
+                ->withSum('point_list', 'points')->paginate($request->per_page ?? 10);
         }
         return User::select('id','name','avatar')->where('is_active', 1)->get();
     }
