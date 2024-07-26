@@ -34,7 +34,7 @@ class BillService
             }])->with(['services.service' => function ($q) {
                 return $q->select('id', 'name', 'price');
             }])
-            ->latest()->paginate(15)
+            ->latest()->paginate($request->input('per_page') ?? 10)
             ->appends($request->except('page','per_page'));
     }
 
